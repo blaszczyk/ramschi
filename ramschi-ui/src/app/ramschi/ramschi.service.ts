@@ -38,14 +38,9 @@ export class RamschiService {
   }
 
   postImage(itemId: string, file: File): Observable<string> {
-    console.log(file);
-    const formData = new FormData();
-    formData.append('data', file);
-    return this.http.post<string>('/api/item/' + itemId + '/image', formData, 
-      { headers: { 'content-type': 'image/png'}}
+    return this.http.post<string>('/api/item/' + itemId + '/image', file, 
+      { headers: { 'content-type': file.type}}
     );
   }
-
-  // TODO: image endpoints
 
 }

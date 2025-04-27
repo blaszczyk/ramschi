@@ -10,9 +10,10 @@ create_item = json.dumps({
 	'price': 100
 })
 
-create_image = b'ar'
+create_image = None
 
-json_headers = {'Content-type': 'application/json'}
+with open('test.png', 'rb') as file:
+	create_image = file.read()
 
 connection = http.client.HTTPConnection(host)
 
