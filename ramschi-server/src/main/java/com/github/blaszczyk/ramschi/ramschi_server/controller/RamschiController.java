@@ -54,7 +54,6 @@ public class RamschiController {
                 .map(ResponseEntity::ok);
     }
 
-
     @PostMapping(path = "/item/{itemId}/image",
             consumes = { MediaType.IMAGE_PNG_VALUE, MediaType.IMAGE_JPEG_VALUE },
             produces = MediaType.APPLICATION_JSON_VALUE)
@@ -67,6 +66,12 @@ public class RamschiController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     Mono<ResponseEntity<List<String>>> getAssignees() {
         return service.getAllAssignees()
+                .map(ResponseEntity::ok);
+    }
+
+    @PutMapping(path = "/item/{itemId}/assignee/{assignee}")
+    Mono<ResponseEntity<Void>> putItemAssignee(@PathVariable UUID itemId, @PathVariable String assignee) {
+        return service.addAssignee(itemId, assignee)
                 .map(ResponseEntity::ok);
     }
 }

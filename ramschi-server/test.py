@@ -24,13 +24,21 @@ connection.request('POST', '/api/item/' + item_id + '/image', create_image, { 'C
 image_id = connection.getresponse().read().decode('utf-8')[1:-1]
 print('Image created with id', image_id)
 
-connection.request('GET', '/api/item/' + item_id, None, { 'Accept': 'application/json' })
-item = connection.getresponse().read().decode('utf-8')
-print('Item received', item)
-
 connection.request('GET', '/api/image/' + image_id, None, { 'Accept': 'image/png' })
 image = connection.getresponse().read()
 print('Image received', image)
+
+connection.request('GET', '/api/assignees', None, { 'Accept': 'application/json' })
+assignees = connection.getresponse().read().decode('utf-8')
+print('Assignees received', assignees)
+
+connection.request('PUT', '/api/item/' + item_id + '/assignee/Micha', None)
+aa_response = connection.getresponse().read()
+print('Assignee added', aa_response)
+
+connection.request('GET', '/api/item/' + item_id, None, { 'Accept': 'application/json' })
+item = connection.getresponse().read().decode('utf-8')
+print('Item received', item)
 
 connection.request('GET', '/api/items', None, { 'Accept': 'application/json' })
 items = connection.getresponse().read().decode('utf-8')

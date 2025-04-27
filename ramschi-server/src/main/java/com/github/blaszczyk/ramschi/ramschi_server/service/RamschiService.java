@@ -22,7 +22,10 @@ public class RamschiService {
     private ImageRepository imageRepository;
 
     @Autowired
-    private ItemAssigneeRepository assigneeRepository;
+    private ItemAssigneeRepository itemAssigneeRepository;
+
+    @Autowired
+    private AssigneeRepository assigneeRepository;
 
     public Mono<List<BasicItem>> filterItems(
             Optional<String> filter,
@@ -38,7 +41,7 @@ public class RamschiService {
 
     public Mono<Item> getItem(UUID id) {
         final var fetchItem = itemRepository.findById(id);
-        final var fetchAssignees = assigneeRepository.findByItemId(id).collectList();
+        final var fetchAssignees = itemAssigneeRepository.findByItemId(id).collectList();
         final var fetchImages = imageRepository.findByItemId(id).collectList();
 
         return Mono.zip(fetchItem, fetchAssignees, fetchImages)
@@ -66,7 +69,15 @@ public class RamschiService {
 
     public Mono<List<String>> getAllAssignees() {
         return assigneeRepository.findAll()
-                .map(ItemAssigneeEntity::getAssignee)
+                .map(AssigneeEntity::getName)
                 .collectList();
+    }
+
+    public Mono<Void> addAssignee(UUID itemId, String assignee) {
+        final var entity = new ItemAssigneeEntity();
+        entity.setItemId(itemId);
+        entity.setAssignee(assignee);
+        return itemAssigneeRepository.save(entity)
+                .then();
     }
 }
