@@ -8,5 +8,7 @@ import java.util.UUID;
 
 public interface ItemRepository extends ReactiveCrudRepository<ItemEntity, UUID> {
 
-    Flux<ItemEntity> findByNameAndCategory(String name, Category category);
+    Flux<ItemEntity> findByNameLike(String name);
+
+    Flux<ItemEntity> findByNameLikeAndCategory(String name, Category category);
 }

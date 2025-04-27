@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @RestController
@@ -24,10 +25,10 @@ public class RamschiController {
     @GetMapping(path = "/items",
             produces = MediaType.APPLICATION_JSON_VALUE)
     Mono<ResponseEntity<List<BasicItem>>> getItems(
-            @RequestParam String name,
-            @RequestParam Category category
+            @RequestParam Optional<String> filter,
+            @RequestParam Optional<Category> category
     ) {
-        return service.filterItems(name, category)
+        return service.filterItems(filter, category)
                 .map(ResponseEntity::ok);
     }
 
@@ -40,7 +41,7 @@ public class RamschiController {
 
     @PostMapping(path = "/item",
             consumes = MediaType.APPLICATION_JSON_VALUE,
-            produces = MediaType.TEXT_PLAIN_VALUE)
+            produces = MediaType.APPLICATION_JSON_VALUE)
     Mono<ResponseEntity<UUID>> postItem(@RequestBody Item item) {
         return service.saveItem(item)
                 .map(ResponseEntity::ok);

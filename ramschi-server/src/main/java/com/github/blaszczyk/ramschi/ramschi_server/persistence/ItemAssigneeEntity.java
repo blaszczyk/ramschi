@@ -3,19 +3,20 @@ package com.github.blaszczyk.ramschi.ramschi_server.persistence;
 import org.springframework.data.relational.core.mapping.Table;
 
 import java.util.Objects;
+import java.util.UUID;
 
 @Table("item_assignee")
 public class ItemAssigneeEntity {
 
-    private String itemId;
+    private UUID itemId;
 
     private String assignee;
 
-    public String getItemId() {
+    public UUID getItemId() {
         return itemId;
     }
 
-    public void setItemId(String itemId) {
+    public void setItemId(UUID itemId) {
         this.itemId = itemId;
     }
 

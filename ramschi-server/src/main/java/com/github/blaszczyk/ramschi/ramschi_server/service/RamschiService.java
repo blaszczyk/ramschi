@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -24,11 +25,14 @@ public class RamschiService {
     private ItemAssigneeRepository assigneeRepository;
 
     public Mono<List<BasicItem>> filterItems(
-            String name,
-            Category category
+            Optional<String> filter,
+            Optional<Category> category
     ) {
-        return itemRepository.findByNameAndCategory(name, category)
-                .map(ItemTransformer::toBasicItem)
+        final String filterTerm = filter.map(s -> "%" + s + "%").orElse("%");
+        final var resultFlux = category.isPresent()
+                ? itemRepository.findByNameLikeAndCategory(filterTerm, category.get())
+                : itemRepository.findByNameLike(filterTerm);
+        return resultFlux.map(ItemTransformer::toBasicItem)
                 .collectList();
     }
 
