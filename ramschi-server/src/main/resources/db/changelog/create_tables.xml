@@ -1,0 +1,58 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <property name="uuid_type" value="uuid" dbms="postgresql"/>
+    <property name="uuid_function" value="uuid_generate_v4()" dbms="postgresql"/>
+
+    <changeSet id="create_table_item" author="micha">
+        <createTable tableName="item" schemaName="ramschi">
+            <column name="id" type="${uuid_type}" defaultValueComputed="${uuid_function}">
+                <constraints primaryKey="true" nullable="false" primaryKeyName="ITEM_PK"/>
+            </column>
+            <column name="name" type="text">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="text">
+                <constraints nullable="true"/>
+            </column>
+            <column name="category" type="text">
+                <constraints nullable="true"/>
+            </column>
+            <column name="price" type="int">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="create_table_user" author="micha">
+        <createTable tableName="user" schemaName="ramschi">
+            <column name="name" type="text">
+                <constraints primaryKey="true" nullable="false" primaryKeyName="USER_PK"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="create_table_item_user" author="micha">
+        <createTable tableName="item_user" schemaName="ramschi">
+            <column name="item_id" type="${uuid_type}">
+                <constraints nullable="false"  foreignKeyName="fk_item_user" references="ramschi.item(id)"/>
+            </column>
+            <column name="user" type="text">
+                <constraints nullable="false"  foreignKeyName="fk_user_item" references="ramschi.user(name)"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="create_table_image" author="micha">
+        <createTable tableName="image" schemaName="ramschi">
+            <column name="id" type="${uuid_type}" defaultValueComputed="${uuid_function}">
+                <constraints primaryKey="true" nullable="false" primaryKeyName="IMAGE_PK"/>
+            </column>
+            <column name="item_id" type="${uuid_type}">
+                <constraints nullable="false"  foreignKeyName="fk_item_user" references="ramschi.item(id)"/>
+            </column>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>

@@ -1,0 +1,16 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="create_schema_ramschi" author="micha">
+        <sql>CREATE SCHEMA ramschi</sql>
+    </changeSet>
+
+    <changeSet id="create_extension_ossp_uuid" author="micha">
+        <sql>CREATE EXTENSION IF NOT EXISTS "uuid-ossp"</sql>
+    </changeSet>
+
+    <include file="db/changelog/create_tables.xml" />
+
+</databaseChangeLog>
