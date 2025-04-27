@@ -1,4 +1,4 @@
 <p>ramschi-list works!</p>
 @for (item of items; track item) {
-    <p>{{ item.name }}</p>
+    <a [href]="'ramsch/' + item.id">{{ item.name }}</a>
 }

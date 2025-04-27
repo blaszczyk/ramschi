@@ -1,0 +1,10 @@
+<p>ramschi-detail works!</p>
+@if (item) {
+    <h1>{{item.name}}</h1>
+    <p>{{item.description}}</p>
+    @for (image of item.images; track image) {
+        <p>{{image}}</p>
+        <img [src]="'/api/image/' + image"/>
+    }
+    <input type="file" (change)="uploadNewImage($event)"/>
+}

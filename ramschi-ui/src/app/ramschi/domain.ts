@@ -9,8 +9,9 @@ export enum Category {
 export interface IBasicItem {
     id: string | null;
     name: string;
-    description: string;
-    category: Category;
+    description: string | null;
+    category: Category | null;
+    price: number | null;
 }
 
 export interface IItem extends IBasicItem {

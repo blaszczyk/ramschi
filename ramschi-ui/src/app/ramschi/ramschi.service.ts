@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { flatMap, from, map, mergeMap, Observable } from 'rxjs';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Category, IBasicItem, IItem } from './domain';
 
@@ -35,6 +35,15 @@ export class RamschiService {
 
   putItemAssignee(itemId: string, assignee: string): Observable<void> {
     return this.http.put<void>('/api/item/' + itemId + '/assignee/' + assignee, null);
+  }
+
+  postImage(itemId: string, file: File): Observable<string> {
+    console.log(file);
+    const formData = new FormData();
+    formData.append('data', file);
+    return this.http.post<string>('/api/item/' + itemId + '/image', formData, 
+      { headers: { 'content-type': 'image/png'}}
+    );
   }
 
   // TODO: image endpoints
