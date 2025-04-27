@@ -60,7 +60,8 @@ public class RamschiService {
         final ImageEntity entity = new ImageEntity();
         entity.setData(data);
         entity.setItemId(itemId);
-        return imageRepository.save(entity).map(ImageEntity::getId);
+        return imageRepository.save(entity)
+                .map(ImageEntity::getId);
     }
 
     public Mono<List<String>> getAllAssignees() {

@@ -55,9 +55,9 @@ public class RamschiController {
     }
 
 
-    @PostMapping(path = "/item",
+    @PostMapping(path = "/item/{itemId}/image",
             consumes = { MediaType.IMAGE_PNG_VALUE, MediaType.IMAGE_JPEG_VALUE },
-            produces = MediaType.TEXT_PLAIN_VALUE)
+            produces = MediaType.APPLICATION_JSON_VALUE)
     Mono<ResponseEntity<UUID>> postImage(@PathVariable UUID itemId, @RequestBody byte[] data) {
         return service.createImage(itemId, data)
                 .map(ResponseEntity::ok);
