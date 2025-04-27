@@ -26,21 +26,21 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="create_table_user" author="micha">
-        <createTable tableName="user" schemaName="ramschi">
+    <changeSet id="create_table_assignee" author="micha">
+        <createTable tableName="assignee" schemaName="ramschi">
             <column name="name" type="text">
-                <constraints primaryKey="true" nullable="false" primaryKeyName="USER_PK"/>
+                <constraints primaryKey="true" nullable="false" primaryKeyName="assignee_PK"/>
             </column>
         </createTable>
     </changeSet>
 
-    <changeSet id="create_table_item_user" author="micha">
-        <createTable tableName="item_user" schemaName="ramschi">
+    <changeSet id="create_table_item_assignee" author="micha">
+        <createTable tableName="item_assignee" schemaName="ramschi">
             <column name="item_id" type="${uuid_type}">
-                <constraints nullable="false"  foreignKeyName="fk_item_user" references="ramschi.item(id)"/>
+                <constraints nullable="false"  foreignKeyName="fk_item_assignee" references="ramschi.item(id)"/>
             </column>
-            <column name="user" type="text">
-                <constraints nullable="false"  foreignKeyName="fk_user_item" references="ramschi.user(name)"/>
+            <column name="assignee" type="text">
+                <constraints nullable="false"  foreignKeyName="fk_assignee_item" references="ramschi.assignee(name)"/>
             </column>
         </createTable>
     </changeSet>
@@ -51,7 +51,10 @@
                 <constraints primaryKey="true" nullable="false" primaryKeyName="IMAGE_PK"/>
             </column>
             <column name="item_id" type="${uuid_type}">
-                <constraints nullable="false"  foreignKeyName="fk_item_user" references="ramschi.item(id)"/>
+                <constraints nullable="false"  foreignKeyName="fk_item_assignee" references="ramschi.item(id)"/>
+            </column>
+            <column name="data" type="blob">
+                <constraints nullable="false"/>
             </column>
         </createTable>
     </changeSet>
