@@ -67,6 +67,7 @@ export class RamschiDetailComponent implements OnInit {
       this.spinner.show();
       this.service.postItem(this.item).subscribe(id => {
         this.spinner.hide();
+        this.pristine = true;
         this.router.navigateByUrl('/ramsch/' + id);
       });
     }
