@@ -1,13 +1,14 @@
-<mat-grid-list cols="1" rowHeight="5:1">
-    <mat-grid-tile>
-        <button mat-raised-button (click)="navigateToCreatePage()">Mehr Ramsch</button>
-    </mat-grid-tile>
+<mat-grid-list cols="1" rowHeight="70px">
     @for (item of items; track item) {
         <mat-grid-tile>
-            <a [href]="'ramsch/' + item.id">{{ item.name }}</a>
-            @for (image of item.images; track image) {
-                <img [src]="'/api/image/' + image + '/thumbnail'"/>
-            }
+            <div class="item" (click)="navigateTo(item)">
+                <div class="item-name">{{ item.name }}</div>
+                <div class="images">
+                    @for (image of item.images; track image) {
+                    <img [src]="'/api/image/' + image + '/thumbnail'" height="60px"/>
+                    }
+                </div>
+            </div>
         </mat-grid-tile>
     }
 </mat-grid-list>

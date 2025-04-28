@@ -4,5 +4,11 @@
     </div>
 }
 <div class="container">
-    <router-outlet></router-outlet>
+    <div class="header">
+        <button mat-raised-button (click)="navigateTo('/')">Ramsch</button>
+        <button mat-raised-button (click)="navigateTo('/ramsch')">Mehr Ramsch</button>
+    </div>
+    <div class="scrollarea">
+        <router-outlet></router-outlet>
+    </div>  
 </div>

@@ -5,8 +5,30 @@
     height: 100%;
     margin-left: auto;
     margin-right: auto;
-    border: 3px solid  rgb(0, 92, 187);
     border-style: groove;
+    overflow-y: auto;
+    background-color: blanchedalmond;
+}
+
+.header {
+    position: sticky;
+    top: 0;
+    height: 60px;
+    z-index: 1;
+    background-color: blanchedalmond;
+    text-align: center;
+}
+
+button {
+    margin: 10px 20px 0px 20px;
+}
+
+.scrollarea {
+    position: relative;
+    top: 50px;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
 }
 
 .screenlock {

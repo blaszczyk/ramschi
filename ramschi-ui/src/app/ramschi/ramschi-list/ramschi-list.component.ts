@@ -27,8 +27,8 @@ export class RamschiListComponent implements OnInit {
     this.service.getItems().subscribe(items => this.items = items);
   }
 
-  navigateToCreatePage(): void {
-    this.router.navigateByUrl('/ramsch');
+  navigateTo(item: IItem): void {
+    this.router.navigateByUrl('/ramsch/' + item.id);
   }
 
 }
