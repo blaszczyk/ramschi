@@ -7,5 +7,5 @@ export const routes: Routes = [
     { path: "", component: RamschiListComponent },
     { path: "ramsch", component: RamschiDetailComponent },
     { path: "ramsch/:id", component: RamschiDetailComponent },
-    { path: "neu", component: NewAssigneeComponent },
+    { path: "leute", component: NewAssigneeComponent },
 ];

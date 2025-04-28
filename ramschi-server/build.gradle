@@ -34,3 +34,33 @@ bootJar.archiveFileName = "${rootProject.name}.jar"
 tasks.named('test') {
 	useJUnitPlatform()
 }
+
+ext {
+	staticWebDir = "${projectDir}/src/main/resources/static"
+}
+
+tasks.register('retrieveUi', Sync) {
+	description "Retrieve UI distribution files."
+	group "Build"
+	def localFrontend = '../ramschi-ui/dist/ramschi-ui/browser/'
+
+	from localFrontend
+	into staticWebDir
+	doLast {
+		println "Fetching UI distribution" + localFrontend
+	}
+}
+
+tasks.register('cleanUi', Delete) {
+	description "Clear UI distribution files."
+	group "Build"
+	delete staticWebDir
+}
+
+processResources.dependsOn([
+		retrieveUi
+])
+
+clean.dependsOn([
+		cleanUi
+])
