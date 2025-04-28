@@ -1,4 +1,10 @@
-@for (item of items; track item) {
-    <a [href]="'ramsch/' + item.id">{{ item.name }}</a>
-    <br>
-}
+<mat-grid-list cols="1" rowHeight="5:1">
+    <mat-grid-tile>
+        <button mat-raised-button (click)="navigateToCreatePage()">Mehr Ramsch</button>
+    </mat-grid-tile>
+    @for (item of items; track item) {
+        <mat-grid-tile>
+            <a [href]="'ramsch/' + item.id">{{ item.name }}</a>
+        </mat-grid-tile>
+    }
+</mat-grid-list>

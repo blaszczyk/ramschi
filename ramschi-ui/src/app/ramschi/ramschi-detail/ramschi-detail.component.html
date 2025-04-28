@@ -1,6 +1,37 @@
 @if (item) {
-    <h1>{{item.name}}</h1>
-    <p>{{item.description}}</p>
+    <mat-grid-list cols="1" rowHeight="5:1">
+        <mat-grid-tile>
+            <button mat-raised-button (click)="saveItem()">Speichern</button>
+        </mat-grid-tile>
+        <mat-grid-tile>
+            <mat-form-field>
+                <mat-label>Name</mat-label>
+                <input matInput placeholder="Name" [(ngModel)]="item.name">
+            </mat-form-field>
+        </mat-grid-tile>
+        <mat-grid-tile>
+            <mat-form-field>
+                <mat-label>Beschreibung</mat-label>
+                <input matInput placeholder="Beschreibung" [(ngModel)]="item.description">
+            </mat-form-field>
+        </mat-grid-tile>
+        <mat-grid-tile>
+            <mat-form-field>
+                <mat-label>Kategorie</mat-label>
+                <mat-select [(ngModel)]="item.category" name="category">
+                  @for (category of categories; track category) {
+                    <mat-option [value]="category.id">{{category.displayName}}</mat-option>
+                  }
+                </mat-select>
+            </mat-form-field>
+        </mat-grid-tile>
+        <mat-grid-tile>
+            <mat-form-field>
+                <mat-label>Preisvorstellung in €</mat-label>
+                <input matInput type="number" placeholder="Preis" [(ngModel)]="item.price">
+            </mat-form-field>
+        </mat-grid-tile>
+    </mat-grid-list>
     @for (image of item.images; track image) {
         <img [src]="'/api/image/' + image"/>
     }

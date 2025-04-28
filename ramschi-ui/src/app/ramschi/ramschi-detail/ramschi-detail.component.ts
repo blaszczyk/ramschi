@@ -1,16 +1,24 @@
 import { Component, OnInit } from '@angular/core';
 import { RamschiService } from '../ramschi.service';
-import { IItem } from '../domain';
+import { Category, categoryDisplayName, IItem } from '../domain';
 import { ActivatedRoute } from '@angular/router';
-import { FormsModule, ValueChangeEvent } from '@angular/forms';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSelectModule } from '@angular/material/select';
+import { MatButtonModule } from '@angular/material/button';
+import { MatGridListModule } from '@angular/material/grid-list';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-ramschi-detail',
-  imports: [FormsModule],
+  imports: [MatInputModule, MatFormFieldModule, MatSelectModule, MatButtonModule, MatGridListModule, FormsModule],
   templateUrl: './ramschi-detail.component.html',
   styleUrl: './ramschi-detail.component.css'
 })
 export class RamschiDetailComponent implements OnInit {
+
+  categories: { id:Category, displayName: string }[] = Object.values(Category)
+  .map(id => ({id, displayName: categoryDisplayName(id)}));
 
   item: IItem | null = null;
 
@@ -37,6 +45,10 @@ export class RamschiDetailComponent implements OnInit {
         }
       }
     })
+  }
+
+  saveItem(): void {
+    this.service.postItem(this.item!).subscribe();
   }
 
   uploadNewImage(event: Event) {
