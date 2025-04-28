@@ -18,7 +18,8 @@ spring:
     url: jdbc:postgresql://${database.host}:${database.port}/${database.name}
     user: ${database.username}
     password: ${database.password}
-
+  codec:
+    max-in-memory-size: 10MB
 logging:
   level:
     ROOT: DEBUG
