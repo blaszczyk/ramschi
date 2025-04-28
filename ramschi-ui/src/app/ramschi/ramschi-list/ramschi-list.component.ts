@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { RamschiService } from '../ramschi.service';
-import { IBasicItem } from '../domain';
+import { IItem } from '../domain';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
@@ -17,7 +17,7 @@ import { Router } from '@angular/router';
 })
 export class RamschiListComponent implements OnInit {
 
-  items: IBasicItem[] = [];
+  items: IItem[] = [];
 
   constructor(private readonly service: RamschiService,
     private readonly router: Router,

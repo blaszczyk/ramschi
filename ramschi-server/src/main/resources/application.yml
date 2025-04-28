@@ -10,7 +10,7 @@ server:
 
 image:
   thumbnail:
-    height: 40
+    height: 100
   preview:
     width: 400
 

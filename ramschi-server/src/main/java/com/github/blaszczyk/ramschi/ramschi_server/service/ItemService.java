@@ -24,7 +24,7 @@ public class ItemService {
     @Autowired
     private ItemAssigneeRepository itemAssigneeRepository;
 
-    public Mono<List<BasicItem>> filterItems(
+    public Mono<List<Item>> filterItems(
             Optional<String> filter,
             Optional<Category> category
     ) {
@@ -32,7 +32,16 @@ public class ItemService {
         final var resultFlux = category.isPresent()
                 ? itemRepository.findByNameLikeAndCategory(filterTerm, category.get())
                 : itemRepository.findByNameLike(filterTerm);
-        return resultFlux.map(ItemTransformer::toBasicItem)
+        return resultFlux
+                .flatMap(entity -> {
+                    final UUID id = entity.getId();
+                    var fetchAssignees = itemAssigneeRepository.findByItemId(id)
+                            .collectList();
+                    var fetchImages = imageRepository.findIdsByItemId(id)
+                            .collectList();
+                    return Mono.zip(fetchAssignees, fetchImages)
+                            .map(tuple -> ItemTransformer.toItem(entity, tuple.getT1(), tuple.getT2()));
+                })
                 .collectList();
     }
 

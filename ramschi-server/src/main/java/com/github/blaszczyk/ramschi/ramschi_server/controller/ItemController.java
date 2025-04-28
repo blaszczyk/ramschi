@@ -28,7 +28,7 @@ public class ItemController {
 
     @GetMapping(path = "",
             produces = MediaType.APPLICATION_JSON_VALUE)
-    Mono<ResponseEntity<List<BasicItem>>> getItems(
+    Mono<ResponseEntity<List<Item>>> getItems(
             @RequestParam Optional<String> filter,
             @RequestParam Optional<Category> category
     ) {

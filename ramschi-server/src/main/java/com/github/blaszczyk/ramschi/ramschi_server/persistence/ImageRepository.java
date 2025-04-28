@@ -9,8 +9,6 @@ import java.util.UUID;
 
 public interface ImageRepository  extends ReactiveCrudRepository<ImageEntity, UUID> {
 
-    Flux<ImageEntity> findByItemId(UUID itemId);
-
     @Query("SELECT id FROM ramschi.image WHERE item_id = :itemId")
     Flux<UUID> findIdsByItemId(UUID itemId);
 

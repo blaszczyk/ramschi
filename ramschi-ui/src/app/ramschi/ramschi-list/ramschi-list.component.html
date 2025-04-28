@@ -5,6 +5,9 @@
     @for (item of items; track item) {
         <mat-grid-tile>
             <a [href]="'ramsch/' + item.id">{{ item.name }}</a>
+            @for (image of item.images; track image) {
+                <img [src]="'/api/image/' + image + '/thumbnail'"/>
+            }
         </mat-grid-tile>
     }
 </mat-grid-list>
