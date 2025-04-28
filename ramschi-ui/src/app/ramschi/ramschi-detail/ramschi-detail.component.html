@@ -1,21 +1,24 @@
 @if (initialized) {
     <mat-grid-list cols="1" rowHeight="5:1">
         <mat-grid-tile>
+            <h1>{{item.name}}</h1>
+        </mat-grid-tile>
+        <mat-grid-tile>
             <mat-form-field>
                 <mat-label>Name</mat-label>
-                <input matInput placeholder="Name" [(ngModel)]="item.name">
+                <input matInput placeholder="Name" [(ngModel)]="item.name" (keyup)="setDirty()">
             </mat-form-field>
         </mat-grid-tile>
         <mat-grid-tile rowspan="2">
             <mat-form-field>
                 <mat-label>Beschreibung</mat-label>
-                <textarea matInput placeholder="Beschreibung" rows="4" [(ngModel)]="item.description"></textarea>
+                <textarea matInput placeholder="Beschreibung" rows="4" [(ngModel)]="item.description" (keyup)="setDirty()"></textarea>
             </mat-form-field>
         </mat-grid-tile>
         <mat-grid-tile>
             <mat-form-field>
                 <mat-label>Kategorie</mat-label>
-                <mat-select [(ngModel)]="item.category" name="category">
+                <mat-select [(ngModel)]="item.category" (change)="setDirty()" name="category">
                   @for (category of categories; track category) {
                     <mat-option [value]="category.id">{{category.displayName}}</mat-option>
                   }
@@ -25,11 +28,11 @@
         <mat-grid-tile>
             <mat-form-field>
                 <mat-label>Preisvorstellung in €</mat-label>
-                <input matInput type="number" placeholder="Preis" [(ngModel)]="item.price">
+                <input class="price" matInput type="number" placeholder="Preis" [(ngModel)]="item.price" (keyup)="setDirty()">
             </mat-form-field>
         </mat-grid-tile>
         <mat-grid-tile>
-            <button mat-raised-button (click)="saveItem()">Speichern</button>
+            <button mat-raised-button [class.fake-disabled]="pristine || !item.name" (click)="saveItem()">Speichern</button>
             <button mat-raised-button [style.visibility]="item.id ? 'visible' : 'hidden'" (click)="clickNewImage()">Foto Machen</button>
             <input #newImage id="new-image" type="file" (change)="uploadNewImage($event)"/>
         </mat-grid-tile>

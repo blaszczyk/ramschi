@@ -36,6 +36,8 @@ export class RamschiDetailComponent implements OnInit {
 
   initialized = false;
 
+  pristine = true;
+
   constructor(
     private readonly service: RamschiService,
     private readonly route: ActivatedRoute,
@@ -61,11 +63,13 @@ export class RamschiDetailComponent implements OnInit {
   }
 
   saveItem(): void {
-    this.spinner.show();
-    this.service.postItem(this.item).subscribe(id => {
-      this.spinner.hide();
-      this.router.navigateByUrl('/ramsch/' + id);
-    });
+    if (this.item.name ) {
+      this.spinner.show();
+      this.service.postItem(this.item).subscribe(id => {
+        this.spinner.hide();
+        this.router.navigateByUrl('/ramsch/' + id);
+      });
+    }
   }
 
   uploadNewImage(event: Event) {
@@ -79,6 +83,10 @@ export class RamschiDetailComponent implements OnInit {
 
   clickNewImage() {
     this.newImageElement.nativeElement.click();
+  }
+
+  setDirty() {
+    this.pristine = false;
   }
 
 }

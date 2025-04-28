@@ -13,3 +13,12 @@ textarea {
 button {
     margin: 10px 20px 0px 20px;
 }
+
+.price {
+    text-align: right;
+}
+
+.fake-disabled {
+    color: gray;
+    cursor: default;
+}
