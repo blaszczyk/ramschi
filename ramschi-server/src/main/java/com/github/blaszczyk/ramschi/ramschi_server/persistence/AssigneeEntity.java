@@ -3,7 +3,6 @@ package com.github.blaszczyk.ramschi.ramschi_server.persistence;
 import org.springframework.data.relational.core.mapping.Table;
 
 import java.util.Objects;
-import java.util.UUID;
 
 @Table("assignee")
 public class AssigneeEntity {

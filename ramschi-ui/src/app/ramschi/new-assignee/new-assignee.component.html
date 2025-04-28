@@ -1,0 +1,6 @@
+@for (assignee of assignees; track assignee) {
+    <p>{{assignee}} <button (click)="deleteAssignee(assignee)">X</button></p>
+}
+<input [(ngModel)]="newAssignee"/>
+<br>
+<button (click)="createNewAssignee()" [disabled]="!newAssignee">Neuer Interessent</button>

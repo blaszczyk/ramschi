@@ -69,6 +69,18 @@ public class RamschiController {
                 .map(ResponseEntity::ok);
     }
 
+    @PostMapping(path = "/assignee/{name}")
+    Mono<ResponseEntity<Void>> postAssignee(@PathVariable String name) {
+        return service.createAssignee(name)
+                .map(ResponseEntity::ok);
+    }
+
+    @DeleteMapping(path = "/assignee/{name}")
+    Mono<ResponseEntity<Void>> deleteAssignee(@PathVariable String name) {
+        return service.deleteAssignee(name)
+                .map(ResponseEntity::ok);
+    }
+
     @PutMapping(path = "/item/{itemId}/assignee/{assignee}")
     Mono<ResponseEntity<Void>> putItemAssignee(@PathVariable UUID itemId, @PathVariable String assignee) {
         return service.addAssignee(itemId, assignee)

@@ -73,6 +73,18 @@ public class RamschiService {
                 .collectList();
     }
 
+    public Mono<Void> createAssignee(String name) {
+        final var entity = new AssigneeEntity();
+        entity.setName(name);
+        return assigneeRepository.save(entity)
+                .then();
+    }
+
+    public Mono<Void> deleteAssignee(String name) {
+        return assigneeRepository.delete(name)
+                .then();
+    }
+
     public Mono<Void> addAssignee(UUID itemId, String assignee) {
         final var entity = new ItemAssigneeEntity();
         entity.setItemId(itemId);
