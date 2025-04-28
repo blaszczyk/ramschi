@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { RamschiService } from '../ramschi.service';
 import { Category, categoryDisplayName, IItem } from '../domain';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
@@ -35,6 +35,7 @@ export class RamschiDetailComponent implements OnInit {
   constructor(
     private readonly service: RamschiService,
     private readonly route: ActivatedRoute,
+    private readonly router: Router,
   ) {}
 
   ngOnInit(): void {
@@ -54,7 +55,7 @@ export class RamschiDetailComponent implements OnInit {
 
   saveItem(): void {
     this.service.postItem(this.item).subscribe(id => {
-      this.item.id = id;
+      this.router.navigateByUrl('/ramsch/' + id);
     });
   }
 
