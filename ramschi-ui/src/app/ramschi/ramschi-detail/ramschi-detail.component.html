@@ -30,6 +30,8 @@
         </mat-grid-tile>
         <mat-grid-tile>
             <button mat-raised-button (click)="saveItem()">Speichern</button>
+            <button mat-raised-button [style.visibility]="item.id ? 'visible' : 'hidden'" (click)="clickNewImage()">Foto Machen</button>
+            <input #newImage id="new-image" type="file" (change)="uploadNewImage($event)"/>
         </mat-grid-tile>
     </mat-grid-list>
     @if (item.id) {
@@ -38,6 +40,5 @@
                 <img [src]="'/api/image/' + image + '/preview'"/>
             </a>
         }
-        <input type="file" (change)="uploadNewImage($event)"/>
     }
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { RamschiService } from '../ramschi.service';
 import { Category, categoryDisplayName, IItem } from '../domain';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -17,6 +17,9 @@ import { SpinnerService } from '../../spinner.service';
   styleUrl: './ramschi-detail.component.css'
 })
 export class RamschiDetailComponent implements OnInit {
+
+  @ViewChild('newImage')
+  newImageElement!: ElementRef<HTMLInputElement> ;
 
   categories: { id:Category, displayName: string }[] = Object.values(Category)
   .map(id => ({id, displayName: categoryDisplayName(id)}));
@@ -72,6 +75,10 @@ export class RamschiDetailComponent implements OnInit {
       this.item.images.push(id);
       this.spinner.hide();
     });
+  }
+
+  clickNewImage() {
+    this.newImageElement.nativeElement.click();
   }
 
 }

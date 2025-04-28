@@ -5,3 +5,11 @@ img {
 textarea {
     resize: none;
 }
+
+#new-image {
+    display: none;
+}
+
+button {
+    margin: 10px 20px 0px 20px;
+}
