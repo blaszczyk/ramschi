@@ -39,7 +39,7 @@ export class RamschiService {
 
   postImage(itemId: string, file: File): Observable<string> {
     return this.http.post<string>('/api/item/' + itemId + '/image', file, 
-      { headers: { 'content-type': file.type}}
+      { headers: { 'content-type': file.type} }
     );
   }
 
