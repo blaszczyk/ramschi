@@ -20,7 +20,17 @@ export class RamschiDetailComponent implements OnInit {
   categories: { id:Category, displayName: string }[] = Object.values(Category)
   .map(id => ({id, displayName: categoryDisplayName(id)}));
 
-  item: IItem | null = null;
+  item: IItem = {
+    id: null,
+    name: '',
+    description: null,
+    category: null,
+    price: null,
+    assignees: [],
+    images: [],          
+  };
+
+  initialized = false;
 
   constructor(
     private readonly service: RamschiService,
@@ -31,29 +41,28 @@ export class RamschiDetailComponent implements OnInit {
     this.route.paramMap.subscribe(params => {
       const id: string | null = params.get('id');
       if (id) {
-        this.service.getItem(id).subscribe(item => this.item = item);
+        this.service.getItem(id).subscribe(item => {
+          this.item = item;
+          this.initialized = true;
+        });
       }
       else {
-        this.item = {
-          id: null,
-          name: '',
-          description: null,
-          category: null,
-          price: null,
-          assignees: [],
-          images: [],          
-        }
+        this.initialized = true;
       }
     })
   }
 
   saveItem(): void {
-    this.service.postItem(this.item!).subscribe();
+    this.service.postItem(this.item).subscribe(id => {
+      this.item.id = id;
+    });
   }
 
   uploadNewImage(event: Event) {
     const file: File = (event.target as HTMLInputElement).files![0];
-    this.service.postImage(this.item!.id!, file).subscribe();
+    this.service.postImage(this.item!.id!, file).subscribe(id => {
+      this.item.images.push(id);
+    });
   }
 
 }

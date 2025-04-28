@@ -1,4 +1,4 @@
-@if (item) {
+@if (initialized) {
     <mat-grid-list cols="1" rowHeight="5:1">
         <mat-grid-tile>
             <button mat-raised-button (click)="saveItem()">Speichern</button>
@@ -32,8 +32,10 @@
             </mat-form-field>
         </mat-grid-tile>
     </mat-grid-list>
-    @for (image of item.images; track image) {
-        <img [src]="'/api/image/' + image"/>
+    @if (item.id) {
+        @for (image of item.images; track image) {
+            <img [src]="'/api/image/' + image"/>
+        }
+        <input type="file" (change)="uploadNewImage($event)"/>
     }
-    <input type="file" (change)="uploadNewImage($event)"/>
 }
