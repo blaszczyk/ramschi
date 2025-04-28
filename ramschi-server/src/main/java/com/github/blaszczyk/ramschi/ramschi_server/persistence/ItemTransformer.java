@@ -4,6 +4,7 @@ import com.github.blaszczyk.ramschi.ramschi_server.domain.BasicItem;
 import com.github.blaszczyk.ramschi.ramschi_server.domain.Item;
 
 import java.util.List;
+import java.util.UUID;
 
 public class ItemTransformer {
 
@@ -27,7 +28,7 @@ public class ItemTransformer {
         );
     }
 
-    public static Item toItem(ItemEntity entity, List<ItemAssigneeEntity> assignees, List<ImageEntity> images) {
+    public static Item toItem(ItemEntity entity, List<ItemAssigneeEntity> assignees, List<UUID> images) {
         return new Item(
                 entity.getId(),
                 entity.getName(),
@@ -35,7 +36,7 @@ public class ItemTransformer {
                 entity.getCategory(),
                 entity.getPrice(),
                 assignees.stream().map(ItemAssigneeEntity::getAssignee).toList(),
-                images.stream().map(ImageEntity::getId).toList()
+                images
         );
     }
 }

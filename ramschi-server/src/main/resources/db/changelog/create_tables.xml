@@ -53,7 +53,13 @@
             <column name="item_id" type="${uuid_type}">
                 <constraints nullable="false"  foreignKeyName="fk_item_assignee" references="ramschi.item(id)"/>
             </column>
-            <column name="data" type="bytea">
+            <column name="original" type="bytea">
+                <constraints nullable="false"/>
+            </column>
+            <column name="thumbnail" type="bytea">
+                <constraints nullable="false"/>
+            </column>
+            <column name="preview" type="bytea">
                 <constraints nullable="false"/>
             </column>
         </createTable>

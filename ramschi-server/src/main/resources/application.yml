@@ -8,6 +8,12 @@ database:
 server:
   port: 80
 
+image:
+  thumbnail:
+    height: 40
+  preview:
+    width: 400
+
 spring:
   r2dbc:
     url: r2dbc:postgresql://${database.host}:${database.port}/${database.name}?schema=ramschi

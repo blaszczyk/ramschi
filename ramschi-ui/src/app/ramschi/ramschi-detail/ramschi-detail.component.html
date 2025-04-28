@@ -9,10 +9,10 @@
                 <input matInput placeholder="Name" [(ngModel)]="item.name">
             </mat-form-field>
         </mat-grid-tile>
-        <mat-grid-tile>
+        <mat-grid-tile rowspan="2">
             <mat-form-field>
                 <mat-label>Beschreibung</mat-label>
-                <input matInput placeholder="Beschreibung" [(ngModel)]="item.description">
+                <textarea matInput placeholder="Beschreibung" rows="4" [(ngModel)]="item.description"></textarea>
             </mat-form-field>
         </mat-grid-tile>
         <mat-grid-tile>
@@ -34,7 +34,9 @@
     </mat-grid-list>
     @if (item.id) {
         @for (image of item.images; track image) {
-            <img [src]="'/api/image/' + image"/>
+            <a [href]="'/api/image/' + image">
+                <img [src]="'/api/image/' + image + '/preview'"/>
+            </a>
         }
         <input type="file" (change)="uploadNewImage($event)"/>
     }

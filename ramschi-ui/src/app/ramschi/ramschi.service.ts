@@ -18,7 +18,7 @@ export class RamschiService {
     if (category) {
       params.set('category', category);
     }
-    return this.http.get<IBasicItem[]>('/api/items', { params })
+    return this.http.get<IBasicItem[]>('/api/item', { params })
   }
 
   getItem(id: string): Observable<IItem> {
@@ -30,7 +30,7 @@ export class RamschiService {
   }
 
   getAssignees(): Observable<string[]> {
-    return this.http.get<string[]>('/api/assignees');
+    return this.http.get<string[]>('/api/assignee');
   }
 
   putItemAssignee(itemId: string, assignee: string): Observable<void> {

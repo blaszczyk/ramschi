@@ -15,7 +15,11 @@ public class ImageEntity {
 
     private UUID itemId;
 
-    private byte[] data;
+    private byte[] original;
+
+    private byte[] thumbnail;
+
+    private byte[] preview;
 
     public UUID getId() {
         return id;
@@ -33,23 +37,39 @@ public class ImageEntity {
         this.itemId = itemId;
     }
 
-    public byte[] getData() {
-        return data;
+    public byte[] getOriginal() {
+        return original;
     }
 
-    public void setData(byte[] data) {
-        this.data = data;
+    public void setOriginal(byte[] original) {
+        this.original = original;
+    }
+
+    public byte[] getThumbnail() {
+        return thumbnail;
+    }
+
+    public void setThumbnail(byte[] thumbnail) {
+        this.thumbnail = thumbnail;
+    }
+
+    public byte[] getPreview() {
+        return preview;
+    }
+
+    public void setPreview(byte[] preview) {
+        this.preview = preview;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof ImageEntity that)) return false;
-        return Objects.equals(id, that.id) && Objects.equals(itemId, that.itemId) && Objects.deepEquals(data, that.data);
+        return Objects.equals(id, that.id) && Objects.equals(itemId, that.itemId) && Objects.deepEquals(original, that.original) && Objects.deepEquals(thumbnail, that.thumbnail) && Objects.deepEquals(preview, that.preview);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, itemId, Arrays.hashCode(data));
+        return Objects.hash(id, itemId, Arrays.hashCode(original), Arrays.hashCode(thumbnail), Arrays.hashCode(preview));
     }
 }

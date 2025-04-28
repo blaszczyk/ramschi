@@ -13,7 +13,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Service
-public class RamschiService {
+public class ItemService {
 
     @Autowired
     private ItemRepository itemRepository;
@@ -23,9 +23,6 @@ public class RamschiService {
 
     @Autowired
     private ItemAssigneeRepository itemAssigneeRepository;
-
-    @Autowired
-    private AssigneeRepository assigneeRepository;
 
     public Mono<List<BasicItem>> filterItems(
             Optional<String> filter,
@@ -42,7 +39,7 @@ public class RamschiService {
     public Mono<Item> getItem(UUID id) {
         final var fetchItem = itemRepository.findById(id);
         final var fetchAssignees = itemAssigneeRepository.findByItemId(id).collectList();
-        final var fetchImages = imageRepository.findByItemId(id).collectList();
+        final var fetchImages = imageRepository.findIdsByItemId(id).collectList();
 
         return Mono.zip(fetchItem, fetchAssignees, fetchImages)
                 .map(tuple -> ItemTransformer.toItem(tuple.getT1(), tuple.getT2(), tuple.getT3()));
@@ -52,37 +49,6 @@ public class RamschiService {
         final ItemEntity entity = ItemTransformer.toEntity(item);
         return itemRepository.save(entity)
                 .map(ItemEntity::getId);
-    }
-
-    public Mono<byte[]> getImage(UUID id) {
-        return imageRepository.findById(id)
-                .map(ImageEntity::getData);
-    }
-
-    public Mono<UUID> createImage(UUID itemId, byte[] data) {
-        final ImageEntity entity = new ImageEntity();
-        entity.setData(data);
-        entity.setItemId(itemId);
-        return imageRepository.save(entity)
-                .map(ImageEntity::getId);
-    }
-
-    public Mono<List<String>> getAllAssignees() {
-        return assigneeRepository.findAll()
-                .map(AssigneeEntity::getName)
-                .collectList();
-    }
-
-    public Mono<Void> createAssignee(String name) {
-        final var entity = new AssigneeEntity();
-        entity.setName(name);
-        return assigneeRepository.save(entity)
-                .then();
-    }
-
-    public Mono<Void> deleteAssignee(String name) {
-        return assigneeRepository.delete(name)
-                .then();
     }
 
     public Mono<Void> addAssignee(UUID itemId, String assignee) {
