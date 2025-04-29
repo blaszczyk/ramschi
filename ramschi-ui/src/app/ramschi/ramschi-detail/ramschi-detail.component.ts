@@ -99,21 +99,26 @@ export class RamschiDetailComponent implements OnInit {
 
     const newAssignees = event.value.filter(a => !currentAssignees.includes(a));
     for (let assignee of newAssignees) {
-      this.spinner.show();
-      this.service.putItemAssignee(this.item.id!, assignee).subscribe(() => {
-        this.item.assignees.push(assignee);
-        this.spinner.hide();
-      });
+      if(confirm(`Danke ${assignee} für Dein Interesse an ${this.item.name}!`)) {
+        this.spinner.show();
+        this.service.putItemAssignee(this.item.id!, assignee).subscribe(() => {
+          this.item.assignees.push(assignee);
+          this.spinner.hide();
+        });
+      }
     }
 
     const deletedAssignees = currentAssignees.filter(a => !event.value.includes(a));
     for (let assignee of deletedAssignees) {
-      this.spinner.show();
-      this.service.deleteItemAssignee(this.item.id!, assignee).subscribe(() => {
-        const index = this.item.assignees.indexOf(assignee);
-        this.item.assignees.splice(index, 1);
-        this.spinner.hide();
-      });
+      if(confirm(`Schade, ${assignee}, dass Dir ${this.item.name} egal ist!`)) {
+        this.spinner.show();
+        this.service.deleteItemAssignee(this.item.id!, assignee).subscribe(() => {
+          const index = this.item.assignees.indexOf(assignee);
+          this.item.assignees.splice(index, 1);
+          this.spinner.hide();
+        });
+
+      }
     }
   }
 

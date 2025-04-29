@@ -19,11 +19,15 @@ export class EliminatorComponent implements OnInit {
   }
 
   deleteItem(item: IItem) {
-    this.service.deleteItem(item).subscribe();
+    if (confirm(item.name + ' wirklich löschen?')) {
+      this.service.deleteItem(item).subscribe();
+    }
   }
 
   deleteImage(id: string) {
-    this.service.deleteImage(id).subscribe();
+    if (confirm('Bild wirklich löschen?')) {
+      this.service.deleteImage(id).subscribe();
+    }
   }
 
 }
