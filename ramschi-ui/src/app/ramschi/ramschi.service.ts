@@ -53,9 +53,9 @@ export class RamschiService {
     return this.http.delete<void>('/api/assignee/' + name);
   }
 
-  postImage(itemId: string, file: File): Observable<string> {
-    return this.http.post<string>('/api/item/' + itemId + '/image', file, 
-      { headers: { 'content-type': file.type} }
+  postImage(itemId: string, blob: Blob, type: string): Observable<string> {
+    return this.http.post<string>('/api/item/' + itemId + '/image', blob, 
+      { headers: { 'content-type': type} }
     );
   }
 

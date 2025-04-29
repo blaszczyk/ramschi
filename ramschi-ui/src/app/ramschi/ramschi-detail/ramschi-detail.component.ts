@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { RamschiService } from '../ramschi.service';
 import { Category, categoryDisplayName, IItem } from '../domain';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -9,6 +9,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { FormsModule } from '@angular/forms';
 import { SpinnerService } from '../../spinner.service';
+import { scaleImage } from '../util';
 
 @Component({
   selector: 'app-ramschi-detail',
@@ -45,6 +46,7 @@ export class RamschiDetailComponent implements OnInit {
     private readonly route: ActivatedRoute,
     private readonly router: Router,
     private readonly spinner: SpinnerService,
+    private readonly cdr: ChangeDetectorRef,
   ) {}
 
   ngOnInit(): void {
@@ -83,10 +85,13 @@ export class RamschiDetailComponent implements OnInit {
   uploadNewImage(event: Event) {
     const file: File = (event.target as HTMLInputElement).files![0];
     this.spinner.show();
-    this.service.postImage(this.item!.id!, file).subscribe(id => {
-      this.item.images.push(id);
-      this.spinner.hide();
-    });
+    scaleImage(file, blob => {
+      this.service.postImage(this.item!.id!, blob, file.type).subscribe(id => {
+        this.item.images.push(id);
+        this.spinner.hide();
+        this.cdr.detectChanges();
+      });
+    })
   }
 
   clickNewImage() {
