@@ -24,6 +24,14 @@
                 <constraints nullable="true"/>
             </column>
         </createTable>
+        <createIndex indexName="INDEX_ITEM_NAME"
+                     tableName="item" schemaName="ramschi">
+            <column name="name"/>
+        </createIndex>
+        <createIndex indexName="INDEX_ITEM_CATEGORY"
+                     tableName="item" schemaName="ramschi">
+            <column name="category"/>
+        </createIndex>
     </changeSet>
 
     <changeSet id="create_table_assignee" author="micha">
@@ -43,6 +51,10 @@
                 <constraints nullable="false"  foreignKeyName="fk_assignee_item" references="ramschi.assignee(name)"/>
             </column>
         </createTable>
+        <createIndex indexName="INDEX_ITEM_ASSIGNEE_ITEM"
+                     tableName="item_assignee" schemaName="ramschi">
+            <column name="item_id"/>
+        </createIndex>
     </changeSet>
 
     <changeSet id="create_table_image" author="micha">
@@ -63,5 +75,9 @@
                 <constraints nullable="false"/>
             </column>
         </createTable>
+        <createIndex indexName="INDEX_IMAGE_ITEM"
+                     tableName="image" schemaName="ramschi">
+            <column name="item_id"/>
+        </createIndex>
     </changeSet>
 </databaseChangeLog>
