@@ -9,6 +9,7 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import { MatExpansionModule} from '@angular/material/expansion';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { SpinnerService } from '../../spinner.service';
 
 @Component({
   selector: 'app-ramschi-list',
@@ -39,6 +40,7 @@ export class RamschiListComponent implements OnInit {
     .map(id => ({id, displayName: categoryDisplayName(id)}));
 
   constructor(private readonly service: RamschiService,
+    private readonly spinner: SpinnerService,
     private readonly router: Router,
   ) {}
 
@@ -47,8 +49,11 @@ export class RamschiListComponent implements OnInit {
   }
 
   getItems(): void {
-    console.log(this, this.filterName, this.filterCategory);
-    this.service.getItems(this.filterName, this.filterCategory).subscribe(items => this.items = items);
+    this.spinner.show();
+    this.service.getItems(this.filterName, this.filterCategory).subscribe(items => {
+      this.items = items;
+      this.spinner.hide();
+    });
   }
 
   navigateTo(item: IItem): void {
