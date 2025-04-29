@@ -1,6 +1,5 @@
 package com.github.blaszczyk.ramschi.ramschi_server.service;
 
-import com.github.blaszczyk.ramschi.ramschi_server.domain.BasicItem;
 import com.github.blaszczyk.ramschi.ramschi_server.domain.Category;
 import com.github.blaszczyk.ramschi.ramschi_server.domain.Item;
 import com.github.blaszczyk.ramschi.ramschi_server.persistence.*;

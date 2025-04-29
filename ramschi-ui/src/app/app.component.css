@@ -10,7 +10,7 @@
 
 .header {
     position: sticky;
-    top: 0;
+    top: 0px;
     height: 60px;
     z-index: 1;
     background-color: blanchedalmond;
@@ -23,7 +23,7 @@ button {
 
 .scrollarea {
     position: relative;
-    top: 50px;
+    top: 5px;
     bottom: 0px;
     left: 0px;
     right: 0px;

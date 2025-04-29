@@ -1,7 +1,7 @@
 @if (initialized) {
     <mat-grid-list cols="1" rowHeight="5:1">
         <mat-grid-tile>
-            <h1>{{item.name}}</h1>
+            <h1>{{item.name || 'Neuer Ramsch'}}</h1>
         </mat-grid-tile>
         <mat-grid-tile>
             <mat-form-field>
@@ -31,16 +31,18 @@
                 <input class="price" matInput type="number" placeholder="Preis" [(ngModel)]="item.price" (keyup)="setDirty()">
             </mat-form-field>
         </mat-grid-tile>
-        <mat-grid-tile>
-            <mat-form-field>
-                <mat-label>Interessenten</mat-label>
-                <mat-select multiple (selectionChange)="changeAssignee($event)" [value]="item.assignees">
-                  @for (assignee of assignees; track assignee) {
-                    <mat-option [value]="assignee">{{assignee}}</mat-option>
-                  }
-                </mat-select>
-              </mat-form-field>
-        </mat-grid-tile>
+        @if (item.id) {
+            <mat-grid-tile>
+                <mat-form-field>
+                    <mat-label>Interessenten</mat-label>
+                    <mat-select multiple (selectionChange)="changeAssignee($event)" [value]="item.assignees">
+                      @for (assignee of assignees; track assignee) {
+                        <mat-option [value]="assignee">{{assignee}}</mat-option>
+                      }
+                    </mat-select>
+                  </mat-form-field>
+            </mat-grid-tile>
+        }
         <mat-grid-tile>
             <button mat-raised-button [class.fake-disabled]="pristine || !item.name" (click)="saveItem()">Speichern</button>
             <button mat-raised-button [style.visibility]="item.id ? 'visible' : 'hidden'" (click)="clickNewImage()">Foto Machen</button>
