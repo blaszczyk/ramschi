@@ -67,4 +67,9 @@ public class ItemService {
         return itemAssigneeRepository.save(entity)
                 .then();
     }
+
+    public Mono<Void> deleteAssignee(UUID itemId, String assignee) {
+        return itemAssigneeRepository.delete(itemId, assignee)
+                .then();
+    }
 }

@@ -57,6 +57,12 @@ public class ItemController {
                 .map(ResponseEntity::ok);
     }
 
+    @DeleteMapping(path = "/{itemId}/assignee/{assignee}")
+    Mono<ResponseEntity<Void>> deleteItemAssignee(@PathVariable UUID itemId, @PathVariable String assignee) {
+        return itemService.deleteAssignee(itemId, assignee)
+                .map(ResponseEntity::ok);
+    }
+
     @PostMapping(path = "/{itemId}/image",
             consumes = { MediaType.IMAGE_PNG_VALUE, MediaType.IMAGE_JPEG_VALUE },
             produces = MediaType.APPLICATION_JSON_VALUE)

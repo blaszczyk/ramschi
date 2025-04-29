@@ -37,6 +37,10 @@ export class RamschiService {
     return this.http.put<void>('/api/item/' + itemId + '/assignee/' + assignee, null);
   }
 
+  deleteItemAssignee(itemId: string, assignee: string): Observable<void> {
+    return this.http.delete<void>('/api/item/' + itemId + '/assignee/' + assignee);
+  }
+
   postAssignee(name: string): Observable<void> {
     return this.http.post<void>('/api/assignee/' + name, null);
   }

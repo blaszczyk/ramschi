@@ -4,7 +4,7 @@ import { Category, categoryDisplayName, IItem } from '../domain';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatSelectModule } from '@angular/material/select';
+import { MatSelectChange, MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { FormsModule } from '@angular/forms';
@@ -23,6 +23,8 @@ export class RamschiDetailComponent implements OnInit {
 
   categories: { id:Category, displayName: string }[] = Object.values(Category)
   .map(id => ({id, displayName: categoryDisplayName(id)}));
+
+  assignees: string[] = [];
 
   item: IItem = {
     id: null,
@@ -59,7 +61,8 @@ export class RamschiDetailComponent implements OnInit {
       else {
         this.initialized = true;
       }
-    })
+    });
+    this.service.getAssignees().subscribe(assignees => this.assignees = assignees);
   }
 
   saveItem(): void {
@@ -84,6 +87,30 @@ export class RamschiDetailComponent implements OnInit {
 
   clickNewImage() {
     this.newImageElement.nativeElement.click();
+  }
+  
+  changeAssignee(event: MatSelectChange<string[]>) {
+
+    const currentAssignees = [... this.item.assignees];
+
+    const newAssignees = event.value.filter(a => !currentAssignees.includes(a));
+    for (let assignee of newAssignees) {
+      this.spinner.show();
+      this.service.putItemAssignee(this.item.id!, assignee).subscribe(() => {
+        this.item.assignees.push(assignee);
+        this.spinner.hide();
+      });
+    }
+
+    const deletedAssignees = currentAssignees.filter(a => !event.value.includes(a));
+    for (let assignee of deletedAssignees) {
+      this.spinner.show();
+      this.service.deleteItemAssignee(this.item.id!, assignee).subscribe(() => {
+        const index = this.item.assignees.indexOf(assignee);
+        this.item.assignees.splice(index, 1);
+        this.spinner.hide();
+      });
+    }
   }
 
   setDirty() {
