@@ -65,8 +65,12 @@ export class RamschiDetailComponent implements OnInit {
     this.service.getAssignees().subscribe(assignees => this.assignees = assignees);
   }
 
+  saveDisabled(): boolean {
+    return this.pristine || !this.item.name;
+  }
+
   saveItem(): void {
-    if (this.item.name ) {
+    if (!this.saveDisabled()) {
       this.spinner.show();
       this.service.postItem(this.item).subscribe(id => {
         this.spinner.hide();

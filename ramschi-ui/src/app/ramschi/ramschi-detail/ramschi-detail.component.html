@@ -44,7 +44,7 @@
             </mat-grid-tile>
         }
         <mat-grid-tile>
-            <button mat-raised-button [class.fake-disabled]="pristine || !item.name" (click)="saveItem()">Speichern</button>
+            <button mat-raised-button [class.fake-disabled]="saveDisabled()" (click)="saveItem()">Speichern</button>
             <button mat-raised-button [style.visibility]="item.id ? 'visible' : 'hidden'" (click)="clickNewImage()">Ablichten</button>
             <input #newImage id="new-image" type="file" (change)="uploadNewImage($event)"/>
         </mat-grid-tile>
