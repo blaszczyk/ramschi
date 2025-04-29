@@ -31,17 +31,16 @@ public class ImageScaler {
 
     public void addThumbnailAndPreview(ImageEntity entity) {
 
-        final BufferedImage image = getImage(entity);
-
-        final Metadata metadata = getMetaData(entity);
+        final BufferedImage tempImage = getImage(entity);
+        final int orientation = getOrientation(entity);
+        final BufferedImage image = fixOrientation(tempImage, orientation);
 
         final int previewHeight = previewWidth * image.getHeight() / image.getWidth();
-        final BufferedImage tempPreview = buffered(image.getScaledInstance(previewWidth, previewHeight, Image.SCALE_SMOOTH));
+        final BufferedImage preview = buffered(image.getScaledInstance(previewWidth, previewHeight, Image.SCALE_SMOOTH));
 
-        final BufferedImage preview = fixOrientation(tempPreview, metadata);
         entity.setPreview(getBytes(preview));
 
-        final int thumbnailWidth = thumbnailHeight * image.getWidth() / image.getHeight();
+        final int thumbnailWidth = thumbnailHeight * previewWidth / previewHeight;
         final BufferedImage thumbnail = buffered(preview.getScaledInstance(thumbnailWidth, thumbnailHeight, Image.SCALE_SMOOTH));
         entity.setThumbnail(getBytes(thumbnail));
     }
@@ -54,35 +53,31 @@ public class ImageScaler {
         }
     }
 
-    private Metadata getMetaData(ImageEntity entity) {
+    private int getOrientation(ImageEntity entity) {
         try (final InputStream inputStream = new ByteArrayInputStream(entity.getOriginal())) {
-            return ImageMetadataReader.readMetadata(inputStream);
-        } catch (IOException | ImageProcessingException e) {
+            final Metadata metadata = ImageMetadataReader.readMetadata(inputStream);
+            final var exifIFDirectory = metadata.getFirstDirectoryOfType(ExifIFD0Directory.class);
+            if (exifIFDirectory == null) {
+                return 0;
+            }
+            return exifIFDirectory.getInt(ExifIFD0Directory.TAG_ORIENTATION);
+        } catch (IOException | ImageProcessingException | MetadataException e) {
             throw new RuntimeException(e);
         }
     }
 
-    private BufferedImage fixOrientation(BufferedImage image, Metadata metadata) {
-        final var exifIFDirectory = metadata.getFirstDirectoryOfType(ExifIFD0Directory.class);
-        if (exifIFDirectory == null) {
-            return image;
-        }
-        try {
-            final int orientation = exifIFDirectory.getInt(ExifIFD0Directory.TAG_ORIENTATION);
-            return switch (orientation) {
-                case 1 -> image;
-                case 2 -> Scalr.rotate(image, Scalr.Rotation.FLIP_HORZ);
-                case 3 -> Scalr.rotate(image, Rotation.CW_180);
-                case 4 -> Scalr.rotate(image, Rotation.FLIP_VERT);
-                case 5 -> Scalr.rotate(Scalr.rotate(image, Rotation.CW_90), Rotation.FLIP_HORZ);
-                case 6 -> Scalr.rotate(image, Rotation.CW_90);
-                case 7 -> Scalr.rotate(Scalr.rotate(image, Rotation.CW_90), Rotation.FLIP_VERT);
-                case 8 -> Scalr.rotate(image, Rotation.CW_270);
-                default -> image;
-            };
-        } catch (MetadataException e) {
-            throw new RuntimeException(e);
-        }
+    private BufferedImage fixOrientation(BufferedImage image, int orientation) {
+        return switch (orientation) {
+            case 1 -> image;
+            case 2 -> Scalr.rotate(image, Scalr.Rotation.FLIP_HORZ);
+            case 3 -> Scalr.rotate(image, Rotation.CW_180);
+            case 4 -> Scalr.rotate(image, Rotation.FLIP_VERT);
+            case 5 -> Scalr.rotate(Scalr.rotate(image, Rotation.CW_90), Rotation.FLIP_HORZ);
+            case 6 -> Scalr.rotate(image, Rotation.CW_90);
+            case 7 -> Scalr.rotate(Scalr.rotate(image, Rotation.CW_90), Rotation.FLIP_VERT);
+            case 8 -> Scalr.rotate(image, Rotation.CW_270);
+            default -> image;
+        };
     }
 
     private BufferedImage buffered(Image image) {
