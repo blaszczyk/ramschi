@@ -71,4 +71,8 @@ public class ItemService {
         return itemAssigneeRepository.delete(itemId, assignee)
                 .then();
     }
+
+    public Mono<Void> deleteItem(UUID id) {
+        return itemRepository.deleteById(id);
+    }
 }

@@ -51,6 +51,12 @@ public class ItemController {
                 .map(ResponseEntity::ok);
     }
 
+    @DeleteMapping(path = "/{id}")
+    Mono<ResponseEntity<Void>> deleteItem(@PathVariable UUID id) {
+        return itemService.deleteItem(id)
+                .map(ResponseEntity::ok);
+    }
+
     @PutMapping(path = "/{itemId}/assignee/{assignee}")
     Mono<ResponseEntity<Void>> putItemAssignee(@PathVariable UUID itemId, @PathVariable String assignee) {
         return itemService.addAssignee(itemId, assignee)

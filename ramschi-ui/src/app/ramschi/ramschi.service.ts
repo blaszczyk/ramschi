@@ -10,7 +10,7 @@ export class RamschiService {
 
   constructor(private readonly http: HttpClient) { }
 
-  getItems(filter: string , category: Category | undefined): Observable<IItem[]> {
+  getItems(filter: string = '', category: Category | undefined = undefined): Observable<IItem[]> {
     let params = new HttpParams();
     if (filter) {
       params = params.set('filter', filter);
@@ -27,6 +27,10 @@ export class RamschiService {
 
   postItem(item: IBasicItem): Observable<string> {
     return this.http.post<string>('/api/item', item);
+  }
+
+  deleteItem(item: IBasicItem): Observable<void> {
+    return this.http.delete<void>('/api/item/' + item.id);
   }
 
   getAssignees(): Observable<string[]> {
@@ -53,6 +57,10 @@ export class RamschiService {
     return this.http.post<string>('/api/item/' + itemId + '/image', file, 
       { headers: { 'content-type': file.type} }
     );
+  }
+
+  deleteImage(id: string): Observable<void> {
+    return this.http.delete<void>('/api/image/' + id);
   }
 
 }

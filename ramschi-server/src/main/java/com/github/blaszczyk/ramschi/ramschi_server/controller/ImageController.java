@@ -38,6 +38,12 @@ public class ImageController {
                 .map(ImageController::ok);
     }
 
+    @DeleteMapping(path = "/{id}")
+    Mono<ResponseEntity<Void>> deleteImage(@PathVariable UUID id) {
+        return imageService.deleteImage(id)
+                .map(ImageController::ok);
+    }
+
     private static <T> ResponseEntity<T> ok(T t) {
         return ResponseEntity.ok()
                 .header(HttpHeaders.CACHE_CONTROL, "public, max-age=31536000")

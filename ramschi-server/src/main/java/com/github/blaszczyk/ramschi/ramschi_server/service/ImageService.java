@@ -50,4 +50,8 @@ public class ImageService {
         return imageRepository.getPreview(id)
                 .map(ImageEntity::getPreview);
     }
+
+    public Mono<Void> deleteImage(UUID id) {
+        return imageRepository.deleteById(id);
+    }
 }
