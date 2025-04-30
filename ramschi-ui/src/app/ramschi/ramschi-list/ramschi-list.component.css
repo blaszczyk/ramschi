@@ -8,8 +8,15 @@
 .item-name {
     position: absolute;
     left: 10px;
-    bottom: 10px;
+    top: 10px;
     font-size: 18pt;
+}
+
+.item-description {
+    position: absolute;
+    left: 10px;
+    bottom: 10px;
+    font-size: 12px;
 }
 
 .images {
