@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
+import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -67,6 +68,7 @@ public class ItemService {
 
     public Mono<UUID> saveItem(Item item) {
         final ItemEntity entity = ItemTransformer.toEntity(item);
+        entity.setLastedit(LocalDateTime.now());
         return itemRepository.save(entity)
                 .map(ItemEntity::getId);
     }

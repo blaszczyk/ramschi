@@ -12,5 +12,6 @@
     </changeSet>
 
     <include file="db/changelog/create_tables.xml" />
+    <include file="db/changelog/add_column_item_lastedit.xml" />
 
 </databaseChangeLog>
