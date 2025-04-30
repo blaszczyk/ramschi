@@ -29,15 +29,11 @@ public class ItemService {
             Optional<String> assignee
     ) {
         final String filterTerm = filter.map(s -> "%" + s + "%").orElse("%");
-        if (assignee.isPresent()) {
-            return itemAssigneeRepository.findByAssignee(assignee.get())
-                    .map(ItemAssigneeEntity::getItemId)
-                    .collectList()
-                    .flatMap(itemIds -> filterItems(filterTerm, category, itemIds));
-        }
-        else {
-            return filterItems(filterTerm, category, null);
-        }
+        return assignee.map(s -> itemAssigneeRepository.findByAssignee(s)
+                .map(ItemAssigneeEntity::getItemId)
+                .collectList()
+                .flatMap(itemIds -> filterItems(filterTerm, category, itemIds)))
+                .orElseGet(() -> filterItems(filterTerm, category, null));
     }
 
     private Mono<List<Item>> filterItems(String filterTerm, Optional<Category> category, List<UUID> itemIds) {
