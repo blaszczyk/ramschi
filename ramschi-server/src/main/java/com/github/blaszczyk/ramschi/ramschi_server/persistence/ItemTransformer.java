@@ -35,6 +35,7 @@ public class ItemTransformer {
                 entity.getDescription(),
                 entity.getCategory(),
                 entity.getPrice(),
+                entity.getLastedit(),
                 assignees.stream().map(ItemAssigneeEntity::getAssignee).toList(),
                 images
         );

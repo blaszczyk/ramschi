@@ -10,7 +10,12 @@ export class RamschiService {
 
   constructor(private readonly http: HttpClient) { }
 
-  getItems(filter: string = '', category: Category | undefined = undefined, assignee: string | undefined = undefined): Observable<IItem[]> {
+  getItems(
+    filter: string = '',
+    category: Category | undefined = undefined,
+    assignee: string | undefined = undefined,
+    latestFirst: boolean = false,
+  ): Observable<IItem[]> {
     let params = new HttpParams();
     if (filter) {
       params = params.set('filter', filter);
@@ -20,6 +25,9 @@ export class RamschiService {
     }
     if (assignee) {
       params = params.set('assignee', assignee);
+    }
+    if (latestFirst) {
+      params = params.set('latestFirst', true);
     }
     return this.http.get<IItem[]>('/api/item', { params })
   }

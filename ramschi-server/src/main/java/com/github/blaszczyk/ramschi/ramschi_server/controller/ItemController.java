@@ -31,9 +31,10 @@ public class ItemController {
     Mono<ResponseEntity<List<Item>>> getItems(
             @RequestParam Optional<String> filter,
             @RequestParam Optional<Category> category,
-            @RequestParam Optional<String> assignee
+            @RequestParam Optional<String> assignee,
+            @RequestParam Optional<String> latestFirst
     ) {
-        return itemService.filterItems(filter, category, assignee)
+        return itemService.filterItems(filter, category, assignee, latestFirst.isPresent())
                 .map(ResponseEntity::ok);
     }
 

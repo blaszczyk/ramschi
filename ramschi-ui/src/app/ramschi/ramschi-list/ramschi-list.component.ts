@@ -7,6 +7,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatExpansionModule} from '@angular/material/expansion';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { SpinnerService } from '../../spinner.service';
@@ -14,7 +15,7 @@ import { ScrollService } from '../../scroll.service';
 
 @Component({
   selector: 'app-ramschi-list',
-  imports: [MatInputModule, MatFormFieldModule, MatSelectModule, MatButtonModule, MatGridListModule, MatExpansionModule, FormsModule],
+  imports: [MatInputModule, MatFormFieldModule, MatSelectModule, MatButtonModule, MatGridListModule, MatExpansionModule, MatCheckboxModule, FormsModule],
   templateUrl: './ramschi-list.component.html',
   styleUrl: './ramschi-list.component.css'
 })
@@ -29,6 +30,8 @@ export class RamschiListComponent implements OnInit {
   filterAssignee: string | undefined = undefined;
 
   assignees: string[] = [];
+
+  latestFirst = false;
 
   get filterSummary(): string {
     const filters: string[] = [];
@@ -54,18 +57,27 @@ export class RamschiListComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+
     const storedFilterName = localStorage.getItem(KEY_FILTER_NAME);
     if (storedFilterName ) {
       this.filterName = storedFilterName;
     }
+
     const storedFilterCategory = localStorage.getItem(KEY_FILTER_CATEGORY);
     if (storedFilterCategory ) {
       this.filterCategory = storedFilterCategory as Category;
     }
+
     const storedFilterAssignee = localStorage.getItem(KEY_FILTER_ASSIGNEE);
     if (storedFilterAssignee ) {
       this.filterAssignee = storedFilterAssignee;
     }
+
+    const storedLatestFirst = localStorage.getItem(KEY_LATEST_FIRST);
+    if ( storedLatestFirst ) {
+      this.latestFirst = !!storedLatestFirst;
+    }
+
     this.service.getAssignees().subscribe(assignees => this.assignees = assignees);
     this.getItems();
   }
@@ -79,9 +91,10 @@ export class RamschiListComponent implements OnInit {
     updateLocalStorage(KEY_FILTER_NAME, this.filterName);
     updateLocalStorage(KEY_FILTER_CATEGORY, this.filterCategory);
     updateLocalStorage(KEY_FILTER_ASSIGNEE, this.filterAssignee);
+    updateLocalStorage(KEY_LATEST_FIRST, this.latestFirst ? 'yes please' : undefined);
     
     this.spinner.show();
-    this.service.getItems(this.filterName, this.filterCategory, this.filterAssignee).subscribe(items => {
+    this.service.getItems(this.filterName, this.filterCategory, this.filterAssignee, this.latestFirst).subscribe(items => {
       this.items = items;
       this.spinner.hide();
       this.scroll.restorePosition();
@@ -108,3 +121,4 @@ function updateLocalStorage(key: string, value: string | undefined) {
 const KEY_FILTER_NAME = 'filter-name';
 const KEY_FILTER_CATEGORY = 'filter-category';
 const KEY_FILTER_ASSIGNEE = 'filter-assignee';
+const KEY_LATEST_FIRST = 'latest-first';

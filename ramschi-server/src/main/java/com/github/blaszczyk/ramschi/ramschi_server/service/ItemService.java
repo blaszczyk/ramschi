@@ -16,6 +16,10 @@ import java.util.UUID;
 @Service
 public class ItemService {
 
+    private static final Comparator<Item> BY_NAME = Comparator.comparing(Item::name);
+
+    private static final Comparator<Item> BY_LAST_EDIT = Comparator.comparing(Item::lastedit).reversed();
+
     @Autowired
     private ItemRepository itemRepository;
 
@@ -28,17 +32,19 @@ public class ItemService {
     public Mono<List<Item>> filterItems(
             Optional<String> filter,
             Optional<Category> category,
-            Optional<String> assignee
+            Optional<String> assignee,
+            boolean latestFirst
     ) {
         final String filterTerm = filter.map(s -> "%" + s + "%").orElse("%");
         return assignee.map(s -> itemAssigneeRepository.findByAssignee(s)
                 .map(ItemAssigneeEntity::getItemId)
                 .collectList()
-                .flatMap(itemIds -> filterItems(filterTerm, category, itemIds)))
-                .orElseGet(() -> filterItems(filterTerm, category, null));
+                .flatMap(itemIds -> filterItems(filterTerm, category, latestFirst, itemIds)))
+                .orElseGet(() -> filterItems(filterTerm, category, latestFirst, null));
     }
 
-    private Mono<List<Item>> filterItems(String filterTerm, Optional<Category> category, List<UUID> itemIds) {
+    private Mono<List<Item>> filterItems(String filterTerm, Optional<Category> category, boolean latestFirst, List<UUID> itemIds) {
+        final Comparator<Item> comparator = latestFirst ? BY_LAST_EDIT : BY_NAME;
         final var resultFlux = category.isPresent()
                 ? itemRepository.findByNameLikeAndCategory(filterTerm, category.get())
                 : itemRepository.findByNameLike(filterTerm);
@@ -53,7 +59,7 @@ public class ItemService {
                     return Mono.zip(fetchAssignees, fetchImages)
                             .map(tuple -> ItemTransformer.toItem(entity, tuple.getT1(), tuple.getT2()));
                 })
-                .sort(Comparator.comparing(Item::name))
+                .sort(comparator)
                 .collectList();
     }
 

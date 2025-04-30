@@ -28,6 +28,8 @@
           }
         </mat-select>
     </mat-form-field>
+
+    <mat-checkbox [(ngModel)]="latestFirst" (change)="setFilter()" name="latest first">Neuster Ramsch zuerst</mat-checkbox>
 </mat-expansion-panel>
 <mat-grid-list cols="1" rowHeight="70px">
     @for (item of items; track item) {
