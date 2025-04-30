@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -51,6 +52,7 @@ public class ItemService {
                     return Mono.zip(fetchAssignees, fetchImages)
                             .map(tuple -> ItemTransformer.toItem(entity, tuple.getT1(), tuple.getT2()));
                 })
+                .sort(Comparator.comparing(Item::name))
                 .collectList();
     }
 
