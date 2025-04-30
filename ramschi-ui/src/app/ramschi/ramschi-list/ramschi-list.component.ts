@@ -45,10 +45,25 @@ export class RamschiListComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    const storedFilterName = localStorage.getItem(KEY_FILTER_NAME);
+    if (storedFilterName ) {
+      this.filterName = storedFilterName;
+    }
+    const storedFilterCategory = localStorage.getItem(KEY_FILTER_CATEGORY);
+    if (storedFilterCategory ) {
+      this.filterCategory = storedFilterCategory as Category;
+    }
     this.getItems();
   }
 
   getItems(): void {
+    if (this.filterName) {
+      localStorage.setItem(KEY_FILTER_NAME, this.filterName);
+    }
+    if (this.filterCategory) {
+      localStorage.setItem(KEY_FILTER_CATEGORY, this.filterCategory);
+    }
+    
     this.spinner.show();
     this.service.getItems(this.filterName, this.filterCategory).subscribe(items => {
       this.items = items;
@@ -61,3 +76,6 @@ export class RamschiListComponent implements OnInit {
   }
 
 }
+
+const KEY_FILTER_NAME = 'filter-name';
+const KEY_FILTER_CATEGORY = 'filter-category';
