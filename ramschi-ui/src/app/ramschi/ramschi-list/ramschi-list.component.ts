@@ -10,6 +10,7 @@ import { MatExpansionModule} from '@angular/material/expansion';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { SpinnerService } from '../../spinner.service';
+import { ScrollService } from '../../scroll.service';
 
 @Component({
   selector: 'app-ramschi-list',
@@ -48,6 +49,7 @@ export class RamschiListComponent implements OnInit {
 
   constructor(private readonly service: RamschiService,
     private readonly spinner: SpinnerService,
+    private readonly scroll: ScrollService,
     private readonly router: Router,
   ) {}
 
@@ -68,7 +70,12 @@ export class RamschiListComponent implements OnInit {
     this.getItems();
   }
 
-  getItems(): void {
+  setFilter(): void {
+    this.scroll.forgetPosition();
+    this.getItems();
+  }
+
+  private getItems(): void {
     updateLocalStorage(KEY_FILTER_NAME, this.filterName);
     updateLocalStorage(KEY_FILTER_CATEGORY, this.filterCategory);
     updateLocalStorage(KEY_FILTER_ASSIGNEE, this.filterAssignee);
@@ -77,11 +84,13 @@ export class RamschiListComponent implements OnInit {
     this.service.getItems(this.filterName, this.filterCategory, this.filterAssignee).subscribe(items => {
       this.items = items;
       this.spinner.hide();
+      this.scroll.restorePosition();
     });
   }
 
   navigateTo(item: IItem): void {
     this.router.navigateByUrl('/ramsch/' + item.id);
+    this.scroll.storePosition();
   }
 
 }

@@ -6,12 +6,12 @@
 
     <mat-form-field>
         <mat-label>Suche</mat-label>
-        <input matInput placeholder="Suche" [(ngModel)]="filterName" (keyup)="getItems()">
+        <input matInput placeholder="Suche" [(ngModel)]="filterName" (keyup)="setFilter()">
     </mat-form-field>
 
     <mat-form-field>
         <mat-label>Kategorie</mat-label>
-        <mat-select [(ngModel)]="filterCategory" (selectionChange)="getItems()" name="category">
+        <mat-select [(ngModel)]="filterCategory" (selectionChange)="setFilter()" name="category">
         <mat-option [value]="undefined">Alle</mat-option>
           @for (category of categories; track category) {
             <mat-option [value]="category.id">{{category.displayName}}</mat-option>
@@ -21,7 +21,7 @@
 
     <mat-form-field>
         <mat-label>Interessent</mat-label>
-        <mat-select [(ngModel)]="filterAssignee" (selectionChange)="getItems()" name="assignee">
+        <mat-select [(ngModel)]="filterAssignee" (selectionChange)="setFilter()" name="assignee">
         <mat-option [value]="undefined">Alle</mat-option>
           @for (assignee of assignees; track assignee) {
             <mat-option [value]="assignee">{{assignee}}</mat-option>
