@@ -30,9 +30,10 @@ public class ItemController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     Mono<ResponseEntity<List<Item>>> getItems(
             @RequestParam Optional<String> filter,
-            @RequestParam Optional<Category> category
+            @RequestParam Optional<Category> category,
+            @RequestParam Optional<String> assignee
     ) {
-        return itemService.filterItems(filter, category)
+        return itemService.filterItems(filter, category, assignee)
                 .map(ResponseEntity::ok);
     }
 

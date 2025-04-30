@@ -18,6 +18,16 @@
           }
         </mat-select>
     </mat-form-field>
+
+    <mat-form-field>
+        <mat-label>Interessent</mat-label>
+        <mat-select [(ngModel)]="filterAssignee" (selectionChange)="getItems()" name="assignee">
+        <mat-option [value]="undefined">Alle</mat-option>
+          @for (assignee of assignees; track assignee) {
+            <mat-option [value]="assignee">{{assignee}}</mat-option>
+          }
+        </mat-select>
+    </mat-form-field>
 </mat-expansion-panel>
 <mat-grid-list cols="1" rowHeight="70px">
     @for (item of items; track item) {

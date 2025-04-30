@@ -25,13 +25,27 @@ public class ItemService {
 
     public Mono<List<Item>> filterItems(
             Optional<String> filter,
-            Optional<Category> category
+            Optional<Category> category,
+            Optional<String> assignee
     ) {
         final String filterTerm = filter.map(s -> "%" + s + "%").orElse("%");
+        if (assignee.isPresent()) {
+            return itemAssigneeRepository.findByAssignee(assignee.get())
+                    .map(ItemAssigneeEntity::getItemId)
+                    .collectList()
+                    .flatMap(itemIds -> filterItems(filterTerm, category, itemIds));
+        }
+        else {
+            return filterItems(filterTerm, category, null);
+        }
+    }
+
+    private Mono<List<Item>> filterItems(String filterTerm, Optional<Category> category, List<UUID> itemIds) {
         final var resultFlux = category.isPresent()
                 ? itemRepository.findByNameLikeAndCategory(filterTerm, category.get())
                 : itemRepository.findByNameLike(filterTerm);
         return resultFlux
+                .filter(entity -> itemIds == null || itemIds.contains(entity.getId()))
                 .flatMap(entity -> {
                     final UUID id = entity.getId();
                     var fetchAssignees = itemAssigneeRepository.findByItemId(id)

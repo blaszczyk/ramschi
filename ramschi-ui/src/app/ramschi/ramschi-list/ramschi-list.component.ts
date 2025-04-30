@@ -25,6 +25,10 @@ export class RamschiListComponent implements OnInit {
 
   filterCategory: Category | undefined = undefined;
 
+  filterAssignee: string | undefined = undefined;
+
+  assignees: string[] = [];
+
   get filterSummary(): string {
     const filters: string[] = [];
     if (this.filterName) {
@@ -32,6 +36,9 @@ export class RamschiListComponent implements OnInit {
     }
     if (this.filterCategory) {
       filters.push(categoryDisplayName(this.filterCategory));
+    }
+    if (this.filterAssignee) {
+      filters.push(this.filterAssignee);
     }
     return filters.join(', ');
   }
@@ -53,19 +60,21 @@ export class RamschiListComponent implements OnInit {
     if (storedFilterCategory ) {
       this.filterCategory = storedFilterCategory as Category;
     }
+    const storedFilterAssignee = localStorage.getItem(KEY_FILTER_ASSIGNEE);
+    if (storedFilterAssignee ) {
+      this.filterAssignee = storedFilterAssignee;
+    }
+    this.service.getAssignees().subscribe(assignees => this.assignees = assignees);
     this.getItems();
   }
 
   getItems(): void {
-    if (this.filterName) {
-      localStorage.setItem(KEY_FILTER_NAME, this.filterName);
-    }
-    if (this.filterCategory) {
-      localStorage.setItem(KEY_FILTER_CATEGORY, this.filterCategory);
-    }
+    updateLocalStorage(KEY_FILTER_NAME, this.filterName);
+    updateLocalStorage(KEY_FILTER_CATEGORY, this.filterCategory);
+    updateLocalStorage(KEY_FILTER_ASSIGNEE, this.filterAssignee);
     
     this.spinner.show();
-    this.service.getItems(this.filterName, this.filterCategory).subscribe(items => {
+    this.service.getItems(this.filterName, this.filterCategory, this.filterAssignee).subscribe(items => {
       this.items = items;
       this.spinner.hide();
     });
@@ -77,5 +86,16 @@ export class RamschiListComponent implements OnInit {
 
 }
 
+function updateLocalStorage(key: string, value: string | undefined) {
+  if (value) {
+    localStorage.setItem(key, value);
+  }
+  else {
+    localStorage.removeItem(key);
+  }
+
+}
+
 const KEY_FILTER_NAME = 'filter-name';
 const KEY_FILTER_CATEGORY = 'filter-category';
+const KEY_FILTER_ASSIGNEE = 'filter-assignee';

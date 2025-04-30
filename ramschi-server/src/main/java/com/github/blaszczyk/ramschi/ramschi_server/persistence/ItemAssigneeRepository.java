@@ -11,6 +11,9 @@ public interface ItemAssigneeRepository extends ReactiveCrudRepository<ItemAssig
 
     Flux<ItemAssigneeEntity> findByItemId(UUID itemId);
 
+    Flux<ItemAssigneeEntity> findByAssignee(String assignee);
+
     @Query("DELETE FROM ramschi.item_assignee WHERE item_id = :itemId AND assignee = :assignee")
     Mono<Void> delete(UUID itemId, String assignee);
+
 }
