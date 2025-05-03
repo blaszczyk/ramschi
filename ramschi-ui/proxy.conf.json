@@ -1,6 +1,7 @@
 {
     "/api/**": {
-        "target": "http://localhost:80",
+        "target": "http://localhost",
+//        "target": "http://heizi.fritz.box",
         "secure": false,
         "logLevel": "debug",
         "changeOrigin": false

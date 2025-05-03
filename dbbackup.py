@@ -14,6 +14,7 @@ def dump(table):
 	subprocess.run(['psql', '-d', 'heizi', '-c', psql])
 
 dump('assignee')
+dump('category')
 dump('image')
 dump('item')
 dump('item_assignee')
