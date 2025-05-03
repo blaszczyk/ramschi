@@ -8,7 +8,7 @@ import java.util.UUID;
 
 public class ItemTransformer {
 
-    public static ItemEntity toEntity(Item item) {
+    public static ItemEntity toEntity(BasicItem item) {
         final var entity = new ItemEntity();
         entity.setId(item.id());
         entity.setName(item.name());

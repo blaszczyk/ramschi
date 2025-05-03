@@ -1,5 +1,6 @@
 package com.github.blaszczyk.ramschi.ramschi_server.service;
 
+import com.github.blaszczyk.ramschi.ramschi_server.domain.BasicItem;
 import com.github.blaszczyk.ramschi.ramschi_server.domain.Item;
 import com.github.blaszczyk.ramschi.ramschi_server.persistence.*;
 import org.slf4j.Logger;
@@ -75,7 +76,7 @@ public class ItemService {
                 .map(tuple -> ItemTransformer.toItem(tuple.getT1(), tuple.getT2(), tuple.getT3()));
     }
 
-    public Mono<UUID> saveItem(Item item) {
+    public Mono<UUID> saveItem(BasicItem item) {
         LOG.info("Saving Item: {}", item);
         final ItemEntity entity = ItemTransformer.toEntity(item);
         entity.setLastedit(LocalDateTime.now());

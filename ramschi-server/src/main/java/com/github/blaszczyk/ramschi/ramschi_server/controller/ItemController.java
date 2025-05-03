@@ -1,5 +1,6 @@
 package com.github.blaszczyk.ramschi.ramschi_server.controller;
 
+import com.github.blaszczyk.ramschi.ramschi_server.domain.BasicItem;
 import com.github.blaszczyk.ramschi.ramschi_server.domain.Item;
 import com.github.blaszczyk.ramschi.ramschi_server.service.ImageService;
 import com.github.blaszczyk.ramschi.ramschi_server.service.ItemService;
@@ -46,7 +47,7 @@ public class ItemController {
     @PostMapping(path = "",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    Mono<ResponseEntity<UUID>> postItem(@RequestBody Item item) {
+    Mono<ResponseEntity<UUID>> postItem(@RequestBody BasicItem item) {
         return itemService.saveItem(item)
                 .map(ResponseEntity::ok);
     }

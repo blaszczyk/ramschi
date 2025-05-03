@@ -1,6 +1,5 @@
 package com.github.blaszczyk.ramschi.ramschi_server.service;
 
-import com.github.blaszczyk.ramschi.ramschi_server.domain.Item;
 import com.github.blaszczyk.ramschi.ramschi_server.persistence.*;
 import com.github.blaszczyk.ramschi.ramschi_server.util.ImageScaler;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,19 +12,10 @@ import java.util.UUID;
 public class ImageService {
 
     @Autowired
-    private ItemRepository itemRepository;
-
-    @Autowired
     private ImageRepository imageRepository;
 
     @Autowired
     private ImageScaler imageScaler;
-
-    public Mono<UUID> saveItem(Item item) {
-        final ItemEntity entity = ItemTransformer.toEntity(item);
-        return itemRepository.save(entity)
-                .map(ItemEntity::getId);
-    }
 
     public Mono<UUID> createImage(UUID itemId, byte[] data) {
         final ImageEntity entity = new ImageEntity();
