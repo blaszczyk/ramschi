@@ -11,8 +11,6 @@ public class CategoryEntity {
 
     private String name;
 
-    private String symbol;
-
     public String getId() {
         return id;
     }
@@ -29,23 +27,15 @@ public class CategoryEntity {
         this.name = name;
     }
 
-    public String getSymbol() {
-        return symbol;
-    }
-
-    public void setSymbol(String symbol) {
-        this.symbol = symbol;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof CategoryEntity that)) return false;
-        return Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(symbol, that.symbol);
+        return Objects.equals(id, that.id) && Objects.equals(name, that.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, symbol);
+        return Objects.hash(id, name);
     }
 }

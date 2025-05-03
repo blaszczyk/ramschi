@@ -1,7 +1,6 @@
 export interface ICategory {
     id: string;
     name: string;
-    symbol: string;
 }
 
 export interface IBasicItem {

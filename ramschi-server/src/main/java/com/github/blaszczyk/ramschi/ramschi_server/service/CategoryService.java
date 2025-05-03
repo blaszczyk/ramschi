@@ -16,7 +16,7 @@ public class CategoryService {
 
     public Mono<List<Category>> getAllCategories() {
         return categoryRepository.findAll()
-                .map(e -> new Category(e.getId(), e.getName(), e.getSymbol()))
+                .map(e -> new Category(e.getId(), e.getName()))
                 .collectList();
     }
 
@@ -24,7 +24,6 @@ public class CategoryService {
         final var entity = new CategoryEntity();
         entity.setId(category.id());
         entity.setName(category.name());
-        entity.setSymbol(category.symbol());
         return categoryRepository.save(entity)
                 .then();
     }

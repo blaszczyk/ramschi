@@ -11,35 +11,27 @@
             <column name="name" type="text">
                 <constraints nullable="false"/>
             </column>
-            <column name="symbol" type="text">
-                <constraints nullable="true"/>
-            </column>
         </createTable>
 
         <insert tableName="category" schemaName="ramschi">
             <column name="id">GARDEN</column>
             <column name="name">Garten</column>
-            <column name="symbol">🌳</column>
         </insert>
         <insert tableName="category" schemaName="ramschi">
             <column name="id">FURNITURE</column>
             <column name="name">Möbel</column>
-            <column name="symbol">🪑</column>
         </insert>
         <insert tableName="category" schemaName="ramschi">
             <column name="id">ELECTRONICS</column>
             <column name="name">Elektronik</column>
-            <column name="symbol">📻</column>
         </insert>
         <insert tableName="category" schemaName="ramschi">
             <column name="id">ART</column>
             <column name="name">Kunst</column>
-            <column name="symbol">🖼️</column>
         </insert>
         <insert tableName="category" schemaName="ramschi">
             <column name="id">OTHER</column>
             <column name="name">Sonstiges</column>
-            <column name="symbol">❔️</column>
         </insert>
 
         <addForeignKeyConstraint baseTableSchemaName="ramschi" baseTableName="item" baseColumnNames="category"
