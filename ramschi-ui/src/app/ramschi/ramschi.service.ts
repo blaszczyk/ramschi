@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { flatMap, from, map, mergeMap, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { ICategory, IBasicItem, IItem } from './domain';
 
@@ -11,10 +11,10 @@ export class RamschiService {
   constructor(private readonly http: HttpClient) { }
 
   getItems(
-    filter: string = '',
+    filter = '',
     category: string | undefined = undefined,
     assignee: string | undefined = undefined,
-    latestFirst: boolean = false,
+    latestFirst = false,
   ): Observable<IItem[]> {
     let params = new HttpParams();
     if (filter) {

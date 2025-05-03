@@ -7,8 +7,6 @@ export class ScrollService {
 
   private scrollElement: HTMLElement | undefined;
 
-  constructor() { }
-
   setScrollElement(scrollElement: HTMLElement) {
     this.scrollElement = scrollElement;
   }

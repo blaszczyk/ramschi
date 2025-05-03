@@ -104,7 +104,7 @@ export class RamschiDetailComponent implements OnInit {
     const currentAssignees = [... this.item.assignees];
 
     const newAssignees = event.value.filter(a => !currentAssignees.includes(a));
-    for (let assignee of newAssignees) {
+    for (const assignee of newAssignees) {
       if(confirm(`Danke ${assignee} für Dein Interesse an ${this.item.name}!`)) {
         this.spinner.show();
         this.service.putItemAssignee(this.item.id!, assignee).subscribe(() => {
@@ -115,7 +115,7 @@ export class RamschiDetailComponent implements OnInit {
     }
 
     const deletedAssignees = currentAssignees.filter(a => !event.value.includes(a));
-    for (let assignee of deletedAssignees) {
+    for (const assignee of deletedAssignees) {
       if(confirm(`Schade, ${assignee}, dass Dir ${this.item.name} egal ist!`)) {
         this.spinner.show();
         this.service.deleteItemAssignee(this.item.id!, assignee).subscribe(() => {

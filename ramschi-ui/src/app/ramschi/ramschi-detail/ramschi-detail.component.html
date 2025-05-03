@@ -52,7 +52,7 @@
     @if (item.id) {
         @for (image of item.images; track image) {
             <a [href]="'/api/image/' + image">
-                <img [src]="'/api/image/' + image + '/preview'"/>
+                <img [src]="'/api/image/' + image + '/preview'" [alt]="image"/>
             </a>
         }
     }

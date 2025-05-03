@@ -25,7 +25,7 @@ export class RamschiListComponent implements OnInit {
 
   items: IItem[] = [];
 
-  filterName: string = '';
+  filterName = '';
 
   filterCategory: string | undefined = undefined;
 

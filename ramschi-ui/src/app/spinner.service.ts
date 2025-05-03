@@ -5,9 +5,7 @@ import { Injectable } from '@angular/core';
 })
 export class SpinnerService {
 
-  private visible: boolean = false;
-
-  constructor() { }
+  private visible = false;
 
   isVisible(): boolean {
     return this.visible;

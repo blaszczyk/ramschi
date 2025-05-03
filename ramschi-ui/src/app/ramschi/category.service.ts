@@ -9,7 +9,7 @@ export class CategoryService {
 
   private categories: ICategory[] = [];
 
-  private categoryMap: { [id: string]: ICategory } = {};
+  private categoryMap: Record<string, ICategory> = {};
 
   constructor(private readonly service: RamschiService) {
     service.getCategories().subscribe(categories => {

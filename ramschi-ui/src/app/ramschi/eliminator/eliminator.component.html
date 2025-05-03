@@ -3,7 +3,7 @@
         <button (click)="deleteItem(item)">X</button>
     </p>
     @for (image of item.images; track image) {
-        <img [src]="'/api/image/' + image + '/thumbnail'"/>
+        <img [src]="'/api/image/' + image + '/thumbnail'" [alt]="image"/>
         <button (click)="deleteImage(image)">X</button>
         <br>
     }
