@@ -1,51 +1,73 @@
 <mat-expansion-panel>
-    <mat-expansion-panel-header>
-        <mat-panel-title>Filter:</mat-panel-title>
-        <mat-panel-description>{{filterSummary}}</mat-panel-description>
-    </mat-expansion-panel-header>
+  <mat-expansion-panel-header>
+    <mat-panel-title>Filter:</mat-panel-title>
+    <mat-panel-description>{{ filterSummary }}</mat-panel-description>
+  </mat-expansion-panel-header>
 
-    <mat-form-field>
-        <mat-label>Suche</mat-label>
-        <input matInput placeholder="Suche" [(ngModel)]="filterName" (keyup)="setFilter()">
-    </mat-form-field>
+  <mat-form-field>
+    <mat-label>Suche</mat-label>
+    <input
+      matInput
+      placeholder="Suche"
+      [(ngModel)]="filterName"
+      (keyup)="setFilter()"
+    />
+  </mat-form-field>
 
-    <mat-form-field>
-        <mat-label>Kategorie</mat-label>
-        <mat-select [(ngModel)]="filterCategory" (selectionChange)="setFilter()" name="category">
-        <mat-option [value]="undefined">Alle</mat-option>
-          @for (category of categories; track category) {
-            <mat-option [value]="category.id">{{category.name}}</mat-option>
-          }
-        </mat-select>
-    </mat-form-field>
+  <mat-form-field>
+    <mat-label>Kategorie</mat-label>
+    <mat-select
+      [(ngModel)]="filterCategory"
+      (selectionChange)="setFilter()"
+      name="category"
+    >
+      <mat-option [value]="undefined">Alle</mat-option>
+      @for (category of categories; track category) {
+        <mat-option [value]="category.id">{{ category.name }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
 
-    <mat-form-field>
-        <mat-label>Interessent</mat-label>
-        <mat-select [(ngModel)]="filterAssignee" (selectionChange)="setFilter()" name="assignee">
-        <mat-option [value]="undefined">Alle</mat-option>
-          @for (assignee of assignees; track assignee) {
-            <mat-option [value]="assignee">{{assignee}}</mat-option>
-          }
-        </mat-select>
-    </mat-form-field>
+  <mat-form-field>
+    <mat-label>Interessent</mat-label>
+    <mat-select
+      [(ngModel)]="filterAssignee"
+      (selectionChange)="setFilter()"
+      name="assignee"
+    >
+      <mat-option [value]="undefined">Alle</mat-option>
+      @for (assignee of assignees; track assignee) {
+        <mat-option [value]="assignee">{{ assignee }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
 
-    <mat-checkbox [(ngModel)]="latestFirst" (change)="setFilter()" name="latest first">Neuster Ramsch zuerst</mat-checkbox>
+  <mat-checkbox
+    [(ngModel)]="latestFirst"
+    (change)="setFilter()"
+    name="latest first"
+    >Neuster Ramsch zuerst</mat-checkbox
+  >
 </mat-expansion-panel>
 <mat-grid-list cols="1" rowHeight="70px">
-    @for (item of items; track item) {
-        <mat-grid-tile>
-            <div class="item" (click)="navigateTo(item)">
-                <div class="item-name">{{ item.name }}</div>
-                <div class="item-description">
-                    <span class="symbol-assignee">{{ getSymbolAssignee(item) }}</span>
-                    {{ item.description }}
-                </div>
-                <div class="images">
-                    @for (image of item.images.slice(0, 2); track image) {
-                    <img [src]="'/api/image/' + image + '/thumbnail'" height="60px" [alt]="image">
-                    }
-                </div>
-            </div>
-        </mat-grid-tile>
-    }
+  @for (item of items; track item) {
+    <mat-grid-tile>
+      <div class="item" (click)="navigateTo(item)">
+        <div class="item-name">{{ item.name }}</div>
+        <div class="item-description">
+          <span class="symbol-assignee">{{ getSymbolAssignee(item) }}</span>
+          {{ item.description }}
+        </div>
+        <div class="images">
+          @for (image of item.images.slice(0, 2); track image) {
+            <img
+              [src]="'/api/image/' + image + '/thumbnail'"
+              height="60px"
+              [alt]="image"
+            />
+          }
+        </div>
+      </div>
+    </mat-grid-tile>
+  }
 </mat-grid-list>

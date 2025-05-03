@@ -14,22 +14,28 @@ import { AssigneeService } from '../assignee.service';
 
 @Component({
   selector: 'app-ramschi-detail',
-  imports: [MatInputModule, MatFormFieldModule, MatSelectModule, MatButtonModule, MatGridListModule, FormsModule],
+  imports: [
+    MatInputModule,
+    MatFormFieldModule,
+    MatSelectModule,
+    MatButtonModule,
+    MatGridListModule,
+    FormsModule,
+  ],
   templateUrl: './ramschi-detail.component.html',
-  styleUrl: './ramschi-detail.component.css'
+  styleUrl: './ramschi-detail.component.css',
 })
 export class RamschiDetailComponent implements OnInit {
-
   @ViewChild('newImage')
-  newImageElement!: ElementRef<HTMLInputElement> ;
+  newImageElement!: ElementRef<HTMLInputElement>;
 
   get assignees(): string[] {
     return this.assigneeService.getAll();
-  };
-  
+  }
+
   get categories(): ICategory[] {
     return this.catgoryService.getAll();
-  };
+  }
 
   item: IItem = {
     id: null,
@@ -38,7 +44,7 @@ export class RamschiDetailComponent implements OnInit {
     category: null,
     price: null,
     assignees: [],
-    images: [],          
+    images: [],
   };
 
   initialized = false;
@@ -55,17 +61,16 @@ export class RamschiDetailComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.route.paramMap.subscribe(params => {
+    this.route.paramMap.subscribe((params) => {
       const id: string | null = params.get('id');
       if (id) {
         this.spinner.show();
-        this.service.getItem(id).subscribe(item => {
+        this.service.getItem(id).subscribe((item) => {
           this.item = item;
           this.initialized = true;
           this.spinner.hide();
         });
-      }
-      else {
+      } else {
         this.initialized = true;
       }
     });
@@ -78,7 +83,7 @@ export class RamschiDetailComponent implements OnInit {
   saveItem(): void {
     if (!this.saveDisabled()) {
       this.spinner.show();
-      this.service.postItem(this.item).subscribe(id => {
+      this.service.postItem(this.item).subscribe((id) => {
         this.spinner.hide();
         this.pristine = true;
         this.router.navigateByUrl('/ramsch/' + id);
@@ -89,7 +94,7 @@ export class RamschiDetailComponent implements OnInit {
   uploadNewImage(event: Event) {
     const file: File = (event.target as HTMLInputElement).files![0];
     this.spinner.show();
-    this.service.postImage(this.item!.id!, file).subscribe(id => {
+    this.service.postImage(this.item!.id!, file).subscribe((id) => {
       this.item.images.push(id);
       this.spinner.hide();
     });
@@ -98,14 +103,17 @@ export class RamschiDetailComponent implements OnInit {
   clickNewImage() {
     this.newImageElement.nativeElement.click();
   }
-  
+
   changeAssignee(event: MatSelectChange<string[]>) {
+    const currentAssignees = [...this.item.assignees];
 
-    const currentAssignees = [... this.item.assignees];
-
-    const newAssignees = event.value.filter(a => !currentAssignees.includes(a));
+    const newAssignees = event.value.filter(
+      (a) => !currentAssignees.includes(a),
+    );
     for (const assignee of newAssignees) {
-      if(confirm(`Danke ${assignee} für Dein Interesse an ${this.item.name}!`)) {
+      if (
+        confirm(`Danke ${assignee} für Dein Interesse an ${this.item.name}!`)
+      ) {
         this.spinner.show();
         this.service.putItemAssignee(this.item.id!, assignee).subscribe(() => {
           this.item.assignees.push(assignee);
@@ -114,16 +122,21 @@ export class RamschiDetailComponent implements OnInit {
       }
     }
 
-    const deletedAssignees = currentAssignees.filter(a => !event.value.includes(a));
+    const deletedAssignees = currentAssignees.filter(
+      (a) => !event.value.includes(a),
+    );
     for (const assignee of deletedAssignees) {
-      if(confirm(`Schade, ${assignee}, dass Dir ${this.item.name} egal ist!`)) {
+      if (
+        confirm(`Schade, ${assignee}, dass Dir ${this.item.name} egal ist!`)
+      ) {
         this.spinner.show();
-        this.service.deleteItemAssignee(this.item.id!, assignee).subscribe(() => {
-          const index = this.item.assignees.indexOf(assignee);
-          this.item.assignees.splice(index, 1);
-          this.spinner.hide();
-        });
-
+        this.service
+          .deleteItemAssignee(this.item.id!, assignee)
+          .subscribe(() => {
+            const index = this.item.assignees.indexOf(assignee);
+            this.item.assignees.splice(index, 1);
+            this.spinner.hide();
+          });
       }
     }
   }
@@ -131,5 +144,4 @@ export class RamschiDetailComponent implements OnInit {
   setDirty() {
     this.pristine = false;
   }
-
 }

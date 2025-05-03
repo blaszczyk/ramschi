@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ScrollService {
-
   private scrollElement: HTMLElement | undefined;
 
   setScrollElement(scrollElement: HTMLElement) {
@@ -12,14 +11,14 @@ export class ScrollService {
   }
 
   storePosition() {
-    if(this.scrollElement) {
+    if (this.scrollElement) {
       const scrollTop = this.scrollElement.scrollTop + '';
       localStorage.setItem(KEY_SCROLL_POSITION, scrollTop);
     }
   }
 
   forgetPosition() {
-    if(this.scrollElement) {
+    if (this.scrollElement) {
       localStorage.removeItem(KEY_SCROLL_POSITION);
     }
   }
@@ -29,7 +28,7 @@ export class ScrollService {
     if (this.scrollElement && storedValue) {
       setTimeout(() => {
         this.scrollElement!.scrollTop = parseFloat(storedValue);
-        this.scrollElement!.scrollTo({ top: parseFloat(storedValue)});
+        this.scrollElement!.scrollTo({ top: parseFloat(storedValue) });
       }, 1);
     }
   }

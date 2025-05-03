@@ -10,24 +10,24 @@ import { ScrollService } from './scroll.service';
   selector: 'app-root',
   imports: [RouterOutlet, MatProgressSpinnerModule, MatButtonModule],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.css'
+  styleUrl: './app.component.css',
 })
 export class AppComponent implements AfterViewInit {
-
   title = 'ramschi-ui';
 
-  @ViewChild("container")
+  @ViewChild('container')
   container!: ElementRef<HTMLDivElement>;
 
-  constructor(private readonly spinner: SpinnerService,
+  constructor(
+    private readonly spinner: SpinnerService,
     private readonly router: Router,
     private readonly scroll: ScrollService,
   ) {}
 
   get showSpinner(): boolean {
     return this.spinner.isVisible();
-  };
-  
+  }
+
   navigateTo(url: string): void {
     this.router.navigateByUrl(url);
   }
@@ -35,5 +35,4 @@ export class AppComponent implements AfterViewInit {
   ngAfterViewInit(): void {
     this.scroll.setScrollElement(this.container.nativeElement);
   }
-
 }

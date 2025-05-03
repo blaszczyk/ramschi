@@ -1,16 +1,18 @@
 <div class="page">
-    @if (showSpinner) {
-        <div class="screenlock">
-            <mat-spinner></mat-spinner>
-        </div>
-    }
-    <div #container class="container">
-        <div class="header">
-            <button mat-raised-button (click)="navigateTo('/ramsch')">Neuer Ramsch</button>
-            <button mat-raised-button (click)="navigateTo('/')">Ganzer Ramsch</button>
-        </div>
-        <div class="scrollarea">
-            <router-outlet></router-outlet>
-        </div>  
+  @if (showSpinner) {
+    <div class="screenlock">
+      <mat-spinner></mat-spinner>
     </div>
+  }
+  <div #container class="container">
+    <div class="header">
+      <button mat-raised-button (click)="navigateTo('/ramsch')">
+        Neuer Ramsch
+      </button>
+      <button mat-raised-button (click)="navigateTo('/')">Ganzer Ramsch</button>
+    </div>
+    <div class="scrollarea">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
 </div>

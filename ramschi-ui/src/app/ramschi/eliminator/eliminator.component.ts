@@ -6,16 +6,15 @@ import { IItem } from '../domain';
   selector: 'app-eliminator',
   imports: [],
   templateUrl: './eliminator.component.html',
-  styleUrl: './eliminator.component.css'
+  styleUrl: './eliminator.component.css',
 })
 export class EliminatorComponent implements OnInit {
-
   items: IItem[] = [];
 
-  constructor(private readonly service: RamschiService){}
+  constructor(private readonly service: RamschiService) {}
 
   ngOnInit(): void {
-    this.service.getItems().subscribe(items => this.items = items);
+    this.service.getItems().subscribe((items) => (this.items = items));
   }
 
   deleteItem(item: IItem) {
@@ -29,5 +28,4 @@ export class EliminatorComponent implements OnInit {
       this.service.deleteImage(id).subscribe();
     }
   }
-
 }

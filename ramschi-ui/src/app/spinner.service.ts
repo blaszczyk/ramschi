@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class SpinnerService {
-
   private visible = false;
 
   isVisible(): boolean {
@@ -18,5 +17,4 @@ export class SpinnerService {
   hide() {
     this.visible = false;
   }
-
 }

@@ -1,20 +1,19 @@
 import { Injectable } from '@angular/core';
-import { ICategory} from './domain';
+import { ICategory } from './domain';
 import { RamschiService } from './ramschi.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class CategoryService {
-
   private categories: ICategory[] = [];
 
   private categoryMap: Record<string, ICategory> = {};
 
   constructor(private readonly service: RamschiService) {
-    service.getCategories().subscribe(categories => {
+    service.getCategories().subscribe((categories) => {
       this.categories = categories;
-      categories.forEach(c => this.categoryMap[c.id] = c);
+      categories.forEach((c) => (this.categoryMap[c.id] = c));
     });
   }
 
@@ -25,5 +24,4 @@ export class CategoryService {
   getById(id: string): ICategory {
     return this.categoryMap[id];
   }
-
 }

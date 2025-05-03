@@ -7,12 +7,11 @@ import { ICategory } from '../domain';
   selector: 'app-admin',
   imports: [FormsModule],
   templateUrl: './admin.component.html',
-  styleUrl: './admin.component.css'
+  styleUrl: './admin.component.css',
 })
 export class AdminComponent implements OnInit {
-
   assignees: string[] = [];
-  
+
   categories: ICategory[] = [];
 
   newAssignee: string | null = null;
@@ -21,7 +20,7 @@ export class AdminComponent implements OnInit {
 
   newCategoryName: string | null = null;
 
-  constructor (private readonly service: RamschiService) {}
+  constructor(private readonly service: RamschiService) {}
 
   ngOnInit(): void {
     this.refresh();
@@ -46,7 +45,7 @@ export class AdminComponent implements OnInit {
     const category: ICategory = {
       id: this.newCategoryId!.toUpperCase(),
       name: this.newCategoryName!,
-    }
+    };
     this.service.postCategory(category).subscribe(() => {
       this.newCategoryId = null;
       this.newCategoryName = null;
@@ -61,8 +60,11 @@ export class AdminComponent implements OnInit {
   }
 
   private refresh() {
-    this.service.getAssignees().subscribe(assignees => this.assignees = assignees);
-    this.service.getCategories().subscribe(categories => this.categories = categories);
+    this.service
+      .getAssignees()
+      .subscribe((assignees) => (this.assignees = assignees));
+    this.service
+      .getCategories()
+      .subscribe((categories) => (this.categories = categories));
   }
-
 }

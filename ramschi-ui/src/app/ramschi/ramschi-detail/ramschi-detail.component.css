@@ -1,28 +1,28 @@
 img {
-    max-width: 100%;
+  max-width: 100%;
 }
 
 textarea {
-    resize: none;
+  resize: none;
 }
 
 #new-image {
-    display: none;
+  display: none;
 }
 
 button {
-    margin: 10px 20px 0px 20px;
+  margin: 10px 20px 0px 20px;
 }
 
 .price {
-    text-align: right;
+  text-align: right;
 }
 
 .fake-disabled {
-    color: gray;
-    cursor: default;
+  color: gray;
+  cursor: default;
 }
 
 mat-form-field {
-    width: 300px;
+  width: 300px;
 }

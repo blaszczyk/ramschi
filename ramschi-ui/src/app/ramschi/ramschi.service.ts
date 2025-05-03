@@ -4,11 +4,10 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { ICategory, IBasicItem, IItem } from './domain';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class RamschiService {
-
-  constructor(private readonly http: HttpClient) { }
+  constructor(private readonly http: HttpClient) {}
 
   getItems(
     filter = '',
@@ -29,7 +28,7 @@ export class RamschiService {
     if (latestFirst) {
       params = params.set('latestFirst', true);
     }
-    return this.http.get<IItem[]>('/api/item', { params })
+    return this.http.get<IItem[]>('/api/item', { params });
   }
 
   getItem(id: string): Observable<IItem> {
@@ -49,11 +48,16 @@ export class RamschiService {
   }
 
   putItemAssignee(itemId: string, assignee: string): Observable<void> {
-    return this.http.put<void>('/api/item/' + itemId + '/assignee/' + assignee, null);
+    return this.http.put<void>(
+      '/api/item/' + itemId + '/assignee/' + assignee,
+      null,
+    );
   }
 
   deleteItemAssignee(itemId: string, assignee: string): Observable<void> {
-    return this.http.delete<void>('/api/item/' + itemId + '/assignee/' + assignee);
+    return this.http.delete<void>(
+      '/api/item/' + itemId + '/assignee/' + assignee,
+    );
   }
 
   postAssignee(name: string): Observable<void> {
@@ -65,9 +69,9 @@ export class RamschiService {
   }
 
   postImage(itemId: string, file: File): Observable<string> {
-    return this.http.post<string>('/api/item/' + itemId + '/image', file, 
-      { headers: { 'content-type': file.type} }
-    );
+    return this.http.post<string>('/api/item/' + itemId + '/image', file, {
+      headers: { 'content-type': file.type },
+    });
   }
 
   deleteImage(id: string): Observable<void> {
@@ -81,5 +85,4 @@ export class RamschiService {
   postCategory(category: ICategory): Observable<void> {
     return this.http.post<void>('/api/category', category);
   }
-
 }
