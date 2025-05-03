@@ -4,3 +4,15 @@
 <input [(ngModel)]="newAssignee"/>
 <br>
 <button (click)="createNewAssignee()" [disabled]="!newAssignee">Neuer Interessent</button>
+<br>
+@for (category of categories; track category) {
+    <p> {{category.id}}
+        <input [(ngModel)]="category.name"/>
+        <button (click)="updateCategory(category)">Speichern</button>
+    </p>
+}
+
+<input [(ngModel)]="newCategoryId"/>
+<input [(ngModel)]="newCategoryName"/>
+<br>
+<button (click)="createNewCategory()" [disabled]="!newCategoryId || !newCategoryName">Neue Kategorie</button>

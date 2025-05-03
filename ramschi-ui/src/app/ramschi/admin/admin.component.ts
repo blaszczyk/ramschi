@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { RamschiService } from '../ramschi.service';
 import { FormsModule } from '@angular/forms';
+import { ICategory } from '../domain';
 
 @Component({
   selector: 'app-admin',
@@ -11,8 +12,14 @@ import { FormsModule } from '@angular/forms';
 export class AdminComponent implements OnInit {
 
   assignees: string[] = [];
+  
+  categories: ICategory[] = [];
 
   newAssignee: string | null = null;
+
+  newCategoryId: string | null = null;
+
+  newCategoryName: string | null = null;
 
   constructor (private readonly service: RamschiService) {}
 
@@ -35,8 +42,27 @@ export class AdminComponent implements OnInit {
     }
   }
 
+  createNewCategory(): void {
+    const category: ICategory = {
+      id: this.newCategoryId!.toUpperCase(),
+      name: this.newCategoryName!,
+    }
+    this.service.postCategory(category).subscribe(() => {
+      this.newCategoryId = null;
+      this.newCategoryName = null;
+      this.refresh();
+    });
+  }
+
+  updateCategory(category: ICategory): void {
+    this.service.postCategory(category).subscribe(() => {
+      this.refresh();
+    });
+  }
+
   private refresh() {
     this.service.getAssignees().subscribe(assignees => this.assignees = assignees);
+    this.service.getCategories().subscribe(categories => this.categories = categories);
   }
 
 }

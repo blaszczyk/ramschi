@@ -21,10 +21,18 @@ public class CategoryService {
     }
 
     public Mono<Void> createCategory(Category category) {
-        final var entity = new CategoryEntity();
-        entity.setId(category.id());
-        entity.setName(category.name());
-        return categoryRepository.save(entity)
-                .then();
-    }
+        return categoryRepository.findAll()
+                .map(CategoryEntity::getId)
+                .collectList()
+                .flatMap(ids -> {
+                    if(ids.contains(category.id())) {
+                        return categoryRepository.updateName(category.id(), category. name());
+                    }
+                    else {
+                        final var entity = new CategoryEntity();
+                        entity.setId(category.id());
+                        entity.setName(category.name());
+                        return categoryRepository.save(entity);
+                    }
+                }).then();    }
 }

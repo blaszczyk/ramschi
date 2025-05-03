@@ -25,7 +25,6 @@ public class CategoryController {
                 .map(ResponseEntity::ok);
     }
 
-
     @PostMapping(path = "",
             consumes = MediaType.APPLICATION_JSON_VALUE)
     Mono<ResponseEntity<Void>> postCategory(@RequestBody Category category) {
