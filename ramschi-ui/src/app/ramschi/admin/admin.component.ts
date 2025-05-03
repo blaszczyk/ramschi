@@ -3,12 +3,12 @@ import { RamschiService } from '../ramschi.service';
 import { FormsModule } from '@angular/forms';
 
 @Component({
-  selector: 'app-new-assignee',
+  selector: 'app-admin',
   imports: [FormsModule],
-  templateUrl: './new-assignee.component.html',
-  styleUrl: './new-assignee.component.css'
+  templateUrl: './admin.component.html',
+  styleUrl: './admin.component.css'
 })
-export class NewAssigneeComponent implements OnInit {
+export class AdminComponent implements OnInit {
 
   assignees: string[] = [];
 
