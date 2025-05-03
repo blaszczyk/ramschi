@@ -14,7 +14,7 @@
         <mat-select [(ngModel)]="filterCategory" (selectionChange)="setFilter()" name="category">
         <mat-option [value]="undefined">Alle</mat-option>
           @for (category of categories; track category) {
-            <mat-option [value]="category.id">{{category.displayName}}</mat-option>
+            <mat-option [value]="category.id">{{category.name}}</mat-option>
           }
         </mat-select>
     </mat-form-field>

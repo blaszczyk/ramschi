@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { RamschiService } from '../ramschi.service';
-import { Category, categoryDisplayName, IItem } from '../domain';
+import { ICategory, IItem } from '../domain';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
@@ -12,6 +12,8 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { SpinnerService } from '../../spinner.service';
 import { ScrollService } from '../../scroll.service';
+import { CategoryService } from '../category.service';
+import { AssigneeService } from '../assignee.service';
 
 @Component({
   selector: 'app-ramschi-list',
@@ -25,11 +27,9 @@ export class RamschiListComponent implements OnInit {
 
   filterName: string = '';
 
-  filterCategory: Category | undefined = undefined;
+  filterCategory: string | undefined = undefined;
 
   filterAssignee: string | undefined = undefined;
-
-  assignees: string[] = [];
 
   latestFirst = false;
 
@@ -39,20 +39,27 @@ export class RamschiListComponent implements OnInit {
       filters.push('"' + this.filterName + '"');
     }
     if (this.filterCategory) {
-      filters.push(categoryDisplayName(this.filterCategory));
+      filters.push(this.catgoryService.getById(this.filterCategory)?.name);
     }
     if (this.filterAssignee) {
       filters.push(this.filterAssignee);
     }
     return filters.join(', ');
   }
+
+  get assignees(): string[] {
+    return this.assigneeService.getAll();
+  };
   
-  categories: { id:Category, displayName: string }[] = Object.values(Category)
-    .map(id => ({id, displayName: categoryDisplayName(id)}));
+  get categories(): ICategory[] {
+    return this.catgoryService.getAll();
+  };
 
   constructor(private readonly service: RamschiService,
     private readonly spinner: SpinnerService,
     private readonly scroll: ScrollService,
+    private readonly catgoryService: CategoryService,
+    private readonly assigneeService: AssigneeService,
     private readonly router: Router,
   ) {}
 
@@ -65,7 +72,7 @@ export class RamschiListComponent implements OnInit {
 
     const storedFilterCategory = localStorage.getItem(KEY_FILTER_CATEGORY);
     if (storedFilterCategory ) {
-      this.filterCategory = storedFilterCategory as Category;
+      this.filterCategory = storedFilterCategory;
     }
 
     const storedFilterAssignee = localStorage.getItem(KEY_FILTER_ASSIGNEE);
@@ -78,7 +85,6 @@ export class RamschiListComponent implements OnInit {
       this.latestFirst = !!storedLatestFirst;
     }
 
-    this.service.getAssignees().subscribe(assignees => this.assignees = assignees);
     this.getItems();
   }
 
@@ -102,8 +108,8 @@ export class RamschiListComponent implements OnInit {
   }
 
   navigateTo(item: IItem): void {
-    this.router.navigateByUrl('/ramsch/' + item.id);
     this.scroll.storePosition();
+    this.router.navigateByUrl('/ramsch/' + item.id);
   }
 
 }

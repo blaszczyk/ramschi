@@ -1,6 +1,6 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { RamschiService } from '../ramschi.service';
-import { Category, categoryDisplayName, IItem } from '../domain';
+import { ICategory, IItem } from '../domain';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -9,6 +9,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { FormsModule } from '@angular/forms';
 import { SpinnerService } from '../../spinner.service';
+import { CategoryService } from '../category.service';
+import { AssigneeService } from '../assignee.service';
 
 @Component({
   selector: 'app-ramschi-detail',
@@ -21,10 +23,13 @@ export class RamschiDetailComponent implements OnInit {
   @ViewChild('newImage')
   newImageElement!: ElementRef<HTMLInputElement> ;
 
-  categories: { id:Category, displayName: string }[] = Object.values(Category)
-  .map(id => ({id, displayName: categoryDisplayName(id)}));
-
-  assignees: string[] = [];
+  get assignees(): string[] {
+    return this.assigneeService.getAll();
+  };
+  
+  get categories(): ICategory[] {
+    return this.catgoryService.getAll();
+  };
 
   item: IItem = {
     id: null,
@@ -42,6 +47,8 @@ export class RamschiDetailComponent implements OnInit {
 
   constructor(
     private readonly service: RamschiService,
+    private readonly catgoryService: CategoryService,
+    private readonly assigneeService: AssigneeService,
     private readonly route: ActivatedRoute,
     private readonly router: Router,
     private readonly spinner: SpinnerService,
@@ -62,7 +69,6 @@ export class RamschiDetailComponent implements OnInit {
         this.initialized = true;
       }
     });
-    this.service.getAssignees().subscribe(assignees => this.assignees = assignees);
   }
 
   saveDisabled(): boolean {

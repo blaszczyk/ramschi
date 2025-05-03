@@ -1,6 +1,5 @@
 package com.github.blaszczyk.ramschi.ramschi_server.service;
 
-import com.github.blaszczyk.ramschi.ramschi_server.domain.Category;
 import com.github.blaszczyk.ramschi.ramschi_server.domain.Item;
 import com.github.blaszczyk.ramschi.ramschi_server.persistence.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +30,7 @@ public class ItemService {
 
     public Mono<List<Item>> filterItems(
             Optional<String> filter,
-            Optional<Category> category,
+            Optional<String> category,
             Optional<String> assignee,
             boolean latestFirst
     ) {
@@ -43,7 +42,7 @@ public class ItemService {
                 .orElseGet(() -> filterItems(filterTerm, category, latestFirst, null));
     }
 
-    private Mono<List<Item>> filterItems(String filterTerm, Optional<Category> category, boolean latestFirst, List<UUID> itemIds) {
+    private Mono<List<Item>> filterItems(String filterTerm, Optional<String> category, boolean latestFirst, List<UUID> itemIds) {
         final Comparator<Item> comparator = latestFirst ? BY_LAST_EDIT : BY_NAME;
         final var resultFlux = category.isPresent()
                 ? itemRepository.findByNameLikeAndCategory(filterTerm, category.get())

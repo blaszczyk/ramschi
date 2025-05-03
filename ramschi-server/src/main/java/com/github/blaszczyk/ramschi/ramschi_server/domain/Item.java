@@ -7,7 +7,7 @@ import java.util.UUID;
 public record Item(
         UUID id, String name,
         String description,
-        Category category,
+        String category,
         int price,
         LocalDateTime lastedit,
         List<String> assignees,

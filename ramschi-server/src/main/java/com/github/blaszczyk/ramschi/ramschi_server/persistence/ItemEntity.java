@@ -1,11 +1,9 @@
 package com.github.blaszczyk.ramschi.ramschi_server.persistence;
 
-import com.github.blaszczyk.ramschi.ramschi_server.domain.Category;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -19,7 +17,7 @@ public class ItemEntity {
 
     private String description;
 
-    private Category category;
+    private String category;
 
     private int price;
 
@@ -49,11 +47,11 @@ public class ItemEntity {
         this.description = description;
     }
 
-    public Category getCategory() {
+    public String getCategory() {
         return category;
     }
 
-    public void setCategory(Category category) {
+    public void setCategory(String category) {
         this.category = category;
     }
 

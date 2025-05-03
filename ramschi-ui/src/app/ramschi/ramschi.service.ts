@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { flatMap, from, map, mergeMap, Observable } from 'rxjs';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Category, IBasicItem, IItem } from './domain';
+import { ICategory, IBasicItem, IItem } from './domain';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +12,7 @@ export class RamschiService {
 
   getItems(
     filter: string = '',
-    category: Category | undefined = undefined,
+    category: string | undefined = undefined,
     assignee: string | undefined = undefined,
     latestFirst: boolean = false,
   ): Observable<IItem[]> {
@@ -72,6 +72,14 @@ export class RamschiService {
 
   deleteImage(id: string): Observable<void> {
     return this.http.delete<void>('/api/image/' + id);
+  }
+
+  getCategories(): Observable<ICategory[]> {
+    return this.http.get<ICategory[]>('/api/category');
+  }
+
+  postCategory(category: ICategory): Observable<void> {
+    return this.http.post<void>('/api/category', category);
   }
 
 }

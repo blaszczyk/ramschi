@@ -1,7 +1,5 @@
 package com.github.blaszczyk.ramschi.ramschi_server.controller;
 
-import com.github.blaszczyk.ramschi.ramschi_server.domain.BasicItem;
-import com.github.blaszczyk.ramschi.ramschi_server.domain.Category;
 import com.github.blaszczyk.ramschi.ramschi_server.domain.Item;
 import com.github.blaszczyk.ramschi.ramschi_server.service.ImageService;
 import com.github.blaszczyk.ramschi.ramschi_server.service.ItemService;
@@ -30,7 +28,7 @@ public class ItemController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     Mono<ResponseEntity<List<Item>>> getItems(
             @RequestParam Optional<String> filter,
-            @RequestParam Optional<Category> category,
+            @RequestParam Optional<String> category,
             @RequestParam Optional<String> assignee,
             @RequestParam Optional<String> latestFirst
     ) {

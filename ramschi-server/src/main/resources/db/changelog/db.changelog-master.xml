@@ -13,5 +13,6 @@
 
     <include file="db/changelog/create_tables.xml" />
     <include file="db/changelog/add_column_item_lastedit.xml" />
+    <include file="db/changelog/create_table_category.xml" />
 
 </databaseChangeLog>
