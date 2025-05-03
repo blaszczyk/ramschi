@@ -17,6 +17,14 @@
     left: 10px;
     bottom: 10px;
     font-size: 12px;
+    max-width: 350px;
+    white-space: nowrap;
+    overflow-x: hidden;
+    text-overflow: ellipsis;
+}
+
+.symbol-assignee {
+    font-size: 15px;
 }
 
 .images {

@@ -93,6 +93,11 @@ export class RamschiListComponent implements OnInit {
     this.getItems();
   }
 
+  getSymbolAssignee(item: IItem): string {
+    const nrAssignees = item.assignees.length;
+    return nrAssignees === 0 ? '' : ( nrAssignees === 1 ? '☝️' : '✌️');
+  }
+
   private getItems(): void {
     updateLocalStorage(KEY_FILTER_NAME, this.filterName);
     updateLocalStorage(KEY_FILTER_CATEGORY, this.filterCategory);

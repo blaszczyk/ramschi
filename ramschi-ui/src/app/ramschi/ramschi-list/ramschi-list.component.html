@@ -36,7 +36,10 @@
         <mat-grid-tile>
             <div class="item" (click)="navigateTo(item)">
                 <div class="item-name">{{ item.name }}</div>
-                <div class="item-description">{{ item.description }}</div>
+                <div class="item-description">
+                    <span class="symbol-assignee">{{ getSymbolAssignee(item) }}</span>
+                    {{ item.description }}
+                </div>
                 <div class="images">
                     @for (image of item.images.slice(0, 2); track image) {
                     <img [src]="'/api/image/' + image + '/thumbnail'" height="60px"/>
