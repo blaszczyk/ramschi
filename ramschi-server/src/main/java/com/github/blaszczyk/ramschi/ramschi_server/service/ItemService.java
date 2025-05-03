@@ -2,6 +2,8 @@ package com.github.blaszczyk.ramschi.ramschi_server.service;
 
 import com.github.blaszczyk.ramschi.ramschi_server.domain.Item;
 import com.github.blaszczyk.ramschi.ramschi_server.persistence.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
@@ -14,6 +16,8 @@ import java.util.UUID;
 
 @Service
 public class ItemService {
+
+    private static Logger LOG = LoggerFactory.getLogger(ItemService.class);
 
     private static final Comparator<Item> BY_NAME = Comparator.comparing(Item::name);
 
@@ -72,6 +76,7 @@ public class ItemService {
     }
 
     public Mono<UUID> saveItem(Item item) {
+        LOG.info("Saving Item: {}", item);
         final ItemEntity entity = ItemTransformer.toEntity(item);
         entity.setLastedit(LocalDateTime.now());
         return itemRepository.save(entity)
@@ -79,6 +84,7 @@ public class ItemService {
     }
 
     public Mono<Void> addAssignee(UUID itemId, String assignee) {
+        LOG.info("Assigning {} to {}", assignee, itemId);
         final var entity = new ItemAssigneeEntity();
         entity.setItemId(itemId);
         entity.setAssignee(assignee);
@@ -87,11 +93,13 @@ public class ItemService {
     }
 
     public Mono<Void> deleteAssignee(UUID itemId, String assignee) {
+        LOG.info("Unassigning {} from {}", assignee, itemId);
         return itemAssigneeRepository.delete(itemId, assignee)
                 .then();
     }
 
     public Mono<Void> deleteItem(UUID id) {
+        LOG.info("Deleting {}", id);
         return itemRepository.deleteById(id);
     }
 }
