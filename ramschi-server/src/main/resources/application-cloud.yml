@@ -4,8 +4,6 @@ database:
 
 spring:
   r2dbc:
-    url: r2dbc:postgresql:///${database.name}?socket=/cloudsql/${database.instance}/.s.PGSQL.5432
-    properties:
-      sslMode: VERIFY_CA
+    url: r2dbc:gcp:postgres://${database.instance}/${database.name}
   liquibase:
     url: jdbc:postgresql:///${database.name}?cloudSqlInstance=${database.instance}&socketFactory=com.google.cloud.sql.postgres.SocketFactory
