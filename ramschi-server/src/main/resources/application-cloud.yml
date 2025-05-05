@@ -1,0 +1,10 @@
+database:
+  instance: ''
+
+spring:
+  r2dbc:
+    url: r2dbc:postgresql:///${database.name}?socket=/cloudsql/${database.instance}/.s.PGSQL.5432
+    properties:
+      sslMode: VERIFY_CA
+  liquibase:
+    url: jdbc:postgresql:///${database.name}?cloudSqlInstance=${database.instance}&socketFactory=com.google.cloud.sql.postgres.SocketFactory
