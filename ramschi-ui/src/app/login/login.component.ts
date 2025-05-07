@@ -1,0 +1,48 @@
+import { Component } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatGridListModule } from '@angular/material/grid-list';
+import { MatInputModule } from '@angular/material/input';
+import { CredentialService } from './credential.service';
+import { RamschiService } from '../ramschi/ramschi.service';
+import { catchError } from 'rxjs';
+import { HttpErrorResponse } from '@angular/common/http';
+
+@Component({
+  selector: 'app-login',
+  imports: [
+    MatInputModule,
+    MatFormFieldModule,
+    MatButtonModule,
+    MatGridListModule,
+    FormsModule,
+  ],
+  templateUrl: './login.component.html',
+  styleUrl: './login.component.css',
+})
+export class LoginComponent {
+  constructor(
+    private readonly credentials: CredentialService,
+    private readonly service: RamschiService,
+  ) {}
+
+  name: string = '';
+
+  password: string = '';
+
+  anonymous() {
+    this.credentials.setInitialised();
+  }
+
+  login() {
+    if (this.name) {
+      this.credentials.setCredentials(this.name, this.password);
+      this.service.login().subscribe((response) => {
+        this.credentials.setRole(response.role);
+        this.credentials.storeCredentials();
+        this.credentials.setInitialised();
+      });
+    }
+  }
+}

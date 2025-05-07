@@ -1,5 +1,6 @@
 package com.github.blaszczyk.ramschi.ramschi_server.service;
 
+import com.github.blaszczyk.ramschi.ramschi_server.domain.Role;
 import com.github.blaszczyk.ramschi.ramschi_server.persistence.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,6 +26,7 @@ public class AssigneeService {
     public Mono<Void> createAssignee(String name) {
         final var entity = new AssigneeEntity();
         entity.setName(name);
+        entity.setRole(Role.ASSIGNEE);
         return assigneeRepository.save(entity)
                 .then();
     }

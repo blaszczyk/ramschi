@@ -1,3 +1,7 @@
+.panel {
+  text-align: center;
+}
+
 img {
   max-width: 100%;
 }
@@ -10,8 +14,12 @@ textarea {
   display: none;
 }
 
-button {
-  margin: 10px 20px 0px 20px;
+button.assign {
+  margin: 0px 20px 17px 0px;
+}
+
+button.mini {
+  margin: 10px 10px 0px 10px;
 }
 
 .price {
@@ -25,4 +33,9 @@ button {
 
 mat-form-field {
   width: 300px;
+}
+
+.description {
+  text-align: center;
+  margin: 13px;
 }

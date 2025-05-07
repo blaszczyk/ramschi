@@ -2,6 +2,7 @@ package com.github.blaszczyk.ramschi.ramschi_server.controller;
 
 import com.github.blaszczyk.ramschi.ramschi_server.domain.BasicItem;
 import com.github.blaszczyk.ramschi.ramschi_server.domain.Item;
+import com.github.blaszczyk.ramschi.ramschi_server.service.AuthService;
 import com.github.blaszczyk.ramschi.ramschi_server.service.ImageService;
 import com.github.blaszczyk.ramschi.ramschi_server.service.ItemService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import static com.github.blaszczyk.ramschi.ramschi_server.controller.HttpResponseHelper.unauthorized;
+
 @RestController
 @RequestMapping("/api/item")
 @ResponseBody
@@ -24,6 +27,9 @@ public class ItemController {
 
     @Autowired
     private ImageService imageService;
+
+    @Autowired
+    private AuthService authService;
 
     @GetMapping(path = "",
             produces = MediaType.APPLICATION_JSON_VALUE)
@@ -47,34 +53,84 @@ public class ItemController {
     @PostMapping(path = "",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    Mono<ResponseEntity<UUID>> postItem(@RequestBody BasicItem item) {
-        return itemService.saveItem(item)
-                .map(ResponseEntity::ok);
+    Mono<ResponseEntity<UUID>> postItem(@RequestBody BasicItem item, @RequestHeader(RamschiHeader.AUTH) String ramschiAuth) {
+        return authService.getAuthInfo(ramschiAuth)
+                .flatMap(authInfo -> {
+                    if (authInfo.isContributor()) {
+                        return itemService.saveItem(item)
+                                .map(ResponseEntity::ok);
+                    }
+                    else {
+                        return unauthorized();
+                    }
+                });
     }
 
     @DeleteMapping(path = "/{id}")
-    Mono<ResponseEntity<Void>> deleteItem(@PathVariable UUID id) {
-        return itemService.deleteItem(id)
-                .map(ResponseEntity::ok);
+    Mono<ResponseEntity<Void>> deleteItem(
+            @PathVariable UUID id,
+            @RequestHeader(RamschiHeader.AUTH) String ramschiAuth) {
+        return authService.getAuthInfo(ramschiAuth)
+                .flatMap(authInfo -> {
+                    if (authInfo.isAdmin()) {
+                        return itemService.deleteItem(id)
+                                .map(ResponseEntity::ok);
+                    } else {
+                        return unauthorized();
+                    }
+                });
     }
 
     @PutMapping(path = "/{itemId}/assignee/{assignee}")
-    Mono<ResponseEntity<Void>> putItemAssignee(@PathVariable UUID itemId, @PathVariable String assignee) {
-        return itemService.addAssignee(itemId, assignee)
-                .map(ResponseEntity::ok);
+    Mono<ResponseEntity<Void>> putItemAssignee(
+           @PathVariable UUID itemId,
+           @PathVariable String assignee,
+           @RequestHeader(RamschiHeader.AUTH) String ramschiAuth) {
+        return authService.getAuthInfo(ramschiAuth)
+                .flatMap(authInfo -> {
+                    if (authInfo.isAssignee(assignee)) {
+                        return itemService.addAssignee(itemId, assignee)
+                                .map(ResponseEntity::ok);
+                    }
+                    else {
+                        return unauthorized();
+                    }
+                });
     }
 
     @DeleteMapping(path = "/{itemId}/assignee/{assignee}")
-    Mono<ResponseEntity<Void>> deleteItemAssignee(@PathVariable UUID itemId, @PathVariable String assignee) {
-        return itemService.deleteAssignee(itemId, assignee)
-                .map(ResponseEntity::ok);
+    Mono<ResponseEntity<Void>> deleteItemAssignee(
+            @PathVariable UUID itemId,
+            @PathVariable String assignee,
+            @RequestHeader(RamschiHeader.AUTH) String ramschiAuth) {
+        return authService.getAuthInfo(ramschiAuth)
+                .flatMap(authInfo -> {
+                    if (authInfo.isAssignee(assignee)) {
+                        return itemService.deleteAssignee(itemId, assignee)
+                                .map(ResponseEntity::ok);
+                    }
+                    else {
+                        return unauthorized();
+                    }
+                });
     }
 
     @PostMapping(path = "/{itemId}/image",
             consumes = { MediaType.IMAGE_PNG_VALUE, MediaType.IMAGE_JPEG_VALUE },
             produces = MediaType.APPLICATION_JSON_VALUE)
-    Mono<ResponseEntity<UUID>> postImage(@PathVariable UUID itemId, @RequestBody byte[] data) {
-        return imageService.createImage(itemId, data)
-                .map(ResponseEntity::ok);
+    Mono<ResponseEntity<UUID>> postImage(
+            @PathVariable UUID itemId,
+            @RequestBody byte[] data,
+            @RequestHeader(RamschiHeader.AUTH) String ramschiAuth) {
+        return authService.getAuthInfo(ramschiAuth)
+                .flatMap(authInfo -> {
+                    if (authInfo.isContributor()) {
+                        return imageService.createImage(itemId, data)
+                                .map(ResponseEntity::ok);
+                    }
+                    else {
+                        return unauthorized();
+                    }
+                });
     }
 }

@@ -5,14 +5,27 @@
     </div>
   }
   <div #container class="container">
-    <div class="header">
-      <button mat-raised-button (click)="navigateTo('/ramsch')">
-        Neuer Ramsch
-      </button>
-      <button mat-raised-button (click)="navigateTo('/')">Ganzer Ramsch</button>
-    </div>
-    <div class="scrollarea">
-      <router-outlet></router-outlet>
-    </div>
+    @if (loggedIn) {
+      <div class="header">
+        <div class="logo" (click)="navigateTo('/')">
+          <img src="/ramschi.png" alt="Ramschi" />
+        </div>
+        <div class="buttons">
+          @if (isContributor) {
+            <button mat-mini-fab (click)="navigateTo('/ramsch')">
+              <mat-icon>add_circle</mat-icon>
+            </button>
+          }
+          <button mat-mini-fab (click)="logout()">
+            <mat-icon>{{ isAssignee ? 'logout' : 'login'}}</mat-icon>
+          </button>
+        </div>
+      </div>
+      <div class="scrollarea">
+        <router-outlet></router-outlet>
+      </div>
+    } @else {
+      <app-login></app-login>
+    }
   </div>
 </div>

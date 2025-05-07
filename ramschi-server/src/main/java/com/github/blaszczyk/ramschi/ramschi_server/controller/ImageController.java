@@ -1,4 +1,5 @@
 package com.github.blaszczyk.ramschi.ramschi_server.controller;
+import com.github.blaszczyk.ramschi.ramschi_server.service.AuthService;
 import com.github.blaszczyk.ramschi.ramschi_server.service.ImageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -9,6 +10,8 @@ import reactor.core.publisher.Mono;
 
 import java.util.UUID;
 
+import static com.github.blaszczyk.ramschi.ramschi_server.controller.HttpResponseHelper.unauthorized;
+
 @RestController
 @RequestMapping("/api/image")
 @ResponseBody
@@ -16,6 +19,9 @@ public class ImageController {
 
     @Autowired
     private ImageService imageService;
+
+    @Autowired
+    private AuthService authService;
 
     @GetMapping(path = "/{id}",
             produces = { MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE })
@@ -39,9 +45,17 @@ public class ImageController {
     }
 
     @DeleteMapping(path = "/{id}")
-    Mono<ResponseEntity<Void>> deleteImage(@PathVariable UUID id) {
-        return imageService.deleteImage(id)
-                .map(ImageController::ok);
+    Mono<ResponseEntity<Void>> deleteImage(@PathVariable UUID id,
+                                           @RequestHeader(RamschiHeader.AUTH) String ramschiAuth) {
+        return authService.getAuthInfo(ramschiAuth)
+                .flatMap(authInfo -> {
+                    if (authInfo.isAdmin()) {
+                        return imageService.deleteImage(id)
+                                .map(ImageController::ok);
+                    } else {
+                        return unauthorized();
+                    }
+                });
     }
 
     private static <T> ResponseEntity<T> ok(T t) {

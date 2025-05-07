@@ -1,13 +1,18 @@
 package com.github.blaszczyk.ramschi.ramschi_server.controller;
 
+import com.github.blaszczyk.ramschi.ramschi_server.domain.LoginResponse;
 import com.github.blaszczyk.ramschi.ramschi_server.service.AssigneeService;
+import com.github.blaszczyk.ramschi.ramschi_server.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
+
+import static com.github.blaszczyk.ramschi.ramschi_server.controller.HttpResponseHelper.unauthorized;
 
 @RestController
 @RequestMapping("/api/assignee")
@@ -17,6 +22,9 @@ public class AssigneeController {
     @Autowired
     private AssigneeService assigneeService;
 
+    @Autowired
+    private AuthService authService;
+
     @GetMapping(path = "",
             produces = MediaType.APPLICATION_JSON_VALUE)
     Mono<ResponseEntity<List<String>>> getAssignees() {
@@ -24,15 +32,43 @@ public class AssigneeController {
                 .map(ResponseEntity::ok);
     }
 
+    @PostMapping(path = "/login")
+    Mono<ResponseEntity<LoginResponse>> login(
+            @RequestHeader(RamschiHeader.AUTH) String ramschiAuth) {
+        return authService.login(ramschiAuth)
+                .map(response -> ResponseEntity.status(
+                        response.success() ? HttpStatus.OK : HttpStatus.UNAUTHORIZED
+                ).body(response))
+                .switchIfEmpty(unauthorized());
+    }
+
     @PostMapping(path = "/{name}")
-    Mono<ResponseEntity<Void>> postAssignee(@PathVariable String name) {
-        return assigneeService.createAssignee(name)
-                .map(ResponseEntity::ok);
+    Mono<ResponseEntity<Void>> postAssignee(
+            @PathVariable String name,
+            @RequestHeader(RamschiHeader.AUTH) String ramschiAuth) {
+        return authService.getAuthInfo(ramschiAuth)
+                .flatMap(authInfo -> {
+                    if (authInfo.isAdmin()) {
+                        return assigneeService.createAssignee(name)
+                                .map(ResponseEntity::ok);
+                    } else {
+                        return unauthorized();
+                    }
+                });
     }
 
     @DeleteMapping(path = "/{name}")
-    Mono<ResponseEntity<Void>> deleteAssignee(@PathVariable String name) {
-        return assigneeService.deleteAssignee(name)
-                .map(ResponseEntity::ok);
+    Mono<ResponseEntity<Void>> deleteAssignee(
+            @PathVariable String name,
+            @RequestHeader(RamschiHeader.AUTH) String ramschiAuth) {
+        return authService.getAuthInfo(ramschiAuth)
+                .flatMap(authInfo -> {
+                    if (authInfo.isAdmin()) {
+                        return assigneeService.deleteAssignee(name)
+                                .map(ResponseEntity::ok);
+                    } else {
+                        return unauthorized();
+                    }
+                });
     }
 }

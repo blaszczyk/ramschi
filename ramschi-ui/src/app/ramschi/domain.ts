@@ -15,3 +15,14 @@ export interface IItem extends IBasicItem {
   assignees: string[];
   images: string[];
 }
+
+export interface ILoginResponse {
+  success: boolean;
+  role: Role;
+}
+
+export enum Role {
+  ADMIN = 'ADMIN',
+  CONTRIBUTOR = 'CONTRIBUTOR',
+  ASSIGNEE = 'ASSIGNEE',
+}

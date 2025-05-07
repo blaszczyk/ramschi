@@ -1,6 +1,7 @@
 package com.github.blaszczyk.ramschi.ramschi_server.controller;
 
 import com.github.blaszczyk.ramschi.ramschi_server.domain.Category;
+import com.github.blaszczyk.ramschi.ramschi_server.service.AuthService;
 import com.github.blaszczyk.ramschi.ramschi_server.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -10,6 +11,8 @@ import reactor.core.publisher.Mono;
 
 import java.util.List;
 
+import static com.github.blaszczyk.ramschi.ramschi_server.controller.HttpResponseHelper.unauthorized;
+
 @RestController
 @RequestMapping("/api/category")
 @ResponseBody
@@ -17,6 +20,9 @@ public class CategoryController {
 
     @Autowired
     private CategoryService categoryService;
+
+    @Autowired
+    private AuthService authService;
 
     @GetMapping(path = "",
             produces = MediaType.APPLICATION_JSON_VALUE)
@@ -27,8 +33,16 @@ public class CategoryController {
 
     @PostMapping(path = "",
             consumes = MediaType.APPLICATION_JSON_VALUE)
-    Mono<ResponseEntity<Void>> postCategory(@RequestBody Category category) {
-        return categoryService.createCategory(category)
-                .map(ResponseEntity::ok);
+    Mono<ResponseEntity<Void>> postCategory(@RequestBody Category category,
+                                            @RequestHeader(RamschiHeader.AUTH) String ramschiAuth) {
+        return authService.getAuthInfo(ramschiAuth)
+                .flatMap(authInfo -> {
+                    if (authInfo.isAdmin()) {
+                        return categoryService.createCategory(category)
+                                .map(ResponseEntity::ok);
+                    } else {
+                        return unauthorized();
+                    }
+                });
     }
 }

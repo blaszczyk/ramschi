@@ -1,0 +1,17 @@
+.panel {
+  text-align: center;
+  padding: 13px;
+
+  .logo {
+    height: 100px;
+  }
+}
+
+.description {
+  font-size: 21px;
+}
+
+.fake-disabled {
+  color: gray;
+  cursor: default;
+}
