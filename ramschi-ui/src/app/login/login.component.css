@@ -8,5 +8,10 @@
 }
 
 .description {
-  font-size: 21px;
+  font-size: 19px;
+}
+
+.footer {
+  text-align: center;
+  font-size: 12px;
 }

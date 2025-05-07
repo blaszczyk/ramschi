@@ -26,11 +26,6 @@ button.mini {
   text-align: right;
 }
 
-.fake-disabled {
-  color: gray;
-  cursor: default;
-}
-
 mat-form-field {
   width: 300px;
 }

@@ -36,21 +36,19 @@ export class LoginComponent {
   }
 
   login() {
-    if (this.name) {
-      this.credentials.setCredentials(this.name, this.password);
-      this.spinner.show();
-      this.service.login()
-      .subscribe((response) => {
-        this.spinner.hide();
-        if (response.success) {
-          this.credentials.setRole(response.role);
-          this.credentials.storeCredentials();
-          this.credentials.setInitialised();
-        }
-        else {
-          alert('Das hat leider nicht geklappt. Wenn Du Dein Passwort vergessen hast, wende Dich an den Admin Deines Vertrauens, der kann das zurücksetzten.');
-        }
-        });
-    }
+    this.credentials.setCredentials(this.name, this.password);
+    this.spinner.show();
+    this.service.login()
+    .subscribe((response) => {
+      this.spinner.hide();
+      if (response.success) {
+        this.credentials.setRole(response.role);
+        this.credentials.storeCredentials();
+        this.credentials.setInitialised();
+      }
+      else {
+        alert('Das hat leider nicht geklappt. Wenn Du Dein Passwort vergessen hast, wende Dich an den Admin Deines Vertrauens, der kann das zurücksetzen.');
+      }
+      });
   }
 }

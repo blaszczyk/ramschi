@@ -1,3 +1,8 @@
+.filter {
+  background-color: bisque;
+  margin-bottom: 5px;
+}
+
 .item {
   width: 100%;
   height: 100%;

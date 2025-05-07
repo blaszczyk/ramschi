@@ -30,12 +30,14 @@
   </mat-grid-tile>
   <mat-grid-tile>
     <button
-      mat-raised-button
-      [style.color]="name ? '' : 'gray'"
-      [style.cursor]="name ? 'pointer' : 'default'"
+      mat-flat-button
+      [disabled]="!name"
       (click)="login()"
     >
       Auf gehts!
     </button>
   </mat-grid-tile>
 </mat-grid-list>
+<p class="footer">
+    Bei Fragen oder Problemen, wende Dich bitte an den Admin Deines Vertrauens.
+</p>
