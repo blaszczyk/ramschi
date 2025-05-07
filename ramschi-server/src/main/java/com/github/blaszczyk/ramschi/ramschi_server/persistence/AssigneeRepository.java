@@ -7,7 +7,7 @@ import reactor.core.publisher.Mono;
 
 public interface AssigneeRepository extends ReactiveCrudRepository<AssigneeEntity, String> {
 
-    @Query("SELECT name FROM ramschi.assignee")
+    @Query("SELECT name FROM ramschi.assignee ORDER BY name")
     Flux<AssigneeEntity> findNames();
 
     @Query("SELECT * FROM ramschi.assignee WHERE name = :name")
