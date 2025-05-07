@@ -58,8 +58,9 @@ export class RamschiListComponent extends RoleAware implements OnInit {
     return filters.join(', ');
   }
 
-  get assignees(): string[] {
-    return this.assigneeService.getAll();
+  get otherAssignees(): string[] {
+    return this.assigneeService.getAll()
+    .filter(assignee => assignee !== this.assignee);
   }
 
   get categories(): ICategory[] {

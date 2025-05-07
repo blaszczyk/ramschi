@@ -40,9 +40,12 @@
         (selectionChange)="setFilter()"
         name="assignee"
       >
-        <mat-option [value]="undefined">Alle</mat-option>
-        @for (assignee of assignees; track assignee) {
+        @if (isAssignee) {
           <mat-option [value]="assignee">{{ assignee }}</mat-option>
+        }
+        <mat-option [value]="undefined">Alle</mat-option>
+        @for (otherAssignee of otherAssignees; track otherAssignee) {
+          <mat-option [value]="otherAssignee">{{ otherAssignee }}</mat-option>
         }
       </mat-select>
     </mat-form-field>
