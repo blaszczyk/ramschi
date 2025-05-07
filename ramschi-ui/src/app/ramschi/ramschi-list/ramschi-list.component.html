@@ -1,7 +1,11 @@
 <mat-expansion-panel>
   <mat-expansion-panel-header>
     <mat-panel-title>Filter:</mat-panel-title>
-    <mat-panel-description>{{ filterSummary }}</mat-panel-description>
+    <mat-panel-description>{{ filterSummary }}
+      @if (filterSummary) {
+        <span (click)="clearFilter($event)">&nbsp;<mat-icon>cancel</mat-icon></span>
+      }
+    </mat-panel-description>
   </mat-expansion-panel-header>
 
   <mat-form-field>
@@ -28,19 +32,21 @@
     </mat-select>
   </mat-form-field>
 
-  <mat-form-field>
-    <mat-label>Interessent</mat-label>
-    <mat-select
-      [(ngModel)]="filterAssignee"
-      (selectionChange)="setFilter()"
-      name="assignee"
-    >
-      <mat-option [value]="undefined">Alle</mat-option>
-      @for (assignee of assignees; track assignee) {
-        <mat-option [value]="assignee">{{ assignee }}</mat-option>
-      }
-    </mat-select>
-  </mat-form-field>
+  @if (isAssignee) {
+    <mat-form-field>
+      <mat-label>Interessent</mat-label>
+      <mat-select
+        [(ngModel)]="filterAssignee"
+        (selectionChange)="setFilter()"
+        name="assignee"
+      >
+        <mat-option [value]="undefined">Alle</mat-option>
+        @for (assignee of assignees; track assignee) {
+          <mat-option [value]="assignee">{{ assignee }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+  }
 
   <mat-checkbox
     [(ngModel)]="latestFirst"

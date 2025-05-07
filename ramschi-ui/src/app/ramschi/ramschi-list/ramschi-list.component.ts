@@ -14,6 +14,8 @@ import { SpinnerService } from '../../spinner.service';
 import { ScrollService } from '../../scroll.service';
 import { CategoryService } from '../category.service';
 import { AssigneeService } from '../assignee.service';
+import { CredentialService, RoleAware } from '../../login/credential.service';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-ramschi-list',
@@ -25,12 +27,13 @@ import { AssigneeService } from '../assignee.service';
     MatGridListModule,
     MatExpansionModule,
     MatCheckboxModule,
+    MatIconModule,
     FormsModule,
   ],
   templateUrl: './ramschi-list.component.html',
   styleUrl: './ramschi-list.component.css',
 })
-export class RamschiListComponent implements OnInit {
+export class RamschiListComponent extends RoleAware implements OnInit {
   items: IItem[] = [];
 
   filterName = '';
@@ -70,7 +73,10 @@ export class RamschiListComponent implements OnInit {
     private readonly catgoryService: CategoryService,
     private readonly assigneeService: AssigneeService,
     private readonly router: Router,
-  ) {}
+    credential: CredentialService,
+  ) {
+    super(credential);
+  }
 
   ngOnInit(): void {
     const storedFilterName = localStorage.getItem(KEY_FILTER_NAME);
@@ -99,6 +105,15 @@ export class RamschiListComponent implements OnInit {
   setFilter(): void {
     this.scroll.forgetPosition();
     this.getItems();
+  }
+
+  clearFilter(event: Event): void {
+    this.filterName = '';
+    this.filterCategory = undefined;
+    this.filterAssignee = undefined;
+    this.latestFirst = false;
+    this.setFilter();
+    event.stopPropagation();
   }
 
   getSymbolAssignee(item: IItem): string {
