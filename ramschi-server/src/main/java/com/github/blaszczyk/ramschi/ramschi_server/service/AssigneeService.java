@@ -18,7 +18,7 @@ public class AssigneeService {
     private AssigneeRepository assigneeRepository;
 
     public Mono<List<String>> getAllAssignees() {
-        return assigneeRepository.findAll()
+        return assigneeRepository.findNames()
                 .map(AssigneeEntity::getName)
                 .collectList();
     }
