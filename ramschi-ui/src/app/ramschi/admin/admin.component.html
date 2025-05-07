@@ -1,26 +1,31 @@
-@for (assignee of assignees; track assignee) {
-  <p>{{ assignee }} <button (click)="deleteAssignee(assignee)">X</button></p>
+@if (isAdmin) {
+  @for (assignee of assignees; track assignee) {
+    <p>{{ assignee }} <button (click)="deleteAssignee(assignee)">X</button></p>
+  }
+  <input [(ngModel)]="newAssignee" />
+  <br />
+  <button (click)="createNewAssignee()" [disabled]="!newAssignee">
+    Neuer Interessent
+  </button>
+  <br />
+  @for (category of categories; track category) {
+    <p>
+      {{ category.id }}
+      <input [(ngModel)]="category.name" />
+      <button (click)="updateCategory(category)">Speichern</button>
+    </p>
+  }
+  
+  <input [(ngModel)]="newCategoryId" />
+  <input [(ngModel)]="newCategoryName" />
+  <br />
+  <button
+    (click)="createNewCategory()"
+    [disabled]="!newCategoryId || !newCategoryName"
+  >
+    Neue Kategorie
+  </button>
 }
-<input [(ngModel)]="newAssignee" />
-<br />
-<button (click)="createNewAssignee()" [disabled]="!newAssignee">
-  Neuer Interessent
-</button>
-<br />
-@for (category of categories; track category) {
-  <p>
-    {{ category.id }}
-    <input [(ngModel)]="category.name" />
-    <button (click)="updateCategory(category)">Speichern</button>
-  </p>
+@else {
+  <h1>Netter Versuch</h1>
 }
-
-<input [(ngModel)]="newCategoryId" />
-<input [(ngModel)]="newCategoryName" />
-<br />
-<button
-  (click)="createNewCategory()"
-  [disabled]="!newCategoryId || !newCategoryName"
->
-  Neue Kategorie
-</button>

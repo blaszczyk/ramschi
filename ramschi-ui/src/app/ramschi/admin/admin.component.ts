@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { RamschiService } from '../ramschi.service';
 import { FormsModule } from '@angular/forms';
 import { ICategory } from '../domain';
+import { CredentialService, RoleAware } from '../../login/credential.service';
 
 @Component({
   selector: 'app-admin',
@@ -9,7 +10,7 @@ import { ICategory } from '../domain';
   templateUrl: './admin.component.html',
   styleUrl: './admin.component.css',
 })
-export class AdminComponent implements OnInit {
+export class AdminComponent extends RoleAware implements OnInit {
   assignees: string[] = [];
 
   categories: ICategory[] = [];
@@ -20,7 +21,11 @@ export class AdminComponent implements OnInit {
 
   newCategoryName: string | null = null;
 
-  constructor(private readonly service: RamschiService) {}
+  constructor(private readonly service: RamschiService,
+    credential: CredentialService,
+  ) {
+    super(credential);  
+  }
 
   ngOnInit(): void {
     this.refresh();

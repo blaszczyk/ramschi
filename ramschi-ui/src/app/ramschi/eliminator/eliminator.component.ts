@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { RamschiService } from '../ramschi.service';
 import { IItem } from '../domain';
+import { CredentialService, RoleAware } from '../../login/credential.service';
 
 @Component({
   selector: 'app-eliminator',
@@ -8,10 +9,14 @@ import { IItem } from '../domain';
   templateUrl: './eliminator.component.html',
   styleUrl: './eliminator.component.css',
 })
-export class EliminatorComponent implements OnInit {
+export class EliminatorComponent extends RoleAware implements OnInit {
   items: IItem[] = [];
 
-  constructor(private readonly service: RamschiService) {}
+  constructor(private readonly service: RamschiService,
+    credential: CredentialService,
+  ) {
+    super(credential);    
+  }
 
   ngOnInit(): void {
     this.service.getItems().subscribe((items) => (this.items = items));
