@@ -64,7 +64,9 @@
       <div class="item" (click)="navigateTo(item)">
         <div class="item-name">{{ item.name }}</div>
         <div class="item-description">
-          <span class="symbol-assignee">{{ getSymbolAssignee(item) }}</span>
+          @if (isAssignee) {
+            <span class="symbol-assignee">{{ getSymbolAssignee(item) }}</span>
+          }
           {{ item.description }}
         </div>
         <div class="images">
