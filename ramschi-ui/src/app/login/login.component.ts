@@ -6,8 +6,6 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import { MatInputModule } from '@angular/material/input';
 import { CredentialService } from './credential.service';
 import { RamschiService } from '../ramschi/ramschi.service';
-import { catchError } from 'rxjs';
-import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-login',
@@ -38,11 +36,17 @@ export class LoginComponent {
   login() {
     if (this.name) {
       this.credentials.setCredentials(this.name, this.password);
-      this.service.login().subscribe((response) => {
-        this.credentials.setRole(response.role);
-        this.credentials.storeCredentials();
-        this.credentials.setInitialised();
-      });
+      this.service.login()
+      .subscribe((response) => {
+        if (response.success) {
+          this.credentials.setRole(response.role);
+          this.credentials.storeCredentials();
+          this.credentials.setInitialised();
+        }
+        else {
+          alert('Das hat leider nicht geklappt. Wenn Du Dein Passwort vergessen hast, wende Dich an den Admin Deines Vertrauens, der kann das zurücksetzten.');
+        }
+        });
     }
   }
 }

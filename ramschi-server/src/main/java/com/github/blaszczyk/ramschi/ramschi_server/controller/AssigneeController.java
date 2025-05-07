@@ -36,9 +36,7 @@ public class AssigneeController {
     Mono<ResponseEntity<LoginResponse>> login(
             @RequestHeader(RamschiHeader.AUTH) String ramschiAuth) {
         return authService.login(ramschiAuth)
-                .map(response -> ResponseEntity.status(
-                        response.success() ? HttpStatus.OK : HttpStatus.UNAUTHORIZED
-                ).body(response))
+                .map(ResponseEntity::ok)
                 .switchIfEmpty(unauthorized());
     }
 
