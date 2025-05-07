@@ -69,7 +69,7 @@
         </div>
         <div class="images">
           @for (image of item.images.slice(0, 2); track image) {
-            <img
+            <img class="thumbnail"
               [src]="'/api/image/' + image + '/thumbnail'"
               height="60px"
               [alt]="image"

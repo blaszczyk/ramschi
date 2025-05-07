@@ -26,8 +26,14 @@ public class ImageScaler {
     @Value("${image.thumbnail.height}")
     private int thumbnailHeight;
 
+    @Value("${image.thumbnail.max-width}")
+    private int thumbnailMaxWidth;
+
     @Value("${image.preview.width}")
     private int previewWidth;
+
+    @Value("${image.preview.max-height}")
+    private int previewMaxHeight;
 
     public void addThumbnailAndPreview(ImageEntity entity) {
 
@@ -35,13 +41,20 @@ public class ImageScaler {
         final int orientation = getOrientation(entity);
         final BufferedImage image = fixOrientation(tempImage, orientation);
 
-        final int previewHeight = previewWidth * image.getHeight() / image.getWidth();
-        final BufferedImage preview = buffered(image.getScaledInstance(previewWidth, previewHeight, Image.SCALE_SMOOTH));
+        float previewScale = (float) previewWidth / image.getWidth();
+        previewScale = (previewScale * image.getHeight() > previewMaxHeight)
+                ? (float) previewMaxHeight / image.getHeight()
+                : previewScale;
 
+        final BufferedImage preview = scale(image, previewScale);
         entity.setPreview(getBytes(preview));
 
-        final int thumbnailWidth = thumbnailHeight * previewWidth / previewHeight;
-        final BufferedImage thumbnail = buffered(preview.getScaledInstance(thumbnailWidth, thumbnailHeight, Image.SCALE_SMOOTH));
+        float thumbnailScale = (float) thumbnailHeight / image.getHeight();
+        thumbnailScale = (thumbnailScale * image.getWidth() > thumbnailMaxWidth)
+                ? (float) thumbnailMaxWidth / image.getWidth()
+                : thumbnailScale;
+
+        final BufferedImage thumbnail = scale(image, thumbnailScale);
         entity.setThumbnail(getBytes(thumbnail));
     }
 
@@ -80,9 +93,18 @@ public class ImageScaler {
         };
     }
 
-    private BufferedImage buffered(Image image) {
+    private static BufferedImage buffered(Image image) {
         final BufferedImage bufferedImage = new BufferedImage(image.getWidth(null), image.getHeight(null), BufferedImage.TYPE_INT_RGB);
         bufferedImage.getGraphics().drawImage(image, 0, 0, null);
+        return bufferedImage;
+    }
+
+    private static BufferedImage scale(BufferedImage original, float scale) {
+        final int width = Math.round(original.getWidth() * scale);
+        final int height = Math.round(original.getHeight() * scale);
+        final Image scaledInstance = original.getScaledInstance(width, height, Image.SCALE_SMOOTH);
+        final BufferedImage bufferedImage = new BufferedImage(scaledInstance.getWidth(null), scaledInstance.getHeight(null), BufferedImage.TYPE_INT_RGB);
+        bufferedImage.getGraphics().drawImage(scaledInstance, 0, 0, null);
         return bufferedImage;
     }
 

@@ -38,6 +38,7 @@
   top: 5px;
 }
 
-img {
+.thumbnail {
   margin-right: 5px;
+  max-width: 180px;
 }
