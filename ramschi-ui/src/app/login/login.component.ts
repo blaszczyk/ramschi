@@ -6,6 +6,7 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import { MatInputModule } from '@angular/material/input';
 import { CredentialService } from './credential.service';
 import { RamschiService } from '../ramschi/ramschi.service';
+import { SpinnerService } from '../spinner.service';
 
 @Component({
   selector: 'app-login',
@@ -23,6 +24,7 @@ export class LoginComponent {
   constructor(
     private readonly credentials: CredentialService,
     private readonly service: RamschiService,
+    private readonly spinner: SpinnerService,
   ) {}
 
   name: string = '';
@@ -36,8 +38,10 @@ export class LoginComponent {
   login() {
     if (this.name) {
       this.credentials.setCredentials(this.name, this.password);
+      this.spinner.show();
       this.service.login()
       .subscribe((response) => {
+        this.spinner.hide();
         if (response.success) {
           this.credentials.setRole(response.role);
           this.credentials.storeCredentials();

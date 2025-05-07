@@ -8,8 +8,8 @@ public class AuthInfo {
 
     public static AuthInfo FAIL = new AuthInfo(null, null);
 
-    public static AuthInfo success(AssigneeEntity entity) {
-        return new AuthInfo(entity.getName(), entity.getRole());
+    public static AuthInfo success(String name, Role role) {
+        return new AuthInfo(name, role);
     }
     private final String name;
     private final Role role;

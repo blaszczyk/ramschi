@@ -73,14 +73,14 @@ public class AuthService {
         return assigneeRepository.findByName(auth.getName()).map(entity -> {
             if (hasPassword(entity)) {
                 if (verifyPassword(auth, entity)) {
-                    return AuthInfo.success(entity);
+                    return AuthInfo.success(entity.getName(), entity.getRole());
                 }
                 else {
                     return AuthInfo.FAIL;
                 }
             }
             else {
-                return AuthInfo.success(entity);
+                return AuthInfo.success(entity.getName(), Role.ASSIGNEE);
             }
         }).switchIfEmpty(Mono.just(AuthInfo.FAIL));
     }

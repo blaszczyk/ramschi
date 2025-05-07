@@ -31,7 +31,8 @@
   <mat-grid-tile>
     <button
       mat-raised-button
-      [class.fake-disabled]="!name"
+      [style.color]="name ? '' : 'gray'"
+      [style.cursor]="name ? 'pointer' : 'default'"
       (click)="login()"
     >
       Auf gehts!
