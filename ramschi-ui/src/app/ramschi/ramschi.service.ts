@@ -82,6 +82,12 @@ export class RamschiService {
     });
   }
 
+  resetPassword(name: string): Observable<void> {
+    return this.http.delete<void>('/api/assignee/' + name + '/password', {
+      headers: this.getHeaders(),
+    });
+  }
+
   postImage(itemId: string, file: File): Observable<string> {
     return this.http.post<string>('/api/item/' + itemId + '/image', file, {
       headers: {

@@ -46,6 +46,14 @@ export class AdminComponent extends RoleAware implements OnInit {
     }
   }
 
+  resetPassword(name: string) {
+    if (confirm('Passwort von ' + name + ' zurücksetzen?')) {
+      this.service.resetPassword(name).subscribe(() => {
+        alert('Hat geklappt!');
+      });
+    }
+  }
+
   createNewCategory(): void {
     const category: ICategory = {
       id: this.newCategoryId!.toUpperCase(),
@@ -61,6 +69,7 @@ export class AdminComponent extends RoleAware implements OnInit {
   updateCategory(category: ICategory): void {
     this.service.postCategory(category).subscribe(() => {
       this.refresh();
+      alert('Hat geklappt!');
     });
   }
 

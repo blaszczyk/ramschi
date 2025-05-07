@@ -71,4 +71,19 @@ public class AssigneeController {
                     }
                 });
     }
+
+    @DeleteMapping(path = "/{name}/password")
+    Mono<ResponseEntity<Void>> resetPassword(
+            @PathVariable String name,
+            @RequestHeader(RamschiHeader.AUTH) String ramschiAuth) {
+        return authService.getAuthInfo(ramschiAuth)
+                .flatMap(authInfo -> {
+                    if (authInfo.isAdmin()) {
+                        return assigneeService.resetPassword(name)
+                                .map(ResponseEntity::ok);
+                    } else {
+                        return unauthorized();
+                    }
+                });
+    }
 }

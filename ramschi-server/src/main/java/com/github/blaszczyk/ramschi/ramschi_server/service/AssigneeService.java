@@ -11,6 +11,8 @@ import java.util.List;
 @Service
 public class AssigneeService {
 
+    private static final byte[] EMPTY_BYTE_ARRAY = new byte[0];
+
     @Autowired
     private ItemAssigneeRepository itemAssigneeRepository;
 
@@ -33,6 +35,11 @@ public class AssigneeService {
 
     public Mono<Void> deleteAssignee(String name) {
         return assigneeRepository.delete(name)
+                .then();
+    }
+
+    public Mono<Void> resetPassword(String name) {
+        return assigneeRepository.setPassword(name, EMPTY_BYTE_ARRAY, EMPTY_BYTE_ARRAY)
                 .then();
     }
 }
