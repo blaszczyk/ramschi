@@ -1,13 +1,13 @@
 <div class="panel">
   <img class="logo" src="/ramschi.png" alt="Ramschi" />
   <p class="description">
-    Willkommen beim Mütti Online Trödel. Wir lösen einen Haushalt auf und haben
-    viel Kram loszuwerden.
+    Willkommen beim Mütti Cyber-Trödel! Wir lösen den Haushalt auf und haben
+    jede Menge Kram loszuwerden. Viel Spaß beim Stöbern.
   </p>
   <button mat-raised-button (click)="anonymous()">Ich will nur gucken</button>
   <p class="description">
-    Gib Deinen Namen an wenn du Interesse anmelden möchtest. Das Passwort ist
-    optional, aber dient dem Schutz deiner Interessen vor Unfug.
+    Gib Deinen Namen an wenn du Interesse an irgendwas anmelden möchtest. Das Passwort ist
+    optional, aber dient dem Schutz Deiner Interessen vor Unfug.
   </p>
 </div>
 <mat-grid-list cols="1" rowHeight="5:1">
@@ -32,7 +32,6 @@
     <button
       mat-raised-button
       [class.fake-disabled]="!name"
-      [disabled]="!name"
       (click)="login()"
     >
       Auf gehts!

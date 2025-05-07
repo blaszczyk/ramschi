@@ -53,9 +53,11 @@ export class AppComponent extends RoleAware implements AfterViewInit {
       const message = `${this.credential.getAssignee()} abmelden?`;
       if (confirm(message)) {
         this.credential.logout();
+        this.navigateTo('/');
       }
     } else {
       this.credential.logout();
+      this.navigateTo('/');
     }
   }
 

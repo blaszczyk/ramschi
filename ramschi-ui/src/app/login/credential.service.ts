@@ -33,7 +33,7 @@ export class CredentialService {
     localStorage.setItem(KEY_CURRENT_ROLE, this.role || '');
   }
 
-  logout() {
+  logout(): void {
     this.assignee = null;
     this.password = null;
     this.role = null;
