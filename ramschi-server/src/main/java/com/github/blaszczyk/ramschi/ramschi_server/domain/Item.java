@@ -5,7 +5,8 @@ import java.util.List;
 import java.util.UUID;
 
 public record Item(
-        UUID id, String name,
+        UUID id,
+        String name,
         String description,
         String category,
         int price,
