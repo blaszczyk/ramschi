@@ -48,7 +48,6 @@ public class ItemService {
     }
 
     private Mono<List<Item>> filterItems(String filterTerm, Optional<String> category, boolean latestFirst, List<UUID> itemIds) {
-        final Comparator<Item> comparator = latestFirst ? BY_LAST_EDIT : BY_NAME;
         final var resultFlux = category.isPresent()
                 ? itemRepository.findByNameLikeAndCategory(filterTerm, category.get())
                 : itemRepository.findByNameLike(filterTerm);
@@ -63,7 +62,7 @@ public class ItemService {
                     return Mono.zip(fetchAssignees, fetchImages)
                             .map(tuple -> ItemTransformer.toItem(entity, tuple.getT1(), tuple.getT2()));
                 })
-                .sort(comparator)
+                .sort(latestFirst ? BY_LAST_EDIT : BY_NAME)
                 .collectList();
     }
 

@@ -16,7 +16,7 @@ public class CategoryService {
 
     public Mono<List<Category>> getAllCategories() {
         return categoryRepository.findAll()
-                .map(e -> new Category(e.getId(), e.getName()))
+                .map(entity -> new Category(entity.getId(), entity.getName()))
                 .collectList();
     }
 

@@ -26,7 +26,7 @@ public class ImageService {
                 .map(ImageEntity::getId);
     }
 
-    public Mono<byte[]> getImage(UUID id) {
+    public Mono<byte[]> getOriginal(UUID id) {
         return imageRepository.getOriginal(id)
                 .map(ImageEntity::getOriginal);
     }

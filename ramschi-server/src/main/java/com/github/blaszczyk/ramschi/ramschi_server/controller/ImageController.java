@@ -23,8 +23,8 @@ public class ImageController {
 
     @GetMapping(path = "/{id}",
             produces = { MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE })
-    Mono<ResponseEntity<byte[]>> getImage(@PathVariable UUID id) {
-        return imageService.getImage(id)
+    Mono<ResponseEntity<byte[]>> getOriginal(@PathVariable UUID id) {
+        return imageService.getOriginal(id)
                 .map(ImageController::okWithCacheControl);
     }
 
