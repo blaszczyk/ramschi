@@ -38,7 +38,7 @@ public class CommentController {
     @PostMapping(path = "",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    Mono<ResponseEntity<UUID>> postComment(@RequestBody Comment comment, @RequestHeader(RamschiHeader.AUTH) String ramschiAuth) {
+    Mono<ResponseEntity<Comment>> postComment(@RequestBody Comment comment, @RequestHeader(RamschiHeader.AUTH) String ramschiAuth) {
         return authHelper.doIfAuthorised(ramschiAuth, comment.author(), () ->
                 commentService.saveComment(comment)
         );

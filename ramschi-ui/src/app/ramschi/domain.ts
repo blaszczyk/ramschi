@@ -28,7 +28,7 @@ export enum Role {
 }
 
 export interface IComment {
-  id: string;
+  id: string | null;
   itemId: string;
   author: string;
   text: string;

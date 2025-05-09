@@ -123,8 +123,8 @@ export class RamschiService {
     return this.http.get<IComment[]>('/api/comment/' + itemId);
   }
 
-  postComment(comment: IComment): Observable<string> {
-    return this.http.post<string>('/api/comment', comment, {
+  postComment(comment: IComment): Observable<IComment> {
+    return this.http.post<IComment>('/api/comment', comment, {
       headers: this.getHeaders(),
     });
  }

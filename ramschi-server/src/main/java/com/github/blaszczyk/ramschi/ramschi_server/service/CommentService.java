@@ -22,11 +22,11 @@ public class CommentService {
 
     public Mono<List<Comment>> getComments(UUID itemId) {
         return commentRepository.findByItemIdOrderByLastEditDesc(itemId)
-                .map(entity -> new Comment(entity.getId(), entity.getItemId(), entity.getAuthor(), entity.getText(), entity.getLastEdit()))
+                .map(CommentService::toComment)
                 .collectList();
     }
 
-    public Mono<UUID> saveComment(Comment comment) {
+    public Mono<Comment> saveComment(Comment comment) {
         final var entity = new CommentEntity();
         entity.setId(comment.id());
         entity.setItemId(comment.itemId());
@@ -34,6 +34,10 @@ public class CommentService {
         entity.setText(comment.text());
         entity.setLastEdit(LocalDateTime.now());
         return commentRepository.save(entity)
-                .map(CommentEntity::getId);
+                .map(CommentService::toComment);
+    }
+
+    private static Comment toComment(CommentEntity entity) {
+        return new Comment(entity.getId(), entity.getItemId(), entity.getAuthor(), entity.getText(), entity.getLastEdit());
     }
 }

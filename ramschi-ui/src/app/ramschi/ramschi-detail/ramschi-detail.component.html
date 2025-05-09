@@ -84,6 +84,30 @@
       <hr>
     }
   }
+  @if (isContributor) {
+    @for (comment of comments; track comment) {
+      <div class="comment">
+        <b>{{ comment.author }}: </b>
+        {{ comment.text }}  
+      </div>
+    }
+    <mat-form-field>
+      <mat-label>Neuer Kommentar</mat-label>
+      <textarea
+        matInput
+        placeholder="Neuer Kommentar"
+        rows="4"
+        [(ngModel)]="newComment"
+      ></textarea>
+    </mat-form-field>
+    <button class="mini"
+      mat-mini-fab
+      [disabled]="!newComment"
+      (click)="saveNewComment()"
+    >
+      <mat-icon>comment</mat-icon>
+    </button>
+  }
   @if (isAssignee) {
     <div [style.text-align]="isContributor ? 'right' : 'center'">
       @if (isAssigned) {

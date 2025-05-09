@@ -52,6 +52,8 @@ export class RamschiDetailComponent extends RoleAware implements OnInit {
 
   comments: IComment[] = [];
 
+  newComment: string = '';
+
   initialized = false;
 
   pristine = true;
@@ -154,6 +156,21 @@ export class RamschiDetailComponent extends RoleAware implements OnInit {
     for (const assignee of deletedAssignees) {
       this.doUnassign(assignee);
     }
+  }
+
+  saveNewComment(): void {
+      this.spinner.show();
+      this.service
+        .postComment({
+          id: null,
+          itemId: this.item.id!,
+          author: this.credential.getAssignee()!,
+          text: this.newComment,
+        }).subscribe(comment => {
+          this.spinner.hide();
+          this.newComment = '';
+          this.comments.splice(0, 0, comment);
+        });
   }
 
   setDirty() {
