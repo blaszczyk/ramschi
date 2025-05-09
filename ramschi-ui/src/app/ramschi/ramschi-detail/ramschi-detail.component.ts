@@ -1,6 +1,6 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { RamschiService } from '../ramschi.service';
-import { ICategory, IItem } from '../domain';
+import { ICategory, IComment, IItem } from '../domain';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
@@ -50,6 +50,8 @@ export class RamschiDetailComponent extends RoleAware implements OnInit {
     images: [],
   };
 
+  comments: IComment[] = [];
+
   initialized = false;
 
   pristine = true;
@@ -75,6 +77,9 @@ export class RamschiDetailComponent extends RoleAware implements OnInit {
           this.item = item;
           this.initialized = true;
           this.spinner.hide();
+        });
+        this.service.getComments(id).subscribe((comments) => {
+          this.comments = comments;
         });
       } else {
         this.initialized = true;

@@ -26,3 +26,10 @@ export enum Role {
   CONTRIBUTOR = 'CONTRIBUTOR',
   ASSIGNEE = 'ASSIGNEE',
 }
+
+export interface IComment {
+  id: string;
+  itemId: string;
+  author: string;
+  text: string;
+}

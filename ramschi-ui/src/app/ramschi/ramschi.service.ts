@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { ICategory, IBasicItem, IItem, ILoginResponse } from './domain';
+import { ICategory, IBasicItem, IItem, ILoginResponse, IComment } from './domain';
 import { CredentialService } from '../login/credential.service';
 
 @Injectable({
@@ -118,6 +118,16 @@ export class RamschiService {
       headers: this.getHeaders(),
     });
   }
+
+  getComments(itemId: string): Observable<IComment[]> {
+    return this.http.get<IComment[]>('/api/comment/' + itemId);
+  }
+
+  postComment(comment: IComment): Observable<string> {
+    return this.http.post<string>('/api/comment', comment, {
+      headers: this.getHeaders(),
+    });
+ }
 
   private getHeaders(): HttpHeaders {
     return new HttpHeaders({
