@@ -49,7 +49,7 @@ export class CredentialService {
         ? `${this.assignee}:${this.password}`
         : this.assignee
       : '';
-    return btoa(baseString);
+    return btoa(utf8ToHex(baseString));
   }
 
   getRole(): Role | null {
@@ -111,3 +111,13 @@ const KEY_CURRENT_ASSIGNEE = 'current_assignee';
 const KEY_CURRENT_PASSWORD = 'current_password';
 
 const KEY_CURRENT_ROLE = 'current_role';
+
+function utf8ToHex(text: string): string {
+  const encoder = new TextEncoder();
+  const data = encoder.encode(text);
+  let hex = '';
+  for (let i = 0; i < data.length; i++) {
+    hex += data[i].toString(16).padStart(2, '0');
+  }
+  return hex;
+}

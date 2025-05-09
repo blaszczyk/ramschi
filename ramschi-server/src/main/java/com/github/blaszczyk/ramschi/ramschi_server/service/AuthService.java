@@ -118,7 +118,8 @@ public class AuthService {
 
     public static RamschiAuth parse(String ramschiAuth) {
         final byte[] decodedBytes = Base64.getDecoder().decode(ramschiAuth);
-        final String decoded = new String(decodedBytes, StandardCharsets.UTF_8);
+        final String decodedHex = new String(decodedBytes, StandardCharsets.UTF_8);
+        final String decoded = hexToUtf8(decodedHex);
         final String[] split = decoded.split(":", 2);
         if (split.length > 1) {
             return new RamschiAuth(split[0], split[1].getBytes(StandardCharsets.UTF_8));
@@ -132,5 +133,17 @@ public class AuthService {
         boolean hasPassword() {
             return password.length > 0;
         }
+    }
+
+    private static String hexToUtf8(String hex) {
+        final int length = hex.length();
+        final byte[] bytes = new byte[length / 2];
+
+        for (int i = 0; i < length; i += 2) {
+            int byteValue = Integer.parseInt(hex.substring(i, i + 2), 16);
+            bytes[i / 2] = (byte) byteValue;
+        }
+
+        return new String(bytes, StandardCharsets.UTF_8);
     }
 }
