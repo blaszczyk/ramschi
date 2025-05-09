@@ -3,7 +3,7 @@
     <h1>{{ item.name || "Neuer Ramsch" }} {{isAssigned ? ' ☝️' : '' }} </h1>
   </div>
   @if (isContributor) {
-    <mat-grid-list cols="1" rowHeight="5:1">
+    <mat-grid-list class="item-form" cols="1" rowHeight="5:1">
       <mat-grid-tile>
         <mat-form-field>
           <mat-label>Name</mat-label>
@@ -84,30 +84,6 @@
       <hr>
     }
   }
-  @if (isContributor) {
-    @for (comment of comments; track comment) {
-      <div class="comment">
-        <b>{{ comment.author }}: </b>
-        {{ comment.text }}  
-      </div>
-    }
-    <mat-form-field>
-      <mat-label>Neuer Kommentar</mat-label>
-      <textarea
-        matInput
-        placeholder="Neuer Kommentar"
-        rows="4"
-        [(ngModel)]="newComment"
-      ></textarea>
-    </mat-form-field>
-    <button class="mini"
-      mat-mini-fab
-      [disabled]="!newComment"
-      (click)="saveNewComment()"
-    >
-      <mat-icon>comment</mat-icon>
-    </button>
-  }
   @if (isAssignee) {
     <div [style.text-align]="isContributor ? 'right' : 'center'">
       @if (isAssigned) {
@@ -145,6 +121,40 @@
         />
       }
     </div>
+  }
+  @if (isContributor) {
+    @for (comment of comments; track comment) {
+      <div class="comment">
+        <b>{{ comment.author }}: </b>
+        {{ comment.text }}  
+      </div>
+    }
+      <mat-expansion-panel class="new-comment">
+        <mat-expansion-panel-header>
+          <mat-panel-title><div class="new-comment-title">Neuer Kommentar</div></mat-panel-title>
+          <mat-panel-description>
+            <div class="new-comment-button">
+              <button
+                mat-mini-fab
+                [disabled]="!newComment"
+                (click)="saveNewComment()"
+              >
+                <mat-icon>add_comment</mat-icon>
+              </button>
+            </div>  
+          </mat-panel-description>
+        </mat-expansion-panel-header>
+
+        <mat-form-field>
+          <mat-label>Neuer Kommentar</mat-label>
+          <textarea
+            matInput
+            placeholder="Neuer Kommentar"
+            rows="3"
+            [(ngModel)]="newComment"
+          ></textarea>
+        </mat-form-field>
+      </mat-expansion-panel>
   }
   @if (item.id) {
     @for (image of item.images; track image) {

@@ -32,4 +32,5 @@ export interface IComment {
   itemId: string;
   author: string;
   text: string;
+  lastEdit: number | undefined;
 }

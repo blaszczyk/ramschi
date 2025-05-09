@@ -13,6 +13,7 @@ import { SpinnerService } from '../../spinner.service';
 import { CategoryService } from '../category.service';
 import { AssigneeService } from '../assignee.service';
 import { CredentialService, RoleAware } from '../../login/credential.service';
+import { MatExpansionModule } from '@angular/material/expansion';
 
 @Component({
   selector: 'app-ramschi-detail',
@@ -21,6 +22,7 @@ import { CredentialService, RoleAware } from '../../login/credential.service';
     MatInputModule,
     MatFormFieldModule,
     MatSelectModule,
+    MatExpansionModule,
     MatButtonModule,
     MatGridListModule,
     FormsModule,
@@ -166,6 +168,7 @@ export class RamschiDetailComponent extends RoleAware implements OnInit {
           itemId: this.item.id!,
           author: this.credential.getAssignee()!,
           text: this.newComment,
+          lastEdit: undefined,
         }).subscribe(comment => {
           this.spinner.hide();
           this.newComment = '';

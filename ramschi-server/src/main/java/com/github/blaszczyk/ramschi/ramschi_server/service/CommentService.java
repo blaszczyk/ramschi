@@ -1,9 +1,6 @@
 package com.github.blaszczyk.ramschi.ramschi_server.service;
 
-import com.github.blaszczyk.ramschi.ramschi_server.domain.Category;
 import com.github.blaszczyk.ramschi.ramschi_server.domain.Comment;
-import com.github.blaszczyk.ramschi.ramschi_server.persistence.CategoryEntity;
-import com.github.blaszczyk.ramschi.ramschi_server.persistence.CategoryRepository;
 import com.github.blaszczyk.ramschi.ramschi_server.persistence.CommentEntity;
 import com.github.blaszczyk.ramschi.ramschi_server.persistence.CommentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +35,6 @@ public class CommentService {
     }
 
     private static Comment toComment(CommentEntity entity) {
-        return new Comment(entity.getId(), entity.getItemId(), entity.getAuthor(), entity.getText(), entity.getLastEdit());
+            return new Comment(entity.getId(), entity.getItemId(), entity.getAuthor(), entity.getText(), entity.getLastEdit());
     }
 }

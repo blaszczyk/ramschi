@@ -26,7 +26,7 @@ button.mini {
   text-align: right;
 }
 
-mat-form-field {
+item-form.mat-form-field {
   width: 300px;
 }
 
@@ -43,4 +43,24 @@ mat-form-field {
 .assignee {
   margin-left: 21px;
   margin-top: 3px;
+}
+
+.comment {
+  padding: 10px 19px 10px 19px;
+}
+
+.new-comment {
+  padding: 0px 19px 0px 19px;
+  mat-form-field {
+    width: 100%;
+  }
+}
+
+.new-comment-button {
+  position: relative;
+  text-align: right;
+}
+
+.new-comment-title {
+  width: 200px;
 }
