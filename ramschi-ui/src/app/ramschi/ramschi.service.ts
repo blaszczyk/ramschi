@@ -57,7 +57,7 @@ export class RamschiService {
 
   putItemAssignee(itemId: string, assignee: string): Observable<void> {
     return this.http.put<void>(
-      '/api/item/' + itemId + '/assignee/' + assignee,
+      '/api/item/' + itemId + '/assignee/' + encodeURIComponent(assignee),
       null,
       { headers: this.getHeaders() },
     );
@@ -65,25 +65,25 @@ export class RamschiService {
 
   deleteItemAssignee(itemId: string, assignee: string): Observable<void> {
     return this.http.delete<void>(
-      '/api/item/' + itemId + '/assignee/' + assignee,
+      '/api/item/' + itemId + '/assignee/' + encodeURIComponent(assignee),
       { headers: this.getHeaders() },
     );
   }
 
   postAssignee(name: string): Observable<void> {
-    return this.http.post<void>('/api/assignee/' + name, null, {
+    return this.http.post<void>('/api/assignee/' + encodeURIComponent(name), null, {
       headers: this.getHeaders(),
     });
   }
 
   deleteAssignee(name: string): Observable<void> {
-    return this.http.delete<void>('/api/assignee/' + name, {
+    return this.http.delete<void>('/api/assignee/' + encodeURIComponent(name), {
       headers: this.getHeaders(),
     });
   }
 
   resetPassword(name: string): Observable<void> {
-    return this.http.delete<void>('/api/assignee/' + name + '/password', {
+    return this.http.delete<void>('/api/assignee/' + encodeURIComponent(name) + '/password', {
       headers: this.getHeaders(),
     });
   }
