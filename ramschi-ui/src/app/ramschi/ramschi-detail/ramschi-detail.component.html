@@ -75,7 +75,9 @@
     <div class="description">
       {{ item.description }}
     </div>
-    @if (isAssignee && item.assignees.length) {
+  }
+  @if (isAssignee) {
+    @if (item.assignees.length) {
       <hr>
       <div class="assignees">Interessenten:</div>
       @for (assignee of item.assignees; track assignee) {
@@ -83,8 +85,6 @@
       }
       <hr>
     }
-  }
-  @if (isAssignee) {
     <div [style.text-align]="isContributor ? 'right' : 'center'">
       @if (isAssigned) {
         <button class="assign"
