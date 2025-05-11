@@ -14,6 +14,8 @@
   },
   "private": true,
   "dependencies": {
+    "@angular-eslint/builder": "^19.4.0",
+    "@angular-eslint/eslint-plugin": "^19.4.0",
     "@angular/animations": "^19.1.0",
     "@angular/cdk": "^19.2.11",
     "@angular/common": "^19.1.0",
@@ -25,9 +27,11 @@
     "@angular/platform-browser-dynamic": "^19.1.0",
     "@angular/router": "^19.1.0",
     "@types/node": "^22.15.12",
+    "angular-eslint": "^19.4.0",
     "prettier": "^3.5.3",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
+    "typescript-eslint": "^8.32.0",
     "zone.js": "~0.15.0"
   },
   "devDependencies": {
