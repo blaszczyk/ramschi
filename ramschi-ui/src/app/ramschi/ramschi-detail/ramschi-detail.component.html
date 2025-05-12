@@ -89,7 +89,7 @@
       @if (isAssigned) {
         <button class="assign"
           mat-stroked-button
-          (click)="unassign()"
+          (click)="unassign(assignee!)"
         > Kein Interesse mehr
         </button>
       }
@@ -97,7 +97,7 @@
         <button class="assign"
           mat-flat-button
           [style.visibility]="item.id ? 'visible' : 'hidden'"
-          (click)="assign()"
+          (click)="assign(assignee!)"
         > Ich wäre interessiert!
         </button>
       }
@@ -122,14 +122,12 @@
       }
     </div>
   }
-  @if (isAssignee) {
+  @if (isAssignee && item.id) {
     <app-comments [item]="item"></app-comments>
   }
-  @if (item.id) {
-    @for (image of item.images; track image) {
-      <a [href]="'/api/image/' + image">
-        <img [src]="'/api/image/' + image + '/preview'" [alt]="image" />
-      </a>
-    }
+  @for (image of item.images; track image) {
+    <a [href]="'/api/image/' + image">
+      <img [src]="'/api/image/' + image + '/preview'" [alt]="image" />
+    </a>
   }
 }

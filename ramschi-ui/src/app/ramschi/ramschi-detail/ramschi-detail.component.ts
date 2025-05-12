@@ -1,6 +1,6 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { RamschiService } from '../ramschi.service';
-import { ICategory, IComment, IItem } from '../domain';
+import { ICategory, IItem } from '../domain';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
@@ -13,7 +13,6 @@ import { SpinnerService } from '../../spinner.service';
 import { CategoryService } from '../category.service';
 import { AssigneeService } from '../assignee.service';
 import { CredentialService, RoleAware } from '../../login/credential.service';
-import { MatExpansionModule } from '@angular/material/expansion';
 import { CommentsComponent } from "./comments/comments.component";
 
 @Component({
@@ -23,7 +22,6 @@ import { CommentsComponent } from "./comments/comments.component";
     MatInputModule,
     MatFormFieldModule,
     MatSelectModule,
-    MatExpansionModule,
     MatButtonModule,
     MatGridListModule,
     FormsModule,
@@ -95,8 +93,7 @@ export class RamschiDetailComponent extends RoleAware implements OnInit {
   }
 
   get isAssigned(): boolean {
-    const assignee = this.credential.getAssignee()!;
-    return this.item.assignees.includes(assignee);
+    return this.item.assignees.includes(this.assignee!);
   }
 
   saveDisabled(): boolean {
@@ -127,17 +124,6 @@ export class RamschiDetailComponent extends RoleAware implements OnInit {
     this.newImageElement.nativeElement.click();
   }
 
-  assign(): void {
-    const assignee = this.credential.getAssignee()!;
-    this.doAssign(assignee);
-  }
-
-  unassign(): void {
-    const assignee = this.credential.getAssignee()!;
-    this.doUnassign(assignee);
-  }
-
-
   changeAssignee(event: MatSelectChange<string[]>) {
     const currentAssignees = [...this.item.assignees];
 
@@ -145,14 +131,14 @@ export class RamschiDetailComponent extends RoleAware implements OnInit {
       (a) => !currentAssignees.includes(a),
     );
     for (const assignee of newAssignees) {
-      this.doAssign(assignee);
+      this.assign(assignee);
     }
 
     const deletedAssignees = currentAssignees.filter(
       (a) => !event.value.includes(a),
     );
     for (const assignee of deletedAssignees) {
-      this.doUnassign(assignee);
+      this.unassign(assignee);
     }
   }
 
@@ -160,7 +146,7 @@ export class RamschiDetailComponent extends RoleAware implements OnInit {
     this.pristine = false;
   }
 
-  private doAssign(assignee: string): void {
+  assign(assignee: string): void {
     if (
       confirm(`Danke ${assignee} für Dein Interesse an ${this.item.name}!`)
     ) {
@@ -172,7 +158,7 @@ export class RamschiDetailComponent extends RoleAware implements OnInit {
     }
   }
 
-  private doUnassign(assignee: string): void {
+  unassign(assignee: string): void {
     if (
       confirm(`Schade, ${assignee}, dass Dir ${this.item.name} egal ist!`)
     ) {
