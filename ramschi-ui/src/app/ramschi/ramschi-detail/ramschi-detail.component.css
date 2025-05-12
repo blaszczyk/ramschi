@@ -45,22 +45,25 @@ item-form.mat-form-field {
   margin-top: 3px;
 }
 
+.comments {
+  background-color: bisque;
+  margin-bottom: 9px;
+}
+
 .comment {
   padding: 10px 19px 10px 19px;
+  white-space: pre-wrap;
+}
+
+.delete-comment {
+  float: right;
+  transform: scale(0.7);
 }
 
 .new-comment {
+  text-align: center;
   padding: 0px 19px 0px 19px;
   mat-form-field {
     width: 100%;
   }
-}
-
-.new-comment-button {
-  position: relative;
-  text-align: right;
-}
-
-.new-comment-title {
-  width: 200px;
 }

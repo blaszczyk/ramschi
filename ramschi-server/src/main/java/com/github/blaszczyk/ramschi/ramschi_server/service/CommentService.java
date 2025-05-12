@@ -18,7 +18,7 @@ public class CommentService {
     private CommentRepository commentRepository;
 
     public Mono<List<Comment>> getComments(UUID itemId) {
-        return commentRepository.findByItemIdOrderByLastEditDesc(itemId)
+        return commentRepository.findByItemIdOrderByLastEditAsc(itemId)
                 .map(CommentService::toComment)
                 .collectList();
     }
@@ -36,5 +36,14 @@ public class CommentService {
 
     private static Comment toComment(CommentEntity entity) {
             return new Comment(entity.getId(), entity.getItemId(), entity.getAuthor(), entity.getText(), entity.getLastEdit());
+    }
+
+    public Mono<Comment> getComment(UUID id) {
+        return commentRepository.findById(id)
+                .map(CommentService::toComment);
+    }
+
+    public Mono<Void> deleteComment(UUID id) {
+        return commentRepository.deleteById(id);
     }
 }

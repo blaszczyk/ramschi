@@ -31,8 +31,12 @@ import { MatExpansionModule } from '@angular/material/expansion';
   styleUrl: './ramschi-detail.component.css',
 })
 export class RamschiDetailComponent extends RoleAware implements OnInit {
+
   @ViewChild('newImage')
   newImageElement!: ElementRef<HTMLInputElement>;
+
+  @ViewChild('newCommentTextArea')
+  newCommentElement!: ElementRef<HTMLTextAreaElement>;
 
   get assignees(): string[] {
     return this.assigneeService.getAll();
@@ -172,14 +176,30 @@ export class RamschiDetailComponent extends RoleAware implements OnInit {
         }).subscribe(comment => {
           this.spinner.hide();
           this.newComment = '';
-          this.comments.splice(0, 0, comment);
+          this.comments.push(comment);
         });
+  }
+
+  deleteComment(comment: IComment): void {
+    if (confirm('Kommentar wirklich löschen?')) {
+      this.spinner.show();
+      this.service.deleteComment(comment.id!).subscribe(() => {
+        const index = this.comments.indexOf(comment);
+        this.comments.splice(index, 1);
+        this.spinner.hide();
+      });
+    }
   }
 
   setDirty() {
     this.pristine = false;
   }
   
+  adjustNewCommentHeight() {
+    const element = this.newCommentElement.nativeElement;
+    element.style.height = element.scrollHeight+"px";
+  }
+
   private doAssign(assignee: string): void {
     if (
       confirm(`Danke ${assignee} für Dein Interesse an ${this.item.name}!`)

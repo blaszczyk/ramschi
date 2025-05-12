@@ -122,39 +122,39 @@
       }
     </div>
   }
-  @if (false) {
+  @if (isAssignee) {
+    <mat-expansion-panel class="comments">
+      <mat-expansion-panel-header>
+        <mat-panel-title>Kommentare ({{comments.length}})</mat-panel-title>
+      </mat-expansion-panel-header>
     @for (comment of comments; track comment) {
       <div class="comment">
         <b>{{ comment.author }}: </b>
+        @if (comment.author === assignee) {
+         &nbsp;<mat-icon class="delete-comment" (click)="deleteComment(comment)">cancel</mat-icon>
+        }
+        <br>
         {{ comment.text }}  
       </div>
     }
-      <mat-expansion-panel class="new-comment">
-        <mat-expansion-panel-header>
-          <mat-panel-title><div class="new-comment-title">Neuer Kommentar</div></mat-panel-title>
-          <mat-panel-description>
-            <div class="new-comment-button">
-              <button
-                mat-mini-fab
-                [disabled]="!newComment"
-                (click)="saveNewComment()"
-              >
-                <mat-icon>add_comment</mat-icon>
-              </button>
-            </div>  
-          </mat-panel-description>
-        </mat-expansion-panel-header>
-
+    <div class="new-comment">
         <mat-form-field>
-          <mat-label>Neuer Kommentar</mat-label>
-          <textarea
+          <mat-label>{{assignee}}:</mat-label>
+          <textarea #newCommentTextArea
             matInput
+            rows="1"
             placeholder="Neuer Kommentar"
-            rows="3"
+            (keyup)="adjustNewCommentHeight()" style="overflow:hidden"
             [(ngModel)]="newComment"
           ></textarea>
         </mat-form-field>
-      </mat-expansion-panel>
+        <button mat-raised-button
+                [disabled]="!newComment"
+                (click)="saveNewComment()"
+              >Neuer Kommentar</button>
+
+    </div>
+    </mat-expansion-panel>
   }
   @if (item.id) {
     @for (image of item.images; track image) {

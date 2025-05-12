@@ -1,9 +1,6 @@
 package com.github.blaszczyk.ramschi.ramschi_server.controller;
 
-import com.github.blaszczyk.ramschi.ramschi_server.domain.BasicItem;
 import com.github.blaszczyk.ramschi.ramschi_server.domain.Comment;
-import com.github.blaszczyk.ramschi.ramschi_server.domain.Item;
-import com.github.blaszczyk.ramschi.ramschi_server.domain.Role;
 import com.github.blaszczyk.ramschi.ramschi_server.service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -12,7 +9,6 @@ import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @RestController
@@ -42,5 +38,17 @@ public class CommentController {
         return authHelper.doIfAuthorised(ramschiAuth, comment.author(), () ->
                 commentService.saveComment(comment)
         );
+    }
+
+    @DeleteMapping(path = "/{id}")
+    Mono<ResponseEntity<Void>> deleteComment(
+            @PathVariable UUID id,
+            @RequestHeader(RamschiHeader.AUTH) String ramschiAuth) {
+        return commentService.getComment(id)
+                .flatMap(comment ->
+                        authHelper.doIfAuthorised(ramschiAuth, comment.author(), () ->
+                            commentService.deleteComment(id)
+                        )
+                );
     }
 }

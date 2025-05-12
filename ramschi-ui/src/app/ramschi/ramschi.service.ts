@@ -129,6 +129,12 @@ export class RamschiService {
     });
  }
 
+ deleteComment(id: string): Observable<void> {
+    return this.http.delete<void>('/api/comment/' + id, {
+      headers: this.getHeaders(),
+    });
+  }
+
   private getHeaders(): HttpHeaders {
     return new HttpHeaders({
       'X-RAMSCHI-ASSIGNEE': this.credential.getAuthHeader(),
