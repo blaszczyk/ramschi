@@ -39,7 +39,7 @@ export class RamschiDetailComponent extends RoleAware implements OnInit {
   }
 
   get categories(): ICategory[] {
-    return this.catgoryService.getAll();
+    return this.categoryService.getAll();
   }
 
   item: IItem = {
@@ -62,7 +62,7 @@ export class RamschiDetailComponent extends RoleAware implements OnInit {
 
   constructor(
     private readonly service: RamschiService,
-    private readonly catgoryService: CategoryService,
+    private readonly categoryService: CategoryService,
     private readonly assigneeService: AssigneeService,
     private readonly route: ActivatedRoute,
     private readonly router: Router,
