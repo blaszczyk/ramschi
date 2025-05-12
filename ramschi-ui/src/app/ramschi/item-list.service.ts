@@ -3,6 +3,7 @@ import { IItem } from './domain';
 import { RamschiService } from './ramschi.service';
 import { ScrollService } from '../scroll.service';
 import { SpinnerService } from '../spinner.service';
+import { Observable, tap } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -44,7 +45,7 @@ export class ItemListService {
       this.latestFirst = !!storedLatestFirst;
     }
 
-    this.requestItems();
+    this.setFilter();
   }
 
   getFilterName(): string {
@@ -63,24 +64,24 @@ export class ItemListService {
     return this.latestFirst;
   }
   
-  setFilterName(value: string): void {
-    this.filterName = value;
-    this.requestItems();
+  setFilterName(filterName: string): void {
+    this.filterName = filterName;
+    this.setFilter();
   }
 
-  setFilterCategory(value: string | undefined): void {
-    this.filterCategory = value;
-    this.requestItems();
+  setFilterCategory(filterCategory: string | undefined): void {
+    this.filterCategory = filterCategory;
+    this.setFilter();
   }
 
-  setFilterAssignee(value: string | undefined): void {
-    this.filterAssignee = value;
-    this.requestItems();
+  setFilterAssignee(filterAssignee: string | undefined): void {
+    this.filterAssignee = filterAssignee;
+    this.setFilter();
   }
 
-  setLatestFirst(value: boolean): void {
-    this.latestFirst = value;
-    this.requestItems();
+  setLatestFirst(latestFirst: boolean): void {
+    this.latestFirst = latestFirst;
+    this.setFilter();
   }
 
   clearFilter(): void {
@@ -88,15 +89,18 @@ export class ItemListService {
     this.filterCategory = undefined;
     this.filterAssignee = undefined;
     this.latestFirst = false;
-    this.requestItems();
+    this.setFilter();
   }
 
   getItems(): IItem[] {
     return this.items;
   }
+  
+  refresh() {
+    this.requestItems().subscribe();
+  }
 
-
-  private requestItems(): void {
+  private setFilter(): void {
     updateLocalStorage(KEY_FILTER_NAME, this.filterName);
     updateLocalStorage(KEY_FILTER_CATEGORY, this.filterCategory);
     updateLocalStorage(KEY_FILTER_ASSIGNEE, this.filterAssignee);
@@ -105,20 +109,24 @@ export class ItemListService {
       this.latestFirst ? 'yes please' : undefined,
     );
     this.spinner.show();
-    this.service
+    this.requestItems()
+      .subscribe(() => {
+        this.scroll.forgetPosition();
+        this.spinner.hide();
+      });
+  }
+
+  private requestItems(): Observable<IItem[]> {
+    return this.service
       .getItems(
         this.filterName,
         this.filterCategory,
         this.filterAssignee,
         this.latestFirst,
-      )
-      .subscribe((items) => {
-        this.scroll.forgetPosition();
-        this.spinner.hide();
+      ).pipe(tap(items => {
         this.items = items;
-      });
+      }));
   }
-
 }
 
 const KEY_FILTER_NAME = 'filter-name';

@@ -14,6 +14,7 @@ import { CategoryService } from '../category.service';
 import { AssigneeService } from '../assignee.service';
 import { CredentialService, RoleAware } from '../../login/credential.service';
 import { CommentsComponent } from "./comments/comments.component";
+import { ItemListService } from '../item-list.service';
 
 @Component({
   selector: 'app-ramschi-detail',
@@ -59,6 +60,7 @@ export class RamschiDetailComponent extends RoleAware implements OnInit {
 
   constructor(
     private readonly service: RamschiService,
+    private readonly itemList: ItemListService,
     private readonly categoryService: CategoryService,
     private readonly assigneeService: AssigneeService,
     private readonly route: ActivatedRoute,
@@ -107,6 +109,7 @@ export class RamschiDetailComponent extends RoleAware implements OnInit {
         this.spinner.hide();
         this.pristine = true;
         this.router.navigateByUrl('/ramsch/' + id);
+        this.itemList.refresh();
       });
     }
   }
@@ -117,6 +120,7 @@ export class RamschiDetailComponent extends RoleAware implements OnInit {
     this.service.postImage(this.item!.id!, file).subscribe((id) => {
       this.item.images.push(id);
       this.spinner.hide();
+      this.itemList.refresh();
     });
   }
 
@@ -154,6 +158,7 @@ export class RamschiDetailComponent extends RoleAware implements OnInit {
       this.service.putItemAssignee(this.item.id!, assignee).subscribe(() => {
         this.item.assignees.push(assignee);
         this.spinner.hide();
+        this.itemList.refresh();
       });
     }
   }
@@ -169,6 +174,7 @@ export class RamschiDetailComponent extends RoleAware implements OnInit {
           const index = this.item.assignees.indexOf(assignee);
           this.item.assignees.splice(index, 1);
           this.spinner.hide();
+          this.itemList.refresh();
         });
     }
   }    
