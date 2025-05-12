@@ -1,29 +1,26 @@
-import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { ActivationStart, Router, RouterOutlet } from '@angular/router';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
 import { SpinnerService } from './spinner.service';
-import { Router } from '@angular/router';
 import { ScrollService } from './scroll.service';
 import { CredentialService, RoleAware } from './login/credential.service';
 import { LoginComponent } from './login/login.component';
 import { RamschiFilterComponent } from './ramschi/ramschi-filter/ramschi-filter.component';
+import { RamschiHeaderComponent } from "./ramschi-header/ramschi-header.component";
 
 @Component({
   selector: 'app-root',
   imports: [
     RouterOutlet,
     MatProgressSpinnerModule,
-    MatButtonModule,
     LoginComponent,
     RamschiFilterComponent,
-    MatIconModule,
-  ],
+    RamschiHeaderComponent
+],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',
 })
-export class AppComponent extends RoleAware implements AfterViewInit {
+export class AppComponent extends RoleAware implements OnInit, AfterViewInit {
   title = 'ramschi-ui';
 
   @ViewChild('container')
@@ -38,6 +35,8 @@ export class AppComponent extends RoleAware implements AfterViewInit {
     super(credential);
   }
 
+  showFilter: boolean = false;
+
   get showSpinner(): boolean {
     return this.spinner.isVisible();
   }
@@ -46,21 +45,12 @@ export class AppComponent extends RoleAware implements AfterViewInit {
     return this.credential.isInitialised();
   }
 
-  navigateTo(url: string): void {
-    this.router.navigateByUrl(url);
-  }
-
-  logout(): void {
-    if (this.credential.isAssignee()) {
-      const message = `${this.credential.getAssignee()} abmelden?`;
-      if (confirm(message)) {
-        this.credential.logout();
-        this.navigateTo('/');
+  ngOnInit(): void {
+    this.router.events.subscribe((event) => {
+      if (event instanceof ActivationStart) {
+        this.showFilter = !event.snapshot.routeConfig?.path;
       }
-    } else {
-      this.credential.logout();
-      this.navigateTo('/');
-    }
+    });
   }
 
   ngAfterViewInit(): void {
