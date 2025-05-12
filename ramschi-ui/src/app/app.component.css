@@ -58,6 +58,12 @@
   }
 }
 
+app-ramschi-filter {
+  position: sticky;
+  top: 56px;
+  z-index: 13;
+}
+
 .scrollarea {
   position: relative;
   top: 5px;

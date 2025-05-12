@@ -8,6 +8,7 @@ import { Router } from '@angular/router';
 import { ScrollService } from './scroll.service';
 import { CredentialService, RoleAware } from './login/credential.service';
 import { LoginComponent } from './login/login.component';
+import { RamschiFilterComponent } from './ramschi/ramschi-filter/ramschi-filter.component';
 
 @Component({
   selector: 'app-root',
@@ -16,6 +17,7 @@ import { LoginComponent } from './login/login.component';
     MatProgressSpinnerModule,
     MatButtonModule,
     LoginComponent,
+    RamschiFilterComponent,
     MatIconModule,
   ],
   templateUrl: './app.component.html',

@@ -5,13 +5,11 @@ import { Router } from '@angular/router';
 import { ScrollService } from '../../scroll.service';
 import { CredentialService, RoleAware } from '../../login/credential.service';
 import { ItemListService } from '../item-list.service';
-import { RamschiFilterComponent } from "../ramschi-filter/ramschi-filter.component";
 
 @Component({
   selector: 'app-ramschi-list',
   imports: [
-    MatGridListModule,
-    RamschiFilterComponent
+    MatGridListModule
 ],
   templateUrl: './ramschi-list.component.html',
   styleUrl: './ramschi-list.component.css',
