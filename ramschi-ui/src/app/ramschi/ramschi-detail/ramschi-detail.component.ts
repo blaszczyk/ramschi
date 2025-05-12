@@ -14,6 +14,7 @@ import { CategoryService } from '../category.service';
 import { AssigneeService } from '../assignee.service';
 import { CredentialService, RoleAware } from '../../login/credential.service';
 import { MatExpansionModule } from '@angular/material/expansion';
+import { CommentsComponent } from "./comments/comments.component";
 
 @Component({
   selector: 'app-ramschi-detail',
@@ -26,7 +27,8 @@ import { MatExpansionModule } from '@angular/material/expansion';
     MatButtonModule,
     MatGridListModule,
     FormsModule,
-  ],
+    CommentsComponent
+],
   templateUrl: './ramschi-detail.component.html',
   styleUrl: './ramschi-detail.component.css',
 })
@@ -34,9 +36,6 @@ export class RamschiDetailComponent extends RoleAware implements OnInit {
 
   @ViewChild('newImage')
   newImageElement!: ElementRef<HTMLInputElement>;
-
-  @ViewChild('newCommentTextArea')
-  newCommentElement!: ElementRef<HTMLTextAreaElement>;
 
   get assignees(): string[] {
     return this.assigneeService.getAll();
@@ -55,10 +54,6 @@ export class RamschiDetailComponent extends RoleAware implements OnInit {
     assignees: [],
     images: [],
   };
-
-  comments: IComment[] = [];
-
-  newComment: string = '';
 
   initialized = false;
 
@@ -85,9 +80,6 @@ export class RamschiDetailComponent extends RoleAware implements OnInit {
           this.item = item;
           this.initialized = true;
           this.spinner.hide();
-        });
-        this.service.getComments(id).subscribe((comments) => {
-          this.comments = comments;
         });
       } else {
         this.initialized = true;
@@ -164,40 +156,8 @@ export class RamschiDetailComponent extends RoleAware implements OnInit {
     }
   }
 
-  saveNewComment(): void {
-      this.spinner.show();
-      this.service
-        .postComment({
-          id: null,
-          itemId: this.item.id!,
-          author: this.credential.getAssignee()!,
-          text: this.newComment,
-          lastEdit: undefined,
-        }).subscribe(comment => {
-          this.spinner.hide();
-          this.newComment = '';
-          this.comments.push(comment);
-        });
-  }
-
-  deleteComment(comment: IComment): void {
-    if (confirm('Kommentar wirklich löschen?')) {
-      this.spinner.show();
-      this.service.deleteComment(comment.id!).subscribe(() => {
-        const index = this.comments.indexOf(comment);
-        this.comments.splice(index, 1);
-        this.spinner.hide();
-      });
-    }
-  }
-
   setDirty() {
     this.pristine = false;
-  }
-  
-  adjustNewCommentHeight() {
-    const element = this.newCommentElement.nativeElement;
-    element.style.height = element.scrollHeight+"px";
   }
 
   private doAssign(assignee: string): void {

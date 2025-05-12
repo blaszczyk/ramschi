@@ -1,0 +1,33 @@
+
+    <mat-expansion-panel class="comments">
+      <mat-expansion-panel-header>
+        <mat-panel-title>Kommentare ({{comments.length}})</mat-panel-title>
+      </mat-expansion-panel-header>
+    @for (comment of comments; track comment) {
+      <div class="comment">
+        <b>{{ comment.author }}: </b>
+        @if (comment.author === assignee) {
+         <mat-icon class="delete-comment" (click)="deleteComment(comment)">cancel</mat-icon>
+        }
+        <br>
+        {{ comment.text }}  
+      </div>
+    }
+    <div class="new-comment">
+        <mat-form-field>
+          <mat-label>{{assignee}}:</mat-label>
+          <textarea #newCommentTextArea
+            matInput
+            rows="1"
+            placeholder="Neuer Kommentar"
+            (keyup)="adjustNewCommentHeight()" style="overflow:hidden"
+            [(ngModel)]="newComment"
+          ></textarea>
+        </mat-form-field>
+        <button mat-raised-button
+                [disabled]="!newComment"
+                (click)="saveNewComment()"
+              >Neuer Kommentar</button>
+
+    </div>
+    </mat-expansion-panel>
