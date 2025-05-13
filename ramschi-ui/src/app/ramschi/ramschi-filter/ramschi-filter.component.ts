@@ -70,6 +70,9 @@ export class RamschiFilterComponent extends RoleAware {
     if (this.filterAssignee) {
       filters.push(this.filterAssignee);
     }
+    if (this.latestFirst) {
+      filters.push('neustes zuerst');
+    }
     return filters.join(', ');
   }
 

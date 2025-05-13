@@ -33,6 +33,8 @@ item-form.mat-form-field {
 .description {
   text-align: justify;
   margin: 13px;
+  white-space: pre-wrap;
+  text-align: center;
 }
 
 .assignees {
