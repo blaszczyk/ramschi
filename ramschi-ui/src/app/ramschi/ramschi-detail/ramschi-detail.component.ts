@@ -177,6 +177,5 @@ export class RamschiDetailComponent extends RoleAware implements OnInit {
           this.itemList.refresh();
         });
     }
-  }    
-
+  }
 }

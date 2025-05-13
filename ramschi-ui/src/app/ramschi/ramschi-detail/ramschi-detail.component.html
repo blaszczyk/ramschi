@@ -122,6 +122,15 @@
       }
     </div>
   }
+  @else {
+    <div [style.text-align]="'center'">
+        <button class="assign"
+          mat-flat-button
+          (click)="credential.logout()"
+        > Interessiert? Dann melde dich an!
+        </button>
+    </div>
+  }
   @if (isAssignee && item.id) {
     <app-comments [item]="item"></app-comments>
   }
