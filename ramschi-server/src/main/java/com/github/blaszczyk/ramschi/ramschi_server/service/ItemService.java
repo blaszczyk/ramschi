@@ -10,19 +10,17 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
+import java.util.function.Function;
 
 @Service
 public class ItemService {
 
     private static Logger LOG = LoggerFactory.getLogger(ItemService.class);
 
-    private static final Comparator<Item> BY_NAME = Comparator.comparing(Item::name);
+    private static final Comparator<ItemEntity> BY_NAME = Comparator.comparing(ItemEntity::getName);
 
-    private static final Comparator<Item> BY_LAST_EDIT = Comparator.comparing(Item::lastedit).reversed();
+    private static final Comparator<ItemEntity> BY_LAST_EDIT = Comparator.comparing(ItemEntity::getLastedit).reversed();
 
     @Autowired
     private ItemRepository itemRepository;
@@ -53,17 +51,24 @@ public class ItemService {
                 : itemRepository.findByNameLike(filterTerm);
         return resultFlux
                 .filter(entity -> itemIds == null || itemIds.contains(entity.getId()))
-                .flatMap(entity -> {
-                    final UUID id = entity.getId();
-                    var fetchAssignees = itemAssigneeRepository.findByItemId(id)
+                .sort(latestFirst ? BY_LAST_EDIT : BY_NAME)
+                .collectList()
+                .flatMap(entities -> {
+                    final List<UUID> ids = entities.stream().map(ItemEntity::getId).toList();
+                    final var fetchAssignees = itemAssigneeRepository.findByItemIds(ids)
                             .collectList();
-                    var fetchImages = imageRepository.findIdsByItemId(id)
+                    final var fetchImages = imageRepository.findByItemIds(ids)
                             .collectList();
                     return Mono.zip(fetchAssignees, fetchImages)
-                            .map(tuple -> ItemTransformer.toItem(entity, tuple.getT1(), tuple.getT2()));
-                })
-                .sort(latestFirst ? BY_LAST_EDIT : BY_NAME)
-                .collectList();
+                            .map(tuple -> {
+                                final var assignees = mapByItemId(tuple.getT1(), ItemAssigneeEntity::getItemId);
+                                final var images = mapByItemId(tuple.getT2(), ImageEntity::getItemId);
+                                return entities.stream().map(entity -> {
+                                    final UUID id = entity.getId();
+                                    return ItemTransformer.toItem(entity, assignees.get(id), images.get(id));
+                                }).toList();
+                            });
+                });
     }
 
     public Mono<Item> getItem(UUID id) {
@@ -101,5 +106,17 @@ public class ItemService {
     public Mono<Void> deleteItem(UUID id) {
         LOG.info("Deleting {}", id);
         return itemRepository.deleteById(id);
+    }
+
+    private <T> Map<UUID, List<T>> mapByItemId(List<T> ts, Function<T, UUID> itemIdGetter) {
+        final var result = new HashMap<UUID, List<T>>();
+        ts.forEach(t -> {
+            final UUID itemId = itemIdGetter.apply(t);
+            if (!result.containsKey(itemId)) {
+                result.put(itemId, new ArrayList<>());
+            }
+            result.get(itemId).add(t);
+        });
+        return result;
     }
 }
