@@ -1,6 +1,6 @@
 @if (initialized) {
   <div class="panel">
-    <h1>{{ item.name || "Neuer Ramsch" }} {{isAssigned ? ' ☝️' : '' }} </h1>
+    <h1>{{isAssigned ? ' ☝️' : '' }} {{ item.name || "Neuer Ramsch" }} </h1>
   </div>
   @if (isContributor) {
     <mat-grid-list class="item-form" cols="1" rowHeight="5:1">
