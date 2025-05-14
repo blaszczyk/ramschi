@@ -109,7 +109,6 @@ export class ItemListService {
       this.filteredItems.sort((i1, i2) => i2.lastedit - i1.lastedit);
     }
     this.scroll.forgetPosition();
-    this.scroll.restorePosition();
   }
 
   private requestItems(): Observable<IItem[]> {
