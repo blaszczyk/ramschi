@@ -50,6 +50,7 @@ export class RamschiDetailComponent extends RoleAware implements OnInit {
     description: null,
     category: null,
     price: null,
+    lastedit: 0,
     assignees: [],
     images: [],
   };

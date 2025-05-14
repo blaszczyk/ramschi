@@ -20,12 +20,13 @@ export class ScrollService {
   forgetPosition() {
     if (this.scrollElement) {
       localStorage.removeItem(KEY_SCROLL_POSITION);
+      this.restorePosition();
     }
   }
 
   restorePosition() {
-    const storedValue = localStorage.getItem(KEY_SCROLL_POSITION);
-    if (this.scrollElement && storedValue) {
+    const storedValue = localStorage.getItem(KEY_SCROLL_POSITION) || '0';
+    if (this.scrollElement) {
       setTimeout(() => {
         this.scrollElement!.scrollTop = parseFloat(storedValue);
         this.scrollElement!.scrollTo({ top: parseFloat(storedValue) });
