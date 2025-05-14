@@ -3,6 +3,8 @@ package com.github.blaszczyk.ramschi.ramschi_server.persistence;
 import com.github.blaszczyk.ramschi.ramschi_server.domain.BasicItem;
 import com.github.blaszczyk.ramschi.ramschi_server.domain.Item;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
@@ -37,7 +39,7 @@ public class ItemTransformer {
                 entity.getDescription(),
                 entity.getCategory(),
                 entity.getPrice(),
-                entity.getLastedit(),
+                entity.getLastedit().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli(),
                 mapNullable(assignees, ItemAssigneeEntity::getAssignee),
                 mapNullable(images, ImageEntity::getId)
         );

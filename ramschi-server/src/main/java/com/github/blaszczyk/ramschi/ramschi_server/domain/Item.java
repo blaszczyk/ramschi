@@ -1,6 +1,5 @@
 package com.github.blaszczyk.ramschi.ramschi_server.domain;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -10,7 +9,7 @@ public record Item(
         String description,
         String category,
         int price,
-        LocalDateTime lastedit,
+        long lastedit,
         List<String> assignees,
         List<UUID> images
     ) {

@@ -12,6 +12,7 @@ export interface IBasicItem {
 }
 
 export interface IItem extends IBasicItem {
+  lastedit: number;
   assignees: string[];
   images: string[];
 }

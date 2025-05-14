@@ -38,17 +38,17 @@ export class RamschiFilterComponent extends RoleAware {
     this.itemList.setFilterName(value);
   }
 
-  get filterCategory(): string | undefined {
+  get filterCategory(): string | null {
     return this.itemList.getFilterCategory();
   }
-  set filterCategory(value: string | undefined) {
+  set filterCategory(value: string | null) {
     this.itemList.setFilterCategory(value);
   }
 
-  get filterAssignee(): string | undefined {
+  get filterAssignee(): string | null {
     return this.itemList.getFilterAssignee();
   }
-  set filterAssignee(value: string | undefined) {
+  set filterAssignee(value: string | null) {
     this.itemList.setFilterAssignee(value);
   }
 
