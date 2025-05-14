@@ -72,9 +72,7 @@
       }
     </mat-grid-list>
   } @else {
-    <div class="description">
-      {{ item.description }}
-    </div>
+    <div class="description" [innerHTML]="urlify(item.description)"></div>
   }
   @if (isAssignee) {
     @if (item.assignees.length) {

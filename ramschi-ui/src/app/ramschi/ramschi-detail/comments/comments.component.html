@@ -10,7 +10,7 @@
          <mat-icon class="delete-comment" (click)="deleteComment(comment)">cancel</mat-icon>
         }
         <br>
-        {{ comment.text }}  
+        <span [innerHTML]="urlify(comment.text)"></span>
       </div>
     }
     <div class="new-comment">

@@ -103,6 +103,16 @@ export class RoleAware {
   get assignee(): string | null {
     return this.credential.getAssignee();
   };
+  
+  // does not belong here but is useful
+  // TODO: create more generic parent class for components in util file or so
+  urlify(text: string | null): string {
+    text = text || '';
+      const urlRegex = /(https?:\/\/[^\s]+)/g;
+      return text.replace(urlRegex, function(url: string) {
+        return `<a href="${url}" target="_blank">${url}</a>`;
+      })
+    }
 
 }
 

@@ -7,7 +7,7 @@
           @if (isAssignee) {
             <span class="symbol-assignee">{{ getSymbolAssignee(item) }}</span>
           }
-          {{ item.description }}
+          <span [innerHTML]="urlify(item.description)"></span>
         </div>
         <div class="images">
           @for (image of item.images.slice(0, 2); track image) {
