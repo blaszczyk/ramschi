@@ -1,0 +1,34 @@
+@if (isAdmin) {
+  @for (assignee of assignees; track assignee) {
+    <p>{{ assignee }} 
+      <button (click)="deleteAssignee(assignee)">X</button>
+      <button (click)="resetPassword(assignee)">Reset PW</button>
+    </p>
+  }
+  <input [(ngModel)]="newAssignee" />
+  <br />
+  <button (click)="createNewAssignee()" [disabled]="!newAssignee">
+    Neuer Interessent
+  </button>
+  <br />
+  @for (category of categories; track category) {
+    <p>
+      {{ category.id }}
+      <input [(ngModel)]="category.name" />
+      <button (click)="updateCategory(category)">Speichern</button>
+    </p>
+  }
+  
+  <input [(ngModel)]="newCategoryId" />
+  <input [(ngModel)]="newCategoryName" />
+  <br />
+  <button
+    (click)="createNewCategory()"
+    [disabled]="!newCategoryId || !newCategoryName"
+  >
+    Neue Kategorie
+  </button>
+}
+@else {
+  <h1>Netter Versuch</h1>
+}

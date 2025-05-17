@@ -1,35 +1,24 @@
-<mat-expansion-panel>
-    <mat-expansion-panel-header>
-        <mat-panel-title>Filter:</mat-panel-title>
-        <mat-panel-description>{{filterSummary}}</mat-panel-description>
-    </mat-expansion-panel-header>
-
-    <mat-form-field>
-        <mat-label>Suche</mat-label>
-        <input matInput placeholder="Suche" [(ngModel)]="filterName" (keyup)="getItems()">
-    </mat-form-field>
-
-    <mat-form-field>
-        <mat-label>Kategorie</mat-label>
-        <mat-select [(ngModel)]="filterCategory" (selectionChange)="getItems()" name="category">
-        <mat-option [value]="undefined">Alle</mat-option>
-          @for (category of categories; track category) {
-            <mat-option [value]="category.id">{{category.displayName}}</mat-option>
-          }
-        </mat-select>
-    </mat-form-field>
-</mat-expansion-panel>
 <mat-grid-list cols="1" rowHeight="70px">
-    @for (item of items; track item) {
-        <mat-grid-tile>
-            <div class="item" (click)="navigateTo(item)">
-                <div class="item-name">{{ item.name }}</div>
-                <div class="images">
-                    @for (image of item.images.slice(0, 2); track image) {
-                    <img [src]="'/api/image/' + image + '/thumbnail'" height="60px"/>
-                    }
-                </div>
-            </div>
-        </mat-grid-tile>
-    }
+  @for (item of items; track item) {
+    <mat-grid-tile>
+      <div class="item" (click)="navigateTo(item)">
+        <div class="item-name">{{ item.name }}</div>
+        <div class="item-description">
+          @if (isAssignee) {
+            <span class="symbol-assignee">{{ getSymbolAssignee(item) }}</span>
+          }
+          <span [innerHTML]="urlify(item.description)"></span>
+        </div>
+        <div class="images">
+          @for (image of item.images.slice(0, 2); track image) {
+            <img class="thumbnail"
+              [src]="'/api/image/' + image + '/thumbnail'"
+              height="60px"
+              [alt]="image"
+            />
+          }
+        </div>
+      </div>
+    </mat-grid-tile>
+  }
 </mat-grid-list>

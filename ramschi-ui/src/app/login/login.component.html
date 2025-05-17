@@ -1,0 +1,43 @@
+<div class="panel">
+  <img class="logo" src="/ramschi.png" alt="Ramschi" />
+  <p class="description">
+    Willkommen beim Mütti Cyber-Trödel! Wir lösen den Haushalt auf und haben
+    jede Menge Kram loszuwerden. Viel Spaß beim Stöbern!
+  </p>
+  <button mat-stroked-button (click)="anonymous()">Ich will nur gucken</button>
+  <p class="description">
+    Gib Deinen Namen an wenn Du Interesse an irgendwas anmelden möchtest. Das Passwort ist
+    optional, aber dient dem Schutz Deiner Interessen vor Unfug.
+  </p>
+</div>
+<mat-grid-list cols="1" rowHeight="5:1">
+  <mat-grid-tile>
+    <mat-form-field>
+      <mat-label>Name</mat-label>
+      <input matInput placeholder="Name" [(ngModel)]="name" />
+    </mat-form-field>
+  </mat-grid-tile>
+  <mat-grid-tile>
+    <mat-form-field>
+      <mat-label>Passwort</mat-label>
+      <input
+        matInput
+        type="password"
+        placeholder="Passwort"
+        [(ngModel)]="password"
+      />
+    </mat-form-field>
+  </mat-grid-tile>
+  <mat-grid-tile>
+    <button
+      mat-flat-button
+      [disabled]="!name"
+      (click)="login()"
+    >
+      Auf gehts!
+    </button>
+  </mat-grid-tile>
+</mat-grid-list>
+<p class="footer">
+    Bei Fragen oder Problemen, wende Dich bitte an den Admin Deines Vertrauens.
+</p>

@@ -1,10 +1,9 @@
 package com.github.blaszczyk.ramschi.ramschi_server.persistence;
 
-import com.github.blaszczyk.ramschi.ramschi_server.domain.Category;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
 
-import java.util.List;
+import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -18,9 +17,11 @@ public class ItemEntity {
 
     private String description;
 
-    private Category category;
+    private String category;
 
     private int price;
+
+    private LocalDateTime lastedit;
 
     public UUID getId() {
         return id;
@@ -46,11 +47,11 @@ public class ItemEntity {
         this.description = description;
     }
 
-    public Category getCategory() {
+    public String getCategory() {
         return category;
     }
 
-    public void setCategory(Category category) {
+    public void setCategory(String category) {
         this.category = category;
     }
 
@@ -62,16 +63,23 @@ public class ItemEntity {
         this.price = price;
     }
 
+    public LocalDateTime getLastedit() {
+        return lastedit;
+    }
+
+    public void setLastedit(LocalDateTime lastedit) {
+        this.lastedit = lastedit;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof ItemEntity that)) return false;
-        return price == that.price && Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(description, that.description) && category == that.category;
+        if (!(o instanceof ItemEntity entity)) return false;
+        return price == entity.price && Objects.equals(id, entity.id) && Objects.equals(name, entity.name) && Objects.equals(description, entity.description) && category == entity.category && Objects.equals(lastedit, entity.lastedit);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, description, category, price);
+        return Objects.hash(id, name, description, category, price, lastedit);
     }
-
 }

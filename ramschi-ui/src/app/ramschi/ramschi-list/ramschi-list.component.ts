@@ -1,63 +1,45 @@
 import { Component, OnInit } from '@angular/core';
-import { RamschiService } from '../ramschi.service';
-import { Category, categoryDisplayName, IItem } from '../domain';
-import { MatInputModule } from '@angular/material/input';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatSelectModule } from '@angular/material/select';
-import { MatButtonModule } from '@angular/material/button';
+import { IItem } from '../domain';
 import { MatGridListModule } from '@angular/material/grid-list';
-import { MatExpansionModule} from '@angular/material/expansion';
-import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { SpinnerService } from '../../spinner.service';
+import { ScrollService } from '../../scroll.service';
+import { CredentialService, RoleAware } from '../../login/credential.service';
+import { ItemListService } from '../item-list.service';
 
 @Component({
   selector: 'app-ramschi-list',
-  imports: [MatInputModule, MatFormFieldModule, MatSelectModule, MatButtonModule, MatGridListModule, MatExpansionModule, FormsModule],
+  imports: [
+    MatGridListModule
+],
   templateUrl: './ramschi-list.component.html',
-  styleUrl: './ramschi-list.component.css'
+  styleUrl: './ramschi-list.component.css',
 })
-export class RamschiListComponent implements OnInit {
+export class RamschiListComponent extends RoleAware implements OnInit {
 
-  items: IItem[] = [];
+  get items(): IItem[] {
+    return this.itemList.getItems();
+  };
 
-  filterName: string = '';
-
-  filterCategory: Category | undefined = undefined;
-
-  get filterSummary(): string {
-    const filters: string[] = [];
-    if (this.filterName) {
-      filters.push('"' + this.filterName + '"');
-    }
-    if (this.filterCategory) {
-      filters.push(categoryDisplayName(this.filterCategory));
-    }
-    return filters.join(', ');
-  }
-  
-  categories: { id:Category, displayName: string }[] = Object.values(Category)
-    .map(id => ({id, displayName: categoryDisplayName(id)}));
-
-  constructor(private readonly service: RamschiService,
-    private readonly spinner: SpinnerService,
+  constructor(
+    private readonly scroll: ScrollService,
+    private readonly itemList: ItemListService,
     private readonly router: Router,
-  ) {}
+    credential: CredentialService,
+  ) {
+    super(credential);
+  }
 
   ngOnInit(): void {
-    this.getItems();
+      this.scroll.restorePosition();
   }
 
-  getItems(): void {
-    this.spinner.show();
-    this.service.getItems(this.filterName, this.filterCategory).subscribe(items => {
-      this.items = items;
-      this.spinner.hide();
-    });
+  getSymbolAssignee(item: IItem): string {
+    const nrAssignees = item.assignees.length;
+    return nrAssignees === 0 ? '' : nrAssignees === 1 ? '☝️' : '✌️';
   }
 
   navigateTo(item: IItem): void {
+    this.scroll.storePosition();
     this.router.navigateByUrl('/ramsch/' + item.id);
   }
-
 }

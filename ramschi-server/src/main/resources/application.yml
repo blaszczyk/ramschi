@@ -11,14 +11,18 @@ server:
 image:
   thumbnail:
     height: 70
+    max-width: 210
   preview:
     width: 400
+    max-height: 1200
 
 spring:
   r2dbc:
-    url: r2dbc:postgresql://${database.host}:${database.port}/${database.name}?schema=ramschi
+    url: r2dbc:postgresql://${database.host}:${database.port}/${database.name}
     username: ${database.username}
     password: ${database.password}
+    properties:
+      schema: ramschi
   liquibase:
     change-log: classpath:db/changelog/db.changelog-master.xml
     url: jdbc:postgresql://${database.host}:${database.port}/${database.name}

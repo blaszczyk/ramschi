@@ -8,9 +8,8 @@ describe('RamschiListComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [RamschiListComponent]
-    })
-    .compileComponents();
+      imports: [RamschiListComponent],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(RamschiListComponent);
     component = fixture.componentInstance;

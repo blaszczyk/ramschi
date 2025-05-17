@@ -12,5 +12,9 @@
     </changeSet>
 
     <include file="db/changelog/create_tables.xml" />
+    <include file="db/changelog/add_column_item_lastedit.xml" />
+    <include file="db/changelog/create_table_category.xml" />
+    <include file="db/changelog/add_assignee_credentials.xml"/>
+    <include file="db/changelog/create_table_comment.xml" />
 
 </databaseChangeLog>

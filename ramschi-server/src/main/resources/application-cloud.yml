@@ -1,0 +1,9 @@
+database:
+  instance: ''
+  name: 'postgres'
+
+spring:
+  r2dbc:
+    url: r2dbc:gcp:postgres://${database.instance}/${database.name}
+  liquibase:
+    url: jdbc:postgresql:///${database.name}?cloudSqlInstance=${database.instance}&socketFactory=com.google.cloud.sql.postgres.SocketFactory

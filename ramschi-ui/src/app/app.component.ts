@@ -1,29 +1,59 @@
-import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { ActivationStart, Router, RouterOutlet } from '@angular/router';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatButtonModule } from '@angular/material/button';
 import { SpinnerService } from './spinner.service';
-import { Router } from '@angular/router';
+import { ScrollService } from './scroll.service';
+import { CredentialService, RoleAware } from './login/credential.service';
+import { LoginComponent } from './login/login.component';
+import { RamschiFilterComponent } from './ramschi/ramschi-filter/ramschi-filter.component';
+import { RamschiHeaderComponent } from "./ramschi-header/ramschi-header.component";
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, MatProgressSpinnerModule, MatButtonModule],
+  imports: [
+    RouterOutlet,
+    MatProgressSpinnerModule,
+    LoginComponent,
+    RamschiFilterComponent,
+    RamschiHeaderComponent
+],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.css'
+  styleUrl: './app.component.css',
 })
-export class AppComponent {
+export class AppComponent extends RoleAware implements OnInit, AfterViewInit {
   title = 'ramschi-ui';
 
-  constructor(private readonly spinner: SpinnerService,
-    private readonly router: Router
-  ) {}
+  @ViewChild('container')
+  container!: ElementRef<HTMLDivElement>;
+
+  constructor(
+    private readonly spinner: SpinnerService,
+    private readonly router: Router,
+    private readonly scroll: ScrollService,
+    credential: CredentialService,
+  ) {
+    super(credential);
+  }
+
+  showFilter: boolean = false;
 
   get showSpinner(): boolean {
     return this.spinner.isVisible();
-  };
-  
-  navigateTo(url: string): void {
-    this.router.navigateByUrl(url);
   }
 
+  get loggedIn(): boolean {
+    return this.credential.isInitialised();
+  }
+
+  ngOnInit(): void {
+    this.router.events.subscribe((event) => {
+      if (event instanceof ActivationStart) {
+        this.showFilter = !event.snapshot.routeConfig?.path;
+      }
+    });
+  }
+
+  ngAfterViewInit(): void {
+    this.scroll.setScrollElement(this.container.nativeElement);
+  }
 }

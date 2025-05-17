@@ -1,0 +1,28 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <property name="uuid_type" value="uuid" dbms="postgresql"/>
+    <property name="uuid_function" value="uuid_generate_v4()" dbms="postgresql"/>
+
+    <changeSet id="create_table_comment" author="micha">
+        <createTable tableName="comment" schemaName="ramschi">
+            <column name="id" type="${uuid_type}" defaultValueComputed="${uuid_function}">
+                <constraints primaryKey="true" nullable="false" primaryKeyName="COMMENT_PK"/>
+            </column>
+            <column name="item_id" type="${uuid_type}">
+                <constraints nullable="false" foreignKeyName="FK_COMMENT_ITEM"  references="ramschi.item(id)" />
+            </column>
+            <column name="author" type="text">
+                <constraints nullable="false" foreignKeyName="FK_COMMENT_ASSIGNEE"  references="ramschi.assignee(name)"/>
+            </column>
+            <column name="text" type="text">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_edit" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>

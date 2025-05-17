@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { NewAssigneeComponent } from './new-assignee.component';
+import { RamschiFilterComponent } from './ramschi-filter.component';
 
-describe('NewAssigneeComponent', () => {
-  let component: NewAssigneeComponent;
-  let fixture: ComponentFixture<NewAssigneeComponent>;
+describe('RamschiFilterComponent', () => {
+  let component: RamschiFilterComponent;
+  let fixture: ComponentFixture<RamschiFilterComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [NewAssigneeComponent]
+      imports: [RamschiFilterComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(NewAssigneeComponent);
+    fixture = TestBed.createComponent(RamschiFilterComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

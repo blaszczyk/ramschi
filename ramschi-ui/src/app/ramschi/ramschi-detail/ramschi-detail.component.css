@@ -1,28 +1,48 @@
+.panel {
+  text-align: center;
+}
+
 img {
-    max-width: 100%;
+  max-width: 100%;
 }
 
 textarea {
-    resize: none;
+  resize: none;
 }
 
 #new-image {
-    display: none;
+  display: none;
 }
 
-button {
-    margin: 10px 20px 0px 20px;
+button.assign {
+  margin: 0px 6px 17px 0px;
+}
+
+button.mini {
+  margin: 10px 6px 0px 0px;
 }
 
 .price {
-    text-align: right;
+  text-align: right;
 }
 
-.fake-disabled {
-    color: gray;
-    cursor: default;
+item-form.mat-form-field {
+  width: 300px;
 }
 
-mat-form-field {
-    width: 300px;
+.description {
+  text-align: justify;
+  margin: 13px;
+  white-space: pre-wrap;
+  text-align: center;
+}
+
+.assignees {
+  margin-left: 13px;
+  font-size: 14px;
+}
+
+.assignee {
+  margin-left: 21px;
+  margin-top: 3px;
 }

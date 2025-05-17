@@ -1,0 +1,27 @@
+.comments {
+  background-color: bisque;
+  border-radius: 0px;
+  margin-bottom: 9px;
+}
+
+.comment {
+  padding: 10px 19px 10px 19px;
+  white-space: pre-wrap;
+}
+
+.delete-comment {
+  float: right;
+  transform: scale(0.7);
+}
+
+.new-comment {
+  text-align: center;
+  padding: 0px 19px 0px 19px;
+  mat-form-field {
+    width: 100%;
+  }
+}
+
+textarea {
+  resize: none;
+}

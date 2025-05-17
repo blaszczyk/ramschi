@@ -1,0 +1,9 @@
+.filter {
+  background-color: bisque;
+  margin-bottom: 5px;
+  border-radius: 0px;
+}
+
+.cancel {
+  transform: scale(0.8) translate(2px, 4px);
+}

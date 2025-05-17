@@ -1,0 +1,12 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="add_column_item_lastedit" author="micha">
+        <addColumn tableName="item" schemaName="ramschi">
+            <column name="lastedit" type="timestamp" defaultValue="now()"></column>
+        </addColumn>
+    </changeSet>
+
+</databaseChangeLog>

@@ -1,29 +1,36 @@
 import { Component, OnInit } from '@angular/core';
 import { RamschiService } from '../ramschi.service';
 import { IItem } from '../domain';
+import { CredentialService, RoleAware } from '../../login/credential.service';
 
 @Component({
   selector: 'app-eliminator',
   imports: [],
   templateUrl: './eliminator.component.html',
-  styleUrl: './eliminator.component.css'
+  styleUrl: './eliminator.component.css',
 })
-export class EliminatorComponent implements OnInit {
-
+export class EliminatorComponent extends RoleAware implements OnInit {
   items: IItem[] = [];
 
-  constructor(private readonly service: RamschiService){}
+  constructor(private readonly service: RamschiService,
+    credential: CredentialService,
+  ) {
+    super(credential);    
+  }
 
   ngOnInit(): void {
-    this.service.getItems().subscribe(items => this.items = items);
+    this.service.getItems().subscribe((items) => (this.items = items));
   }
 
   deleteItem(item: IItem) {
-    this.service.deleteItem(item).subscribe();
+    if (confirm(item.name + ' wirklich löschen?')) {
+      this.service.deleteItem(item).subscribe();
+    }
   }
 
   deleteImage(id: string) {
-    this.service.deleteImage(id).subscribe();
+    if (confirm('Bild wirklich löschen?')) {
+      this.service.deleteImage(id).subscribe();
+    }
   }
-
 }

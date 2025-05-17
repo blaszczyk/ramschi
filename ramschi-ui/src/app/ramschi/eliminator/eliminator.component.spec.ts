@@ -8,9 +8,8 @@ describe('EliminatorComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [EliminatorComponent]
-    })
-    .compileComponents();
+      imports: [EliminatorComponent],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(EliminatorComponent);
     component = fixture.componentInstance;
