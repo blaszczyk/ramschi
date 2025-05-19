@@ -28,6 +28,7 @@
     "@angular/router": "^19.1.0",
     "@types/node": "^22.15.12",
     "angular-eslint": "^19.4.0",
+    "ng-recaptcha": "^13.2.1",
     "prettier": "^3.5.3",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",

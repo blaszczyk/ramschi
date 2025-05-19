@@ -1,5 +1,7 @@
 package com.github.blaszczyk.ramschi.ramschi_server.controller;
 
+import com.github.blaszczyk.ramschi.ramschi_server.controller.util.AuthHelper;
+import com.github.blaszczyk.ramschi.ramschi_server.controller.util.RecaptchaV3Helper;
 import com.github.blaszczyk.ramschi.ramschi_server.domain.LoginResponse;
 import com.github.blaszczyk.ramschi.ramschi_server.domain.Role;
 import com.github.blaszczyk.ramschi.ramschi_server.service.AssigneeService;
@@ -27,6 +29,9 @@ public class AssigneeController {
     @Autowired
     private AuthHelper authHelper;
 
+    @Autowired
+    private RecaptchaV3Helper recaptchaV3Helper;
+
     @GetMapping(path = "",
             produces = MediaType.APPLICATION_JSON_VALUE)
     Mono<ResponseEntity<List<String>>> getAssignees() {
@@ -36,8 +41,10 @@ public class AssigneeController {
 
     @PostMapping(path = "/login")
     Mono<ResponseEntity<LoginResponse>> login(
+            @RequestHeader(RamschiHeader.RECAPTCHA) String token,
             @RequestHeader(RamschiHeader.AUTH) String ramschiAuth) {
-        return authService.login(ramschiAuth)
+        return recaptchaV3Helper.doIfHuman(token, "login", () ->
+                authService.login(ramschiAuth))
                 .map(ResponseEntity::ok);
     }
 
@@ -47,6 +54,7 @@ public class AssigneeController {
             @RequestHeader(RamschiHeader.AUTH) String ramschiAuth) {
         return authHelper.doIfAuthorised(ramschiAuth, Role.ADMIN, () ->
                 assigneeService.createAssignee(name)
+                        .map(ResponseEntity::ok)
         );
     }
 
@@ -56,6 +64,7 @@ public class AssigneeController {
             @RequestHeader(RamschiHeader.AUTH) String ramschiAuth) {
         return authHelper.doIfAuthorised(ramschiAuth, Role.ADMIN, () ->
                 assigneeService.deleteAssignee(name)
+                        .map(ResponseEntity::ok)
         );
     }
 
@@ -65,6 +74,7 @@ public class AssigneeController {
             @RequestHeader(RamschiHeader.AUTH) String ramschiAuth) {
         return authHelper.doIfAuthorised(ramschiAuth, Role.ADMIN, () ->
                 assigneeService.resetPassword(name)
+                        .map(ResponseEntity::ok)
         );
     }
 }

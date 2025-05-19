@@ -1,4 +1,5 @@
 package com.github.blaszczyk.ramschi.ramschi_server.controller;
+import com.github.blaszczyk.ramschi.ramschi_server.controller.util.AuthHelper;
 import com.github.blaszczyk.ramschi.ramschi_server.domain.Role;
 import com.github.blaszczyk.ramschi.ramschi_server.service.ImageService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +48,7 @@ public class ImageController {
                                            @RequestHeader(RamschiHeader.AUTH) String ramschiAuth) {
         return authHelper.doIfAuthorised(ramschiAuth, Role.ADMIN, () ->
                 imageService.deleteImage(id)
+                        .map(ResponseEntity::ok)
         );
     }
 

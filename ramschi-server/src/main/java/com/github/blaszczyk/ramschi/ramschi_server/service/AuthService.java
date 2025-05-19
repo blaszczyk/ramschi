@@ -25,7 +25,7 @@ public class AuthService {
     private AssigneeRepository assigneeRepository;
 
     public Mono<LoginResponse> login(String ramschiAuthString) {
-        final RamschiAuth auth = parse(ramschiAuthString);
+        final RamschiAuth auth = RamschiAuth.parse(ramschiAuthString);
 
         return assigneeRepository.findByName(auth.name()).flatMap(entity -> {
             final LoginResponse response = LoginResponse.from(entity);
@@ -52,7 +52,7 @@ public class AuthService {
         if (StringUtils.isBlank(ramschiAuthString)) {
             return Mono.just(AuthInfo.FAIL);
         }
-        final RamschiAuth auth = parse(ramschiAuthString);
+        final RamschiAuth auth = RamschiAuth.parse(ramschiAuthString);
         return assigneeRepository.findByName(auth.name()).map(entity -> {
             if (hasPassword(entity)) {
                 if (verifyPassword(auth, entity)) {
@@ -116,20 +116,21 @@ public class AuthService {
         }
     }
 
-    public static RamschiAuth parse(String ramschiAuth) {
-        final byte[] decodedBytes = Base64.getDecoder().decode(ramschiAuth);
-        final String decodedHex = new String(decodedBytes, StandardCharsets.UTF_8);
-        final String decoded = hexToUtf8(decodedHex);
-        final String[] split = decoded.split(":", 2);
-        if (split.length > 1) {
-            return new RamschiAuth(split[0], split[1].getBytes(StandardCharsets.UTF_8));
-        }
-        else {
-            return new RamschiAuth(decoded, new byte[0]);
-        }
-    }
-
     private record RamschiAuth(String name, byte[] password) {
+
+        public static RamschiAuth parse(String ramschiAuth) {
+            final byte[] decodedBytes = Base64.getDecoder().decode(ramschiAuth);
+            final String decodedHex = new String(decodedBytes, StandardCharsets.UTF_8);
+            final String decoded = hexToUtf8(decodedHex);
+            final String[] split = decoded.split(":", 2);
+            if (split.length > 1) {
+                return new RamschiAuth(split[0], split[1].getBytes(StandardCharsets.UTF_8));
+            }
+            else {
+                return new RamschiAuth(decoded, new byte[0]);
+            }
+        }
+
         boolean hasPassword() {
             return password.length > 0;
         }

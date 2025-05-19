@@ -113,9 +113,9 @@ export class RamschiService {
     });
   }
 
-  login(): Observable<ILoginResponse> {
+  login(recaptchaToken: string): Observable<ILoginResponse> {
     return this.http.post<ILoginResponse>('/api/assignee/login', null, {
-      headers: this.getHeaders(),
+      headers: this.getHeaders(recaptchaToken),
     });
   }
 
@@ -123,9 +123,9 @@ export class RamschiService {
     return this.http.get<IComment[]>('/api/comment/' + itemId);
   }
 
-  postComment(comment: IComment): Observable<IComment> {
+  postComment(comment: IComment, recaptchaToken: string): Observable<IComment> {
     return this.http.post<IComment>('/api/comment', comment, {
-      headers: this.getHeaders(),
+       headers: this.getHeaders(recaptchaToken),
     });
  }
 
@@ -135,9 +135,10 @@ export class RamschiService {
     });
   }
 
-  private getHeaders(): HttpHeaders {
+  private getHeaders(recaptchaToken?: string): HttpHeaders {
     return new HttpHeaders({
       'X-RAMSCHI-ASSIGNEE': this.credential.getAuthHeader(),
+      'X-RAMSCHI-RECAPTCHA': recaptchaToken || '',
     });
   }
 }

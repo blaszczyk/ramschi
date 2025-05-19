@@ -7,6 +7,7 @@ import { MatInputModule } from '@angular/material/input';
 import { CredentialService } from './credential.service';
 import { RamschiService } from '../ramschi/ramschi.service';
 import { SpinnerService } from '../spinner.service';
+import { RecaptchaV3Module, ReCaptchaV3Service } from "ng-recaptcha";
 
 @Component({
   selector: 'app-login',
@@ -15,6 +16,7 @@ import { SpinnerService } from '../spinner.service';
     MatFormFieldModule,
     MatButtonModule,
     MatGridListModule,
+    RecaptchaV3Module,
     FormsModule,
   ],
   templateUrl: './login.component.html',
@@ -25,6 +27,7 @@ export class LoginComponent {
     private readonly credentials: CredentialService,
     private readonly service: RamschiService,
     private readonly spinner: SpinnerService,
+    private recaptchaV3Service: ReCaptchaV3Service,
   ) {}
 
   name: string = '';
@@ -38,7 +41,8 @@ export class LoginComponent {
   login() {
     this.credentials.setCredentials(this.name, this.password);
     this.spinner.show();
-    this.service.login()
+    this.recaptchaV3Service.execute('login').subscribe((token) => {
+    this.service.login(token)
     .subscribe((response) => {
       this.spinner.hide();
       if (response.success) {
@@ -50,5 +54,6 @@ export class LoginComponent {
         alert('Das hat leider nicht geklappt. Wenn Du Dein Passwort vergessen hast, wende Dich an den Admin Deines Vertrauens, der kann das zurücksetzen.');
       }
       });
+    });
   }
 }

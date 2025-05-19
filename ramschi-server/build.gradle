@@ -26,6 +26,7 @@ dependencies {
 	implementation 'org.imgscalr:imgscalr-lib:4.2'
 	implementation 'com.google.cloud.sql:postgres-socket-factory:1.25.0'
 	implementation 'com.google.cloud.sql:cloud-sql-connector-r2dbc-postgres:1.25.0'
+	implementation 'com.google.cloud:google-cloud-recaptchaenterprise:3.60.0'
 	runtimeOnly 'org.postgresql:postgresql'
 	runtimeOnly 'org.postgresql:r2dbc-postgresql'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
