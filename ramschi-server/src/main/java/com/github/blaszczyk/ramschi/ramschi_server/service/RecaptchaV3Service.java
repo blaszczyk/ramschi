@@ -2,6 +2,7 @@ package com.github.blaszczyk.ramschi.ramschi_server.service;
 
 import com.google.cloud.recaptchaenterprise.v1.RecaptchaEnterpriseServiceClient;
 import com.google.recaptchaenterprise.v1.*;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -56,10 +57,9 @@ public class RecaptchaV3Service {
                     .filter(r -> r != ClassificationReason.LOW_CONFIDENCE_SCORE)
                     .map(ClassificationReason::toString)
                     .collect(Collectors.joining(", "));
-            LOG.warn("Reasons: {}", reasons);
 
             final float recaptchaScore = response.getRiskAnalysis().getScore();
-            LOG.info("Score {} for {}", recaptchaScore, action);
+            LOG.info("Score {} for {}, {}", recaptchaScore, action, reasons);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

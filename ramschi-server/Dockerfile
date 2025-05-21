@@ -1,4 +1,4 @@
-FROM eclipse-temurin:21-alpine
+FROM eclipse-temurin:21
 RUN mkdir /opt/app
 COPY build/libs/ramschi-server.jar /opt/app
 WORKDIR /opt/app
