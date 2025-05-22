@@ -7,15 +7,9 @@ export class SpinnerService {
 
   private visible = false;
 
-  x = 0;
-  y = 0;
-
-  private vx = 0;
-  private vy = 0;
-
-  private get bounceRadius(): number {
-    return Math.min(window.outerWidth, 400) / 2;
-  }
+  private spawnTimeout: any;
+  
+  spinners: Spinner[] = [];
 
   isVisible(): boolean {
     return this.visible;
@@ -23,23 +17,45 @@ export class SpinnerService {
 
   show() {
     this.visible = true;
-    this.x = 0;
-    this.y = FLOOR_DEPTH;
-    this.applyPhysics();
+    this.spawnSpinner();
+  }
+
+  private spawnSpinner = () => {
+    this.spinners.push(new Spinner());
+    if (this.spinners.length <= MAX_SPINNERS) {
+      this.spawnTimeout = setTimeout(this.spawnSpinner, SPINNER_GENERATION_TIME);
+    }
   }
 
   hide() {
     this.visible = false;
+    this.spinners.forEach(spinner => spinner.close());
+    this.spinners = [];
+    clearTimeout(this.spawnTimeout);
+  }
+}
+
+export class Spinner {
+
+  private get bounceRadius(): number {
+    return Math.min(window.outerWidth, 400) / 2;
+  }
+
+  x = 0;
+  y = FLOOR_DEPTH;
+  
+  private vx = 0;
+  private vy = 0;
+
+  private timeout: any;
+
+  constructor() {
+    this.applyPhysics();
   }
 
   private applyPhysics = () => {
-    if( !this.visible ) {
-      return;
-    }
-    // wall collision
-    if (Math.abs(this.x) > this.bounceRadius) {
-      this.vx = -this.vx;
-    }
+    // newtons law
+     this.vy += GRAVITY;
     // floor collision
     if (this.y >= FLOOR_DEPTH) {
       this.y = FLOOR_DEPTH;
@@ -47,14 +63,19 @@ export class SpinnerService {
       this.vy = Math.sin(angle) * START_VELOCITY;
       this.vx = Math.cos(angle) * START_VELOCITY;
     }
-    // newtons law
-    else {
-     this.vy += GRAVITY;
+    // wall collision
+    else if (Math.abs(this.x) > this.bounceRadius) {
+      this.x = Math.sign(this.x) * this.bounceRadius;
+      this.vx = -this.vx;
     }
     // update position
     this.x += this.vx;
     this.y += this.vy;
-    setTimeout(this.applyPhysics, TIME_STEP);
+    this.timeout = setTimeout(this.applyPhysics, TIME_STEP);
+  }
+
+  close() {
+    clearTimeout(this.timeout);
   }
 }
 
@@ -65,3 +86,7 @@ const START_VELOCITY = 30;
 const GRAVITY = 3;
 
 const TIME_STEP = 30;
+
+const SPINNER_GENERATION_TIME = 1000;
+
+const MAX_SPINNERS = 7;
