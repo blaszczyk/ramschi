@@ -1,6 +1,5 @@
 import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { ActivationStart, Router, RouterOutlet } from '@angular/router';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { SpinnerService } from './spinner.service';
 import { ScrollService } from './scroll.service';
 import { CredentialService, RoleAware } from './login/credential.service';
@@ -12,7 +11,6 @@ import { RamschiHeaderComponent } from "./ramschi-header/ramschi-header.componen
   selector: 'app-root',
   imports: [
     RouterOutlet,
-    MatProgressSpinnerModule,
     LoginComponent,
     RamschiFilterComponent,
     RamschiHeaderComponent
@@ -44,6 +42,10 @@ export class AppComponent extends RoleAware implements OnInit, AfterViewInit {
   get loggedIn(): boolean {
     return this.credential.isInitialised();
   }
+
+  get spinnerPosition(): string {
+    return `translate(${this.spinner.x}px, ${this.spinner.y}px)`;
+  };
 
   ngOnInit(): void {
     this.router.events.subscribe((event) => {

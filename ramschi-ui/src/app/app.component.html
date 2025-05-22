@@ -1,7 +1,7 @@
 <div class="page">
   @if (showSpinner) {
     <div class="screenlock">
-      <mat-spinner></mat-spinner>
+      <img [style.transform]="spinnerPosition" src="/spinner.gif" width="100" height="100" alt="huiii"/>
     </div>
   }
   <div #container class="container">
