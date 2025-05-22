@@ -5,18 +5,15 @@ import { Injectable } from '@angular/core';
 })
 export class SpinnerService {
 
-  private visible = false;
-
   private timeout: any;
   
   spinners: Spinner[] = [];
 
   isVisible(): boolean {
-    return this.visible;
+    return this.spinners.length > 0;
   }
 
   show() {
-    this.visible = true;
     this.spawnSpinner();
   }
 
@@ -31,10 +28,7 @@ export class SpinnerService {
   private killSpinner = () => {
     this.spinners.pop()?.close();
     if (this.spinners.length) {
-      this.timeout = setTimeout(this.killSpinner, SPINNER_KILL_TIME);
-    }
-    else {
-      this.visible = false;
+      setTimeout(this.killSpinner, SPINNER_KILL_TIME);
     }
   }
 
@@ -46,10 +40,6 @@ export class SpinnerService {
 
 export class Spinner {
 
-  private get bounceRadius(): number {
-    return Math.min(window.outerWidth, 400) / 2;
-  }
-
   x = 0;
   y = 0;
   
@@ -59,7 +49,7 @@ export class Spinner {
   private timeout: any;
 
   constructor(private depth: number) {
-    this.x = (2 * Math.random() - 1) * this.bounceRadius;
+    this.x = (2 * Math.random() - 1) * BOUNCE_RADIUS;
     this.y = depth;
     this.applyPhysics();
   }
@@ -75,8 +65,8 @@ export class Spinner {
       this.vx = Math.cos(angle) * START_VELOCITY;
     }
     // wall collision
-    else if (Math.abs(this.x) > this.bounceRadius) {
-      this.x = Math.sign(this.x) * this.bounceRadius;
+    else if (Math.abs(this.x) > BOUNCE_RADIUS) {
+      this.x = Math.sign(this.x) * BOUNCE_RADIUS;
       this.vx = -this.vx;
     }
     // update position
@@ -103,3 +93,5 @@ const SPINNER_GENERATION_TIME = 100;
 const SPINNER_KILL_TIME = 25;
 
 const MAX_SPINNERS = 20;
+
+const BOUNCE_RADIUS = Math.min(window.outerWidth, 400) / 2;
