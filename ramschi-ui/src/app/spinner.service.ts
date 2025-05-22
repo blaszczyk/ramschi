@@ -7,7 +7,7 @@ export class SpinnerService {
 
   private visible = false;
 
-  private spawnTimeout: any;
+  private timeout: any;
   
   spinners: Spinner[] = [];
 
@@ -21,17 +21,26 @@ export class SpinnerService {
   }
 
   private spawnSpinner = () => {
-    this.spinners.push(new Spinner());
+    const depth = (3 * Math.random() - 1) * FLOOR_DEPTH;
+    this.spinners.push(new Spinner(depth));
     if (this.spinners.length <= MAX_SPINNERS) {
-      this.spawnTimeout = setTimeout(this.spawnSpinner, SPINNER_GENERATION_TIME);
+      this.timeout = setTimeout(this.spawnSpinner, SPINNER_GENERATION_TIME);
+    }
+  }
+
+  private killSpinner = () => {
+    this.spinners.pop()?.close();
+    if (this.spinners.length) {
+      this.timeout = setTimeout(this.killSpinner, SPINNER_KILL_TIME);
+    }
+    else {
+      this.visible = false;
     }
   }
 
   hide() {
-    this.visible = false;
-    this.spinners.forEach(spinner => spinner.close());
-    this.spinners = [];
-    clearTimeout(this.spawnTimeout);
+    clearTimeout(this.timeout);
+    this.killSpinner();
   }
 }
 
@@ -42,14 +51,16 @@ export class Spinner {
   }
 
   x = 0;
-  y = FLOOR_DEPTH;
+  y = 0;
   
   private vx = 0;
   private vy = 0;
 
   private timeout: any;
 
-  constructor() {
+  constructor(private depth: number) {
+    this.x = (2 * Math.random() - 1) * this.bounceRadius;
+    this.y = depth;
     this.applyPhysics();
   }
 
@@ -57,8 +68,8 @@ export class Spinner {
     // newtons law
      this.vy += GRAVITY;
     // floor collision
-    if (this.y >= FLOOR_DEPTH) {
-      this.y = FLOOR_DEPTH;
+    if (this.y >= this.depth) {
+      this.y = this.depth;
       const angle =(4 + Math.random()) * Math.PI /3;
       this.vy = Math.sin(angle) * START_VELOCITY;
       this.vx = Math.cos(angle) * START_VELOCITY;
@@ -87,6 +98,8 @@ const GRAVITY = 3;
 
 const TIME_STEP = 30;
 
-const SPINNER_GENERATION_TIME = 1000;
+const SPINNER_GENERATION_TIME = 100;
 
-const MAX_SPINNERS = 7;
+const SPINNER_KILL_TIME = 25;
+
+const MAX_SPINNERS = 20;
