@@ -16,5 +16,6 @@
     <include file="db/changelog/create_table_category.xml" />
     <include file="db/changelog/add_assignee_credentials.xml"/>
     <include file="db/changelog/create_table_comment.xml" />
+    <include file="db/changelog/miscellaneous_0.xml" />
 
 </databaseChangeLog>
