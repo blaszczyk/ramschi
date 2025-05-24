@@ -50,7 +50,7 @@
             type="number"
             placeholder="Preis"
             [(ngModel)]="item.price"
-            (keyup)="setDirty()"
+            (change)="setDirty()"
           />
         </mat-form-field>
       </mat-grid-tile>
