@@ -18,21 +18,22 @@ export class SpinnerService {
     this.spawnSpinner();
   }
 
-  private spawnSpinner = () => {
-    if (this.spawnMode && this.spinners.length < MAX_SPINNERS) {
-      const depth = this.spinners.length === 0 ? 0 : (3 * Math.random() - 1) * FLOOR_DEPTH;
-      this.spinners.push(new Spinner(depth));
-      setTimeout(this.spawnSpinner, SPAWN_INTERVAL);
+  private spawnSpinner = (offset = 0) => {
+    if (this.spawnMode) {
+      if (this.spinners.length < MAX_SPINNERS) {
+        const depth = this.spinners.length === 0 ? 0 : 
+          (FLOOR_HEIGHT + Math.random() * (FLOOR_DEPTH - FLOOR_HEIGHT));
+        const newSpinner = new Spinner(depth, offset);
+        newSpinner.die = () => this.spinners.splice(this.spinners.indexOf(newSpinner), 1);
+        this.spinners.push(newSpinner);
+      }
+      setTimeout(() => this.spawnSpinner((offset + 1) % 4), SPAWN_INTERVAL);
     }
   }
 
   hide = () => {
     this.spawnMode = false;
-    this.spinners.forEach(spinner => 
-      spinner.requestSuicide(() => {
-        this.spinners.splice(this.spinners.indexOf(spinner), 1)
-      }
-  ));
+    this.spinners.forEach(spinner => spinner.requestSuicide = true);
   }
 }
 
@@ -44,9 +45,13 @@ export class Spinner {
   private vx = 0;
   private vy = 0;
 
-  private suicideCallback: (() => void) | undefined = undefined;
+  requestSuicide = false;
+  die: () => void = () => undefined;
 
-  constructor(private depth: number) {
+  constructor(
+    private depth: number,
+    public readonly offset: number,
+  ) {
     this.x = (Math.random() - 0.5) * BOUNCE_RADIUS;
     this.y = depth;
     this.applyPhysics();
@@ -55,13 +60,20 @@ export class Spinner {
   private applyPhysics = () => {
     let canDie = false;
     // newtons law
-     this.vy += GRAVITY;
+    this.vy += GRAVITY;
+    // update position
+    this.x += this.vx;
+    this.y += this.vy;
     // floor collision
     if (this.y >= this.depth) {
       this.y = this.depth;
       const angle =(4 + Math.random()) * Math.PI /3;
       const currentVelocity = Math.sqrt(this.vx * this.vx + this.vy * this.vy);
-      const newVelocity = Math.min(currentVelocity + START_VELOCITY, MAX_VELOCITY);
+      const newVelocity = currentVelocity + VELOCITY_STEP;
+      if (newVelocity > KILL_VELOCITY) {
+        this.die();
+        return;
+      }
       this.vy = Math.sin(angle) * newVelocity;
       this.vx = Math.cos(angle) * newVelocity;
       canDie = true;
@@ -71,35 +83,30 @@ export class Spinner {
       this.x = Math.sign(this.x) * BOUNCE_RADIUS;
       this.vx = -this.vx;
     }
-    // update position
-    this.x += this.vx;
-    this.y += this.vy;
 
-    if (canDie && this.suicideCallback) {
-      this.suicideCallback();
+    if (canDie && this.requestSuicide) {
+      this.die();
     }
     else {
       setTimeout(this.applyPhysics, TIME_STEP);
     }
   }
-
-  requestSuicide(callback: () => void) {
-    this.suicideCallback = callback;
-  }
 }
 
-const FLOOR_DEPTH = 100;
+const VELOCITY_STEP = 10;
 
-const START_VELOCITY = 10;
-
-const MAX_VELOCITY = 30;
+const KILL_VELOCITY = 40;
 
 const GRAVITY = 3;
 
 const TIME_STEP = 30;
 
-const SPAWN_INTERVAL = 100;
+const SPAWN_INTERVAL = 20;
 
 const MAX_SPINNERS = 20;
 
 const BOUNCE_RADIUS = Math.min(window.outerWidth, 400) / 2;
+
+const FLOOR_DEPTH = window.outerHeight / 2 - 70;
+
+const FLOOR_HEIGHT = - window.outerHeight / 2 + KILL_VELOCITY ** 2 / (2 * GRAVITY);
