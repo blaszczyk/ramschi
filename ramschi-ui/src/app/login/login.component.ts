@@ -47,7 +47,7 @@ export class LoginComponent {
         this.credentials.setInitialised();
       }
       else {
-        alert('Das hat leider nicht geklappt. Wenn Du Dein Passwort vergessen hast, wende Dich an den Admin Deines Vertrauens, der kann das zurücksetzen.');
+        alert('Das hat leider nicht geklappt. Wenn Du Dein Passwort vergessen hast, wende Dich an den Admin Deines Vertrauens.');
       }
       });
   }
