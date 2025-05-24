@@ -108,6 +108,6 @@ const MAX_SPINNERS = 20;
 
 const BOUNCE_RADIUS = Math.min(window.outerWidth, 400) / 2;
 
-const FLOOR_DEPTH = window.outerHeight / 2 - 70;
+const FLOOR_DEPTH = window.outerHeight / 2 - 100;
 
 const FLOOR_HEIGHT = - window.outerHeight / 2 + KILL_VELOCITY ** 2 / (2 * GRAVITY);
