@@ -15,6 +15,7 @@ import { AssigneeService } from '../assignee.service';
 import { CredentialService, RoleAware } from '../../login/credential.service';
 import { CommentsComponent } from "./comments/comments.component";
 import { ItemListService } from '../item-list.service';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 @Component({
   selector: 'app-ramschi-detail',
@@ -25,6 +26,7 @@ import { ItemListService } from '../item-list.service';
     MatSelectModule,
     MatButtonModule,
     MatGridListModule,
+    MatCheckboxModule,
     FormsModule,
     CommentsComponent
 ],
@@ -51,6 +53,7 @@ export class RamschiDetailComponent extends RoleAware implements OnInit {
     category: null,
     price: null,
     lastedit: 0,
+    sold: false,
     assignees: [],
     images: [],
   };
@@ -107,10 +110,11 @@ export class RamschiDetailComponent extends RoleAware implements OnInit {
     if (!this.saveDisabled()) {
       this.spinner.show();
       this.service.postItem(this.item).subscribe((id) => {
-        this.spinner.hide();
         this.pristine = true;
         this.router.navigateByUrl('/ramsch/' + id);
-        this.itemList.refresh();
+        this.itemList.requestItems().subscribe(() => {
+          this.spinner.hide();
+        });
       });
     }
   }
@@ -120,8 +124,9 @@ export class RamschiDetailComponent extends RoleAware implements OnInit {
     this.spinner.show();
     this.service.postImage(this.item!.id!, file).subscribe((id) => {
       this.item.images.push(id);
-      this.spinner.hide();
-      this.itemList.refresh();
+      this.itemList.requestItems().subscribe(() => {
+        this.spinner.hide();
+      });
     });
   }
 
@@ -158,8 +163,9 @@ export class RamschiDetailComponent extends RoleAware implements OnInit {
       this.spinner.show();
       this.service.putItemAssignee(this.item.id!, assignee).subscribe(() => {
         this.item.assignees.push(assignee);
-        this.spinner.hide();
-        this.itemList.refresh();
+        this.itemList.requestItems().subscribe(() => {
+          this.spinner.hide();
+        });
       });
     }
   }
@@ -174,8 +180,9 @@ export class RamschiDetailComponent extends RoleAware implements OnInit {
         .subscribe(() => {
           const index = this.item.assignees.indexOf(assignee);
           this.item.assignees.splice(index, 1);
-          this.spinner.hide();
-          this.itemList.refresh();
+          this.itemList.requestItems().subscribe(() => {
+            this.spinner.hide();
+          });
         });
     }
   }

@@ -33,12 +33,9 @@ public class ItemController {
     @GetMapping(path = "",
             produces = MediaType.APPLICATION_JSON_VALUE)
     Mono<ResponseEntity<List<Item>>> getItems(
-            @RequestParam Optional<String> filter,
-            @RequestParam Optional<String> category,
-            @RequestParam Optional<String> assignee,
-            @RequestParam Optional<String> latestFirst
+            @RequestParam Optional<Boolean> includeSold
     ) {
-        return itemService.filterItems(filter, category, assignee, latestFirst.isPresent())
+        return itemService.filterItems(includeSold)
                 .map(ResponseEntity::ok);
     }
 

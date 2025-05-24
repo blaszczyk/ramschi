@@ -1,8 +1,6 @@
 import { Component } from '@angular/core';
 import { CredentialService, RoleAware } from '../login/credential.service';
 import { Router } from '@angular/router';
-import { ScrollService } from '../scroll.service';
-import { SpinnerService } from '../spinner.service';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 
@@ -17,9 +15,7 @@ import { MatIconModule } from '@angular/material/icon';
 export class RamschiHeaderComponent extends RoleAware {
 
   constructor(
-    private readonly spinner: SpinnerService,
     private readonly router: Router,
-    private readonly scroll: ScrollService,
     credential: CredentialService,
   ) {
     super(credential);

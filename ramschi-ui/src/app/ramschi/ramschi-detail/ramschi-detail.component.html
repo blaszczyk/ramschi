@@ -50,7 +50,7 @@
             type="number"
             placeholder="Preis"
             [(ngModel)]="item.price"
-            (keyup)="setDirty()"
+            (change)="setDirty()"
           />
         </mat-form-field>
       </mat-grid-tile>
@@ -68,6 +68,9 @@
               }
             </mat-select>
           </mat-form-field>
+        </mat-grid-tile>
+        <mat-grid-tile>
+            <mat-checkbox [(ngModel)]="item.sold" (change)="setDirty()">Verkauft</mat-checkbox>
         </mat-grid-tile>
       }
     </mat-grid-list>

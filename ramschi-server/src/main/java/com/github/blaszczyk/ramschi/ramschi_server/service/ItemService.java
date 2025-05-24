@@ -18,10 +18,6 @@ public class ItemService {
 
     private static Logger LOG = LoggerFactory.getLogger(ItemService.class);
 
-    private static final Comparator<ItemEntity> BY_NAME = Comparator.comparing(ItemEntity::getName);
-
-    private static final Comparator<ItemEntity> BY_LAST_EDIT = Comparator.comparing(ItemEntity::getLastedit).reversed();
-
     @Autowired
     private ItemRepository itemRepository;
 
@@ -31,43 +27,29 @@ public class ItemService {
     @Autowired
     private ItemAssigneeRepository itemAssigneeRepository;
 
-    public Mono<List<Item>> filterItems(
-            Optional<String> filter,
-            Optional<String> category,
-            Optional<String> assignee,
-            boolean latestFirst
-    ) {
-        final String filterTerm = filter.map(s -> "%" + s + "%").orElse("%");
-        return assignee.map(s -> itemAssigneeRepository.findByAssignee(s)
-                .map(ItemAssigneeEntity::getItemId)
+    public Mono<List<Item>> filterItems(Optional<Boolean> includeSold) {
+        final var resultFlux = includeSold.orElse(Boolean.FALSE)
+                ? itemRepository.findAll()
+                : itemRepository.findUnsold();
+        return resultFlux
                 .collectList()
-                .flatMap(itemIds -> filterItems(filterTerm, category, latestFirst, itemIds)))
-                .orElseGet(() -> filterItems(filterTerm, category, latestFirst, null));
+                .flatMap(this::fetchSubentitiesAndTransform);
     }
 
-    private Mono<List<Item>> filterItems(String filterTerm, Optional<String> category, boolean latestFirst, List<UUID> itemIds) {
-        final var resultFlux = category.isPresent()
-                ? itemRepository.findByNameLikeAndCategory(filterTerm, category.get())
-                : itemRepository.findByNameLike(filterTerm);
-        return resultFlux
-                .filter(entity -> itemIds == null || itemIds.contains(entity.getId()))
-                .sort(latestFirst ? BY_LAST_EDIT : BY_NAME)
-                .collectList()
-                .flatMap(entities -> {
-                    final List<UUID> ids = entities.stream().map(ItemEntity::getId).toList();
-                    final var fetchAssignees = itemAssigneeRepository.findByItemIds(ids)
-                            .collectList();
-                    final var fetchImages = imageRepository.findByItemIds(ids)
-                            .collectList();
-                    return Mono.zip(fetchAssignees, fetchImages)
-                            .map(tuple -> {
-                                final var assignees = mapByItemId(tuple.getT1(), ItemAssigneeEntity::getItemId);
-                                final var images = mapByItemId(tuple.getT2(), ImageEntity::getItemId);
-                                return entities.stream().map(entity -> {
-                                    final UUID id = entity.getId();
-                                    return ItemTransformer.toItem(entity, assignees.get(id), images.get(id));
-                                }).toList();
-                            });
+    private Mono<? extends List<Item>> fetchSubentitiesAndTransform(List<ItemEntity> entities) {
+        final List<UUID> ids = entities.stream().map(ItemEntity::getId).toList();
+        final var fetchAssignees = itemAssigneeRepository.findByItemIds(ids)
+                .collectList();
+        final var fetchImages = imageRepository.findByItemIds(ids)
+                .collectList();
+        return Mono.zip(fetchAssignees, fetchImages)
+                .map(tuple -> {
+                    final var assignees = mapByItemId(tuple.getT1(), ItemAssigneeEntity::getItemId);
+                    final var images = mapByItemId(tuple.getT2(), ImageEntity::getItemId);
+                    return entities.stream().map(entity -> {
+                        final UUID id = entity.getId();
+                        return ItemTransformer.toItem(entity, assignees.get(id), images.get(id));
+                    }).toList();
                 });
     }
 
@@ -108,7 +90,7 @@ public class ItemService {
         return itemRepository.deleteById(id);
     }
 
-    private <T> Map<UUID, List<T>> mapByItemId(List<T> ts, Function<T, UUID> itemIdGetter) {
+    private static <T> Map<UUID, List<T>> mapByItemId(List<T> ts, Function<T, UUID> itemIdGetter) {
         final var result = new HashMap<UUID, List<T>>();
         ts.forEach(t -> {
             final UUID itemId = itemIdGetter.apply(t);

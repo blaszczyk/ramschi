@@ -23,6 +23,8 @@ public class ItemEntity {
 
     private LocalDateTime lastedit;
 
+    private boolean sold;
+
     public UUID getId() {
         return id;
     }
@@ -71,15 +73,23 @@ public class ItemEntity {
         this.lastedit = lastedit;
     }
 
+    public boolean isSold() {
+        return sold;
+    }
+
+    public void setSold(boolean sold) {
+        this.sold = sold;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof ItemEntity entity)) return false;
-        return price == entity.price && Objects.equals(id, entity.id) && Objects.equals(name, entity.name) && Objects.equals(description, entity.description) && category == entity.category && Objects.equals(lastedit, entity.lastedit);
+        return price == entity.price && sold == entity.sold && Objects.equals(id, entity.id) && Objects.equals(name, entity.name) && Objects.equals(description, entity.description) && Objects.equals(category, entity.category) && Objects.equals(lastedit, entity.lastedit);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, description, category, price, lastedit);
+        return Objects.hash(id, name, description, category, price, lastedit, sold);
     }
 }

@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { ScrollService } from '../../scroll.service';
 import { CredentialService, RoleAware } from '../../login/credential.service';
 import { ItemListService } from '../item-list.service';
+import { SpinnerService } from '../../spinner.service';
 
 @Component({
   selector: 'app-ramschi-list',
@@ -22,6 +23,7 @@ export class RamschiListComponent extends RoleAware implements OnInit {
 
   constructor(
     private readonly scroll: ScrollService,
+    private readonly spinner: SpinnerService,
     private readonly itemList: ItemListService,
     private readonly router: Router,
     credential: CredentialService,
@@ -30,7 +32,16 @@ export class RamschiListComponent extends RoleAware implements OnInit {
   }
 
   ngOnInit(): void {
+    if (!this.items.length) {
+      this.spinner.show();
+      this.itemList.requestItems().subscribe(() => {
+        this.scroll.restorePosition();
+        this.spinner.hide();
+      })
+    }
+    else {
       this.scroll.restorePosition();
+    }
   }
 
   getSymbolAssignee(item: IItem): string {

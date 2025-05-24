@@ -19,7 +19,7 @@ export class EliminatorComponent extends RoleAware implements OnInit {
   }
 
   ngOnInit(): void {
-    this.service.getItems().subscribe((items) => (this.items = items));
+    this.service.getItems(true).subscribe((items) => (this.items = items));
   }
 
   deleteItem(item: IItem) {

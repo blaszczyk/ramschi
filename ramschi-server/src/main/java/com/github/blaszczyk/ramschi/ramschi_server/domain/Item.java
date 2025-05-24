@@ -10,6 +10,7 @@ public record Item(
         String category,
         int price,
         long lastedit,
+        boolean sold,
         List<String> assignees,
         List<UUID> images
     ) {

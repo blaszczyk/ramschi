@@ -9,6 +9,7 @@ export interface IBasicItem {
   description: string | null;
   category: string | null;
   price: number | null;
+  sold: boolean;
 }
 
 export interface IItem extends IBasicItem {

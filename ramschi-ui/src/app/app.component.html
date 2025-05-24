@@ -1,7 +1,13 @@
 <div class="page">
+  <link rel="preload" as="image" href="/spinner-0.gif">
+  <link rel="preload" as="image" href="/spinner-1.gif">
+  <link rel="preload" as="image" href="/spinner-2.gif">
+  <link rel="preload" as="image" href="/spinner-3.gif">
   @if (showSpinner) {
     <div class="screenlock">
-      <mat-spinner></mat-spinner>
+      @for (spinner of spinners; track spinner) {
+        <img [style.transform]="spinnerPosition(spinner)" src="/spinner-{{spinner.offset}}.gif" width="100" height="100" alt="huiii"/>
+      }
     </div>
   }
   <div #container class="container">

@@ -4,6 +4,7 @@ import { RamschiService } from './ramschi.service';
 import { ScrollService } from '../scroll.service';
 import { SpinnerService } from '../spinner.service';
 import { Observable, tap } from 'rxjs';
+import { CredentialService } from '../login/credential.service';
 
 @Injectable({
   providedIn: 'root'
@@ -25,19 +26,12 @@ export class ItemListService {
 
   constructor(private readonly service: RamschiService,
     private readonly scroll: ScrollService,
-    private readonly spinner: SpinnerService,
+    private readonly credential: CredentialService,
   ) {
     this.filterName = localStorage.getItem(KEY_FILTER_NAME) || '';
     this.filterCategory = localStorage.getItem(KEY_FILTER_CATEGORY);
     this.filterAssignee = localStorage.getItem(KEY_FILTER_ASSIGNEE);
     this.latestFirst = !!localStorage.getItem(KEY_LATEST_FIRST);
-
-    this.spinner.show();
-    this.requestItems()
-      .subscribe(() => {
-        this.spinner.hide();
-        this.setFilter();
-      });
   }
 
   getFilterName(): string {
@@ -87,10 +81,6 @@ export class ItemListService {
   getItems(): IItem[] {
     return this.filteredItems;
   }
-  
-  refresh() {
-    this.requestItems().subscribe();
-  }
 
   private setFilter(): void {
     updateLocalStorage(KEY_FILTER_NAME, this.filterName);
@@ -105,16 +95,16 @@ export class ItemListService {
       && (!this.filterCategory || item.category === this.filterCategory)
       && (!this.filterAssignee || item.assignees.includes(this.filterAssignee))
     );
-    if (this.latestFirst) {
-      this.filteredItems.sort((i1, i2) => i2.lastedit - i1.lastedit);
-    }
+    this.filteredItems.sort(this.latestFirst ? byDate : byName);
     this.scroll.forgetPosition();
   }
 
-  private requestItems(): Observable<IItem[]> {
+  requestItems(): Observable<IItem[]> {
+    const includeSold = this.credential.isContributor();
     return this.service
-      .getItems().pipe(tap(items => {
+      .getItems(includeSold).pipe(tap(items => {
         this.items = items;
+        this.setFilter();
       }));
   }
 }
@@ -131,3 +121,7 @@ function updateLocalStorage(key: string, value: string | null) {
     localStorage.removeItem(key);
   }
 }
+
+const byDate = (i1: IItem, i2: IItem) => i2.lastedit - i1.lastedit;
+
+const byName = (i1: IItem, i2: IItem) => i1.name.toLowerCase().localeCompare(i2.name.toLowerCase());

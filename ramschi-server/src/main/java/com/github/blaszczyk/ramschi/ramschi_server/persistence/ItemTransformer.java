@@ -19,17 +19,8 @@ public class ItemTransformer {
         entity.setDescription(item.description());
         entity.setCategory(item.category());
         entity.setPrice(item.price());
+        entity.setSold(item.sold());
         return entity;
-    }
-
-    public static BasicItem toBasicItem(ItemEntity entity) {
-        return new BasicItem(
-                entity.getId(),
-                entity.getName(),
-                entity.getDescription(),
-                entity.getCategory(),
-                entity.getPrice()
-        );
     }
 
     public static Item toItem(ItemEntity entity, List<ItemAssigneeEntity> assignees, List<ImageEntity> images) {
@@ -40,6 +31,7 @@ public class ItemTransformer {
                 entity.getCategory(),
                 entity.getPrice(),
                 entity.getLastedit().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli(),
+                entity.isSold(),
                 mapNullable(assignees, ItemAssigneeEntity::getAssignee),
                 mapNullable(images, ImageEntity::getId)
         );
