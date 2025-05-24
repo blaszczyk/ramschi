@@ -4,6 +4,7 @@ import { RamschiService } from './ramschi.service';
 import { ScrollService } from '../scroll.service';
 import { SpinnerService } from '../spinner.service';
 import { Observable, tap } from 'rxjs';
+import { CredentialService } from '../login/credential.service';
 
 @Injectable({
   providedIn: 'root'
@@ -94,15 +95,14 @@ export class ItemListService {
       && (!this.filterCategory || item.category === this.filterCategory)
       && (!this.filterAssignee || item.assignees.includes(this.filterAssignee))
     );
-    if (this.latestFirst) {
-      this.filteredItems.sort((i1, i2) => i2.lastedit - i1.lastedit);
-    }
+    this.filteredItems.sort(this.latestFirst ? byDate : byName);
     this.scroll.forgetPosition();
   }
 
   requestItems(): Observable<IItem[]> {
+    const includeSold = this.credential.isContributor();
     return this.service
-      .getItems().pipe(tap(items => {
+      .getItems(includeSold).pipe(tap(items => {
         this.items = items;
         this.setFilter();
       }));
@@ -121,3 +121,7 @@ function updateLocalStorage(key: string, value: string | null) {
     localStorage.removeItem(key);
   }
 }
+
+const byDate = (i1: IItem, i2: IItem) => i2.lastedit - i1.lastedit;
+
+const byName = (i1: IItem, i2: IItem) => i1.name.toLowerCase().localeCompare(i2.name.toLowerCase());

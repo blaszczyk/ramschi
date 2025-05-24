@@ -3,6 +3,8 @@ package com.github.blaszczyk.ramschi.ramschi_server.service;
 import com.github.blaszczyk.ramschi.ramschi_server.domain.Comment;
 import com.github.blaszczyk.ramschi.ramschi_server.persistence.CommentEntity;
 import com.github.blaszczyk.ramschi.ramschi_server.persistence.CommentRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
@@ -14,6 +16,8 @@ import java.util.UUID;
 @Service
 public class CommentService {
 
+    private static Logger LOG = LoggerFactory.getLogger(CommentService.class);
+
     @Autowired
     private CommentRepository commentRepository;
 
@@ -24,6 +28,7 @@ public class CommentService {
     }
 
     public Mono<Comment> saveComment(Comment comment) {
+        LOG.info("New {}", comment);
         final var entity = new CommentEntity();
         entity.setId(comment.id());
         entity.setItemId(comment.itemId());

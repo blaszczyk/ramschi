@@ -13,4 +13,12 @@
         </createIndex>
     </changeSet>
 
+    <changeSet id="add_column_item_sold" author="micha">
+        <addColumn tableName="item" schemaName="ramschi">
+            <column name="sold" type="boolean" defaultValue="false">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>

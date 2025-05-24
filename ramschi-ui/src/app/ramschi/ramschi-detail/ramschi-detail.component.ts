@@ -15,6 +15,7 @@ import { AssigneeService } from '../assignee.service';
 import { CredentialService, RoleAware } from '../../login/credential.service';
 import { CommentsComponent } from "./comments/comments.component";
 import { ItemListService } from '../item-list.service';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 @Component({
   selector: 'app-ramschi-detail',
@@ -25,6 +26,7 @@ import { ItemListService } from '../item-list.service';
     MatSelectModule,
     MatButtonModule,
     MatGridListModule,
+    MatCheckboxModule,
     FormsModule,
     CommentsComponent
 ],
@@ -51,6 +53,7 @@ export class RamschiDetailComponent extends RoleAware implements OnInit {
     category: null,
     price: null,
     lastedit: 0,
+    sold: false,
     assignees: [],
     images: [],
   };

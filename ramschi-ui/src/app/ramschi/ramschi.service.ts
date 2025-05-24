@@ -14,23 +14,11 @@ export class RamschiService {
   ) {}
 
   getItems(
-    filter = '',
-    category: string | undefined = undefined,
-    assignee: string | undefined = undefined,
-    latestFirst = false,
+    includeSold: boolean
   ): Observable<IItem[]> {
     let params = new HttpParams();
-    if (filter) {
-      params = params.set('filter', filter);
-    }
-    if (category) {
-      params = params.set('category', category);
-    }
-    if (assignee) {
-      params = params.set('assignee', assignee);
-    }
-    if (latestFirst) {
-      params = params.set('latestFirst', true);
+    if (includeSold) {
+      params = params.set('includeSold', true);
     }
     return this.http.get<IItem[]>('/api/item', { params });
   }
