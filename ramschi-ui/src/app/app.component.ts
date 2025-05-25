@@ -33,7 +33,7 @@ export class AppComponent extends RoleAware implements OnInit, AfterViewInit {
     super(credential);
   }
 
-  showFilter: boolean = false;
+  showFilter = false;
 
   get showSpinner(): boolean {
     return this.spinnerService.isVisible();

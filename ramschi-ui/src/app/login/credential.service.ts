@@ -126,8 +126,8 @@ function utf8ToHex(text: string): string {
   const encoder = new TextEncoder();
   const data = encoder.encode(text);
   let hex = '';
-  for (let i = 0; i < data.length; i++) {
-    hex += data[i].toString(16).padStart(2, '0');
-  }
+  data.forEach((byte) => {
+    hex += byte.toString(16).padStart(2, '0');
+  });
   return hex;
 }

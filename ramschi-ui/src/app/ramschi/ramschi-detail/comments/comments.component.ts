@@ -36,7 +36,7 @@ export class CommentsComponent extends RoleAware implements OnInit {
 
   comments: IComment[] = [];
 
-  newComment: string = '';
+  newComment = '';
 
   constructor(private readonly service: RamschiService,
     private readonly spinner: SpinnerService,

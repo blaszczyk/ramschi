@@ -29,9 +29,9 @@ export class LoginComponent {
     private readonly itemList: ItemListService,
   ) {}
 
-  name: string = '';
+  name = '';
 
-  password: string = '';
+  password = '';
 
   anonymous() {
     this.spinner.show();
