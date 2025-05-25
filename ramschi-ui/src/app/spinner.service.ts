@@ -17,10 +17,11 @@ export class SpinnerService {
 
   show() {
     this.spawnMode = true;
+    this.offset = 0;
     this.update();
   }
 
-  update() {
+  update = () => {
     this.spinners.forEach(spinner => {
       const mustDie = spinner.applyPhysics();
       if (mustDie) {
@@ -31,7 +32,7 @@ export class SpinnerService {
       this.spawnSpinner();
     }
     if (this.spawnMode || this.spinners.length > 0) {
-      setTimeout(() => this.update(), TIME_STEP);
+      setTimeout(this.update, TIME_STEP);
     }
   }
 
@@ -92,11 +93,11 @@ export class Spinner {
       this.y = this.depth;
       const currentVelocity = Math.sqrt(this.vx * this.vx + this.vy * this.vy + this.vz * this.vz);
       // die if too fast
-      const newVelocity = currentVelocity + VELOCITY_STEP;
-      if (newVelocity > KILL_VELOCITY) {
+      if (currentVelocity > KILL_VELOCITY) {
         return true;
       }
       // bounce in random direction
+      const newVelocity = currentVelocity + VELOCITY_STEP;
       const azimuth = 2 * Math.PI * Math.random();
       const polar = Math.acos(-1 + 0.5 * Math.random());
       this.vy = newVelocity * Math.cos(polar);
@@ -119,7 +120,7 @@ export class Spinner {
   }
 }
 
-const VELOCITY_STEP = 10;
+const VELOCITY_STEP = 9;
 
 const KILL_VELOCITY = 40;
 
