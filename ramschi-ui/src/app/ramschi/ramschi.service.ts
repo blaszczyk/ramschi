@@ -1,7 +1,13 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { ICategory, IBasicItem, IItem, ILoginResponse, IComment } from './domain';
+import {
+  ICategory,
+  IBasicItem,
+  IItem,
+  ILoginResponse,
+  IComment,
+} from './domain';
 import { CredentialService } from '../login/credential.service';
 
 @Injectable({
@@ -13,9 +19,7 @@ export class RamschiService {
     private readonly credential: CredentialService,
   ) {}
 
-  getItems(
-    includeSold: boolean
-  ): Observable<IItem[]> {
+  getItems(includeSold: boolean): Observable<IItem[]> {
     let params = new HttpParams();
     if (includeSold) {
       params = params.set('includeSold', true);
@@ -59,9 +63,13 @@ export class RamschiService {
   }
 
   postAssignee(name: string): Observable<void> {
-    return this.http.post<void>('/api/assignee/' + encodeURIComponent(name), null, {
-      headers: this.getHeaders(),
-    });
+    return this.http.post<void>(
+      '/api/assignee/' + encodeURIComponent(name),
+      null,
+      {
+        headers: this.getHeaders(),
+      },
+    );
   }
 
   deleteAssignee(name: string): Observable<void> {
@@ -71,9 +79,12 @@ export class RamschiService {
   }
 
   resetPassword(name: string): Observable<void> {
-    return this.http.delete<void>('/api/assignee/' + encodeURIComponent(name) + '/password', {
-      headers: this.getHeaders(),
-    });
+    return this.http.delete<void>(
+      '/api/assignee/' + encodeURIComponent(name) + '/password',
+      {
+        headers: this.getHeaders(),
+      },
+    );
   }
 
   postImage(itemId: string, file: File): Observable<string> {
@@ -115,9 +126,9 @@ export class RamschiService {
     return this.http.post<IComment>('/api/comment', comment, {
       headers: this.getHeaders(),
     });
- }
+  }
 
- deleteComment(id: string): Observable<void> {
+  deleteComment(id: string): Observable<void> {
     return this.http.delete<void>('/api/comment/' + id, {
       headers: this.getHeaders(),
     });

@@ -8,9 +8,8 @@ describe('RamschiHeaderComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [RamschiHeaderComponent]
-    })
-    .compileComponents();
+      imports: [RamschiHeaderComponent],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(RamschiHeaderComponent);
     component = fixture.componentInstance;

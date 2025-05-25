@@ -7,7 +7,10 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
-import { CredentialService, RoleAware } from '../../../login/credential.service';
+import {
+  CredentialService,
+  RoleAware,
+} from '../../../login/credential.service';
 import { IComment, IItem } from '../../domain';
 import { SpinnerService } from '../../../spinner.service';
 import { RamschiService } from '../../ramschi.service';
@@ -22,12 +25,12 @@ import { RamschiService } from '../../ramschi.service';
     MatExpansionModule,
     MatButtonModule,
     MatGridListModule,
-    FormsModule,],
+    FormsModule,
+  ],
   templateUrl: './comments.component.html',
-  styleUrl: './comments.component.css'
+  styleUrl: './comments.component.css',
 })
 export class CommentsComponent extends RoleAware implements OnInit {
-
   @Input()
   item!: IItem;
 
@@ -38,9 +41,11 @@ export class CommentsComponent extends RoleAware implements OnInit {
 
   newComment = '';
 
-  constructor(private readonly service: RamschiService,
+  constructor(
+    private readonly service: RamschiService,
     private readonly spinner: SpinnerService,
-    credential: CredentialService) {
+    credential: CredentialService,
+  ) {
     super(credential);
   }
 
@@ -53,19 +58,20 @@ export class CommentsComponent extends RoleAware implements OnInit {
   }
 
   saveNewComment(): void {
-      this.spinner.show();
-      this.service
-        .postComment({
-          id: null,
-          itemId: this.item.id!,
-          author: this.credential.getAssignee()!,
-          text: this.newComment,
-          lastEdit: undefined,
-        }).subscribe(comment => {
-          this.spinner.hide();
-          this.newComment = '';
-          this.comments.push(comment);
-        });
+    this.spinner.show();
+    this.service
+      .postComment({
+        id: null,
+        itemId: this.item.id!,
+        author: this.credential.getAssignee()!,
+        text: this.newComment,
+        lastEdit: undefined,
+      })
+      .subscribe((comment) => {
+        this.spinner.hide();
+        this.newComment = '';
+        this.comments.push(comment);
+      });
   }
 
   deleteComment(comment: IComment): void {
@@ -78,10 +84,9 @@ export class CommentsComponent extends RoleAware implements OnInit {
       });
     }
   }
-  
+
   adjustNewCommentHeight() {
     const element = this.newCommentElement.nativeElement;
-    element.style.height = element.scrollHeight+"px";
+    element.style.height = element.scrollHeight + 'px';
   }
-
 }

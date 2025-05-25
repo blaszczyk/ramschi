@@ -6,14 +6,11 @@ import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-ramschi-header',
-  imports: [
-    MatButtonModule,
-    MatIconModule,],
+  imports: [MatButtonModule, MatIconModule],
   templateUrl: './ramschi-header.component.html',
-  styleUrl: './ramschi-header.component.css'
+  styleUrl: './ramschi-header.component.css',
 })
 export class RamschiHeaderComponent extends RoleAware {
-
   constructor(
     private readonly router: Router,
     credential: CredentialService,

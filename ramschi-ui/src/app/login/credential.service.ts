@@ -90,30 +90,29 @@ export class RoleAware {
 
   get isAdmin(): boolean {
     return this.credential.isAdmin();
-  };
+  }
 
   get isContributor(): boolean {
     return this.credential.isContributor();
-  };
+  }
 
   get isAssignee(): boolean {
     return this.credential.isAssignee();
-  };
+  }
 
   get assignee(): string | null {
     return this.credential.getAssignee();
-  };
-  
+  }
+
   // does not belong here but is useful
   // TODO: create more generic parent class for components in util file or so
   urlify(text: string | null): string {
     text = text || '';
-      const urlRegex = /(https?:\/\/[^\s]+)/g;
-      return text.replace(urlRegex, function(url: string) {
-        return `<a href="${url}" target="_blank">${url}</a>`;
-      })
-    }
-
+    const urlRegex = /(https?:\/\/[^\s]+)/g;
+    return text.replace(urlRegex, function (url: string) {
+      return `<a href="${url}" target="_blank">${url}</a>`;
+    });
+  }
 }
 
 const KEY_CURRENT_ASSIGNEE = 'current_assignee';

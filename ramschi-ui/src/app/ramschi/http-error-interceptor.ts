@@ -17,7 +17,9 @@ export const handleHttpError =
     const spinner: SpinnerService = inject(SpinnerService);
     return next(req).pipe(
       catchError((error: HttpErrorResponse) => {
-        alert(`Ein Fehler ist aufgetreten!\n😮${error.status} ${error.statusText}😮\nBitte kontaktiere den Administrator.`);
+        alert(
+          `Ein Fehler ist aufgetreten!\n😮${error.status} ${error.statusText}😮\nBitte kontaktiere den Administrator.`,
+        );
         spinner.hide();
         return throwError(() => error);
       }),

@@ -21,10 +21,11 @@ export class AdminComponent extends RoleAware implements OnInit {
 
   newCategoryName: string | null = null;
 
-  constructor(private readonly service: RamschiService,
+  constructor(
+    private readonly service: RamschiService,
     credential: CredentialService,
   ) {
-    super(credential);  
+    super(credential);
   }
 
   ngOnInit(): void {

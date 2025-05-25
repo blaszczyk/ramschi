@@ -26,10 +26,9 @@ import { ItemListService } from '../item-list.service';
     FormsModule,
   ],
   templateUrl: './ramschi-filter.component.html',
-  styleUrl: './ramschi-filter.component.css'
+  styleUrl: './ramschi-filter.component.css',
 })
 export class RamschiFilterComponent extends RoleAware {
-
   get filterName(): string {
     return this.itemList.getFilterName();
   }
@@ -58,7 +57,7 @@ export class RamschiFilterComponent extends RoleAware {
   set latestFirst(value: boolean) {
     this.itemList.setLatestFirst(value);
   }
-    
+
   get filterSummary(): string {
     const filters: string[] = [];
     if (this.filterName) {
@@ -77,8 +76,9 @@ export class RamschiFilterComponent extends RoleAware {
   }
 
   get otherAssignees(): string[] {
-    return this.assigneeService.getAll()
-    .filter(assignee => assignee !== this.assignee);
+    return this.assigneeService
+      .getAll()
+      .filter((assignee) => assignee !== this.assignee);
   }
 
   get categories(): ICategory[] {
@@ -98,5 +98,4 @@ export class RamschiFilterComponent extends RoleAware {
     this.itemList.clearFilter();
     event.stopPropagation();
   }
-
 }

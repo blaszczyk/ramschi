@@ -4,11 +4,10 @@ import { Injectable } from '@angular/core';
   providedIn: 'root',
 })
 export class SpinnerService {
-
   private spawnMode = false;
 
   private offset = 0;
-  
+
   spinners: Spinner[] = [];
 
   isVisible(): boolean {
@@ -22,7 +21,7 @@ export class SpinnerService {
   }
 
   update = () => {
-    this.spinners.forEach(spinner => {
+    this.spinners.forEach((spinner) => {
       const mustDie = spinner.applyPhysics();
       if (mustDie) {
         this.spinners.splice(this.spinners.indexOf(spinner), 1);
@@ -34,28 +33,29 @@ export class SpinnerService {
     if (this.spawnMode || this.spinners.length > 0) {
       setTimeout(this.update, TIME_STEP);
     }
-  }
+  };
 
   private spawnSpinner = () => {
-        const depth = this.spinners.length === 0 ? 0 : 
-          (FLOOR_HEIGHT + Math.random() * (FLOOR_DEPTH - FLOOR_HEIGHT));
-        const newSpinner = new Spinner(depth, this.offset % 4);
-        this.offset++;
-        this.spinners.push(newSpinner);
-  }
+    const depth =
+      this.spinners.length === 0
+        ? 0
+        : FLOOR_HEIGHT + Math.random() * (FLOOR_DEPTH - FLOOR_HEIGHT);
+    const newSpinner = new Spinner(depth, this.offset % 4);
+    this.offset++;
+    this.spinners.push(newSpinner);
+  };
 
   hide = () => {
     this.spawnMode = false;
-    this.spinners.forEach(spinner => spinner.suicideRequested = true);
-  }
+    this.spinners.forEach((spinner) => (spinner.suicideRequested = true));
+  };
 }
 
 export class Spinner {
-
   private x = 0;
   private y = 0;
   private z = 0;
-  
+
   private vx = 0;
   private vy = 0;
   private vz = 0;
@@ -91,7 +91,9 @@ export class Spinner {
     // floor collision
     if (this.y >= this.depth) {
       this.y = this.depth;
-      const currentVelocity = Math.sqrt(this.vx * this.vx + this.vy * this.vy + this.vz * this.vz);
+      const currentVelocity = Math.sqrt(
+        this.vx * this.vx + this.vy * this.vy + this.vz * this.vz,
+      );
       // die if too fast
       if (currentVelocity > KILL_VELOCITY) {
         return true;
@@ -136,4 +138,5 @@ const OBSERVER_DISTANCE = 2 * BOUNCE_RADIUS;
 
 const FLOOR_DEPTH = window.outerHeight / 2 - 100;
 
-const FLOOR_HEIGHT = - window.outerHeight / 2 + KILL_VELOCITY ** 2 / (2 * GRAVITY);
+const FLOOR_HEIGHT =
+  -window.outerHeight / 2 + KILL_VELOCITY ** 2 / (2 * GRAVITY);

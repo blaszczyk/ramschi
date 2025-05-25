@@ -1,6 +1,6 @@
 @if (initialized) {
   <div class="panel">
-    <h1>{{isAssigned ? ' ☝️' : '' }} {{ item.name || "Neuer Ramsch" }} </h1>
+    <h1>{{ isAssigned ? " ☝️" : "" }} {{ item.name || "Neuer Ramsch" }}</h1>
   </div>
   @if (isContributor) {
     <mat-grid-list class="item-form" cols="1" rowHeight="5:1">
@@ -54,7 +54,7 @@
           />
         </mat-form-field>
       </mat-grid-tile>
-      @if (isAdmin && item.id ) {
+      @if (isAdmin && item.id) {
         <mat-grid-tile>
           <mat-form-field>
             <mat-label>Interessenten</mat-label>
@@ -70,7 +70,9 @@
           </mat-form-field>
         </mat-grid-tile>
         <mat-grid-tile>
-            <mat-checkbox [(ngModel)]="item.sold" (change)="setDirty()">Verkauft</mat-checkbox>
+          <mat-checkbox [(ngModel)]="item.sold" (change)="setDirty()"
+            >Verkauft</mat-checkbox
+          >
         </mat-grid-tile>
       }
     </mat-grid-list>
@@ -79,38 +81,43 @@
   }
   @if (isAssignee) {
     @if (item.assignees.length) {
-      <hr>
+      <hr />
       <div class="assignees">Interessenten:</div>
       @for (assignee of item.assignees; track assignee) {
         <div class="assignee">☝️ {{ assignee }}</div>
       }
-      <hr>
+      <hr />
     }
     <div [style.text-align]="isContributor ? 'right' : 'center'">
       @if (isAssigned) {
-        <button class="assign"
-          mat-stroked-button
-          (click)="unassign(assignee!)"
-        > Kein Interesse mehr
+        <button class="assign" mat-stroked-button (click)="unassign(assignee!)">
+          Kein Interesse mehr
         </button>
-      }
-      @else {
-        <button class="assign"
+      } @else {
+        <button
+          class="assign"
           mat-flat-button
           [style.visibility]="item.id ? 'visible' : 'hidden'"
           (click)="assign(assignee!)"
-        > Ich wäre interessiert!
+        >
+          Ich wäre interessiert!
         </button>
       }
       @if (isContributor) {
-        <button class="mini"
+        <button
+          class="mini"
           mat-mini-fab
           [style.visibility]="item.id ? 'visible' : 'hidden'"
           (click)="clickNewImage()"
         >
           <mat-icon>add_a_photo</mat-icon>
         </button>
-        <button mat-mini-fab  class="mini" [disabled]="saveDisabled()" (click)="saveItem()">
+        <button
+          mat-mini-fab
+          class="mini"
+          [disabled]="saveDisabled()"
+          (click)="saveItem()"
+        >
           <mat-icon>save</mat-icon>
         </button>
         <input
@@ -122,14 +129,11 @@
         />
       }
     </div>
-  }
-  @else {
+  } @else {
     <div [style.text-align]="'center'">
-        <button class="assign"
-          mat-flat-button
-          (click)="credential.logout()"
-        > Interessiert? Dann melde dich an!
-        </button>
+      <button class="assign" mat-flat-button (click)="credential.logout()">
+        Interessiert? Dann melde dich an!
+      </button>
     </div>
   }
   @if (isAssignee && item.id) {

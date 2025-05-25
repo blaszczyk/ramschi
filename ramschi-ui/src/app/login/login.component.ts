@@ -35,10 +35,10 @@ export class LoginComponent {
 
   anonymous() {
     this.spinner.show();
-      this.itemList.requestItems().subscribe(() => {
-        this.spinner.hide();
-        this.credentials.setInitialised();
-      });
+    this.itemList.requestItems().subscribe(() => {
+      this.spinner.hide();
+      this.credentials.setInitialised();
+    });
   }
 
   login() {
@@ -52,9 +52,10 @@ export class LoginComponent {
           this.credentials.setInitialised();
           this.spinner.hide();
         });
-      }
-      else {
-        alert('Das hat leider nicht geklappt. Wenn Du Dein Passwort vergessen hast, wende Dich an den Admin Deines Vertrauens.');
+      } else {
+        alert(
+          'Das hat leider nicht geklappt. Wenn Du Dein Passwort vergessen hast, wende Dich an den Admin Deines Vertrauens.',
+        );
         this.spinner.hide();
       }
     });
