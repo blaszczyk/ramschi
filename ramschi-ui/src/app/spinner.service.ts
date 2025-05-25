@@ -108,11 +108,11 @@ export class Spinner {
     }
     // wall collisions
     if (Math.abs(this.x) > BOUNCE_RADIUS) {
-      this.x = Math.sign(this.x) * BOUNCE_RADIUS;
+      this.x = 2 * Math.sign(this.x) * BOUNCE_RADIUS - this.x;
       this.vx = -this.vx;
     }
     if (Math.abs(this.z) > BOUNCE_RADIUS) {
-      this.z = Math.sign(this.z) * BOUNCE_RADIUS;
+      this.z = 2 * Math.sign(this.z) * BOUNCE_RADIUS - this.z;
       this.vz = -this.vz;
     }
     // survive
