@@ -97,7 +97,7 @@ export class Spinner {
         return true;
       }
       // bounce in random direction
-      const newVelocity = currentVelocity + VELOCITY_STEP;
+      const newVelocity = Math.sqrt(currentVelocity ** 2 + BOUNCE_ENERGY);
       const azimuth = 2 * Math.PI * Math.random();
       const polar = Math.acos(-1 + 0.5 * Math.random());
       this.vy = newVelocity * Math.cos(polar);
@@ -120,7 +120,7 @@ export class Spinner {
   }
 }
 
-const VELOCITY_STEP = 9;
+const BOUNCE_ENERGY = 200;
 
 const KILL_VELOCITY = 40;
 
