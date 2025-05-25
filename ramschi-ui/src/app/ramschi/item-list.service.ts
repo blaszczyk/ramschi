@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { IItem } from './domain';
 import { RamschiService } from './ramschi.service';
 import { ScrollService } from '../scroll.service';
-import { SpinnerService } from '../spinner.service';
 import { Observable, tap } from 'rxjs';
 import { CredentialService } from '../login/credential.service';
 
@@ -52,21 +51,25 @@ export class ItemListService {
   
   setFilterName(filterName: string): void {
     this.filterName = filterName;
+    this.scroll.forgetPosition();
     this.setFilter();
   }
 
   setFilterCategory(filterCategory: string | null): void {
     this.filterCategory = filterCategory;
+    this.scroll.forgetPosition();
     this.setFilter();
   }
 
   setFilterAssignee(filterAssignee: string | null): void {
     this.filterAssignee = filterAssignee;
+    this.scroll.forgetPosition();
     this.setFilter();
   }
 
   setLatestFirst(latestFirst: boolean): void {
     this.latestFirst = latestFirst;
+    this.scroll.forgetPosition();
     this.setFilter();
   }
 
@@ -75,6 +78,7 @@ export class ItemListService {
     this.filterCategory = null;
     this.filterAssignee = null;
     this.latestFirst = false;
+    this.scroll.forgetPosition();
     this.setFilter();
   }
 
@@ -96,7 +100,6 @@ export class ItemListService {
       && (!this.filterAssignee || item.assignees.includes(this.filterAssignee))
     );
     this.filteredItems.sort(this.latestFirst ? byDate : byName);
-    this.scroll.forgetPosition();
   }
 
   requestItems(): Observable<IItem[]> {

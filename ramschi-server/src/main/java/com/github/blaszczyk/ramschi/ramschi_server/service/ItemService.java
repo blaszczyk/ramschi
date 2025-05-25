@@ -3,6 +3,8 @@ package com.github.blaszczyk.ramschi.ramschi_server.service;
 import com.github.blaszczyk.ramschi.ramschi_server.domain.BasicItem;
 import com.github.blaszczyk.ramschi.ramschi_server.domain.Item;
 import com.github.blaszczyk.ramschi.ramschi_server.persistence.*;
+import com.google.common.collect.Multimap;
+import com.google.common.collect.HashMultimap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,7 +50,10 @@ public class ItemService {
                     final var images = mapByItemId(tuple.getT2(), ImageEntity::getItemId);
                     return entities.stream().map(entity -> {
                         final UUID id = entity.getId();
-                        return ItemTransformer.toItem(entity, assignees.get(id), images.get(id));
+                        return ItemTransformer.toItem(entity,
+                                List.copyOf(assignees.get(id)),
+                                List.copyOf(images.get(id))
+                        );
                     }).toList();
                 });
     }
@@ -90,14 +95,10 @@ public class ItemService {
         return itemRepository.deleteById(id);
     }
 
-    private static <T> Map<UUID, List<T>> mapByItemId(List<T> ts, Function<T, UUID> itemIdGetter) {
-        final var result = new HashMap<UUID, List<T>>();
+    private static <T> Multimap<UUID, T> mapByItemId(List<T> ts, Function<T, UUID> itemIdGetter) {
+        final Multimap<UUID, T> result = HashMultimap.create();
         ts.forEach(t -> {
-            final UUID itemId = itemIdGetter.apply(t);
-            if (!result.containsKey(itemId)) {
-                result.put(itemId, new ArrayList<>());
-            }
-            result.get(itemId).add(t);
+            result.put(itemIdGetter.apply(t), t);
         });
         return result;
     }
