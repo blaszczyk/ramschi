@@ -51,11 +51,13 @@ export class SpinnerService {
 
 export class Spinner {
 
-  x = 0;
-  y = 0;
+  private x = 0;
+  private y = 0;
+  private z = 0;
   
   private vx = 0;
   private vy = 0;
+  private vz = 0;
 
   suicideRequested = false;
 
@@ -65,33 +67,54 @@ export class Spinner {
   ) {
     this.x = (Math.random() - 0.5) * BOUNCE_RADIUS;
     this.y = depth;
+    this.z = 0;
     this.applyPhysics();
   }
 
-  applyPhysics = () => {
+  get cssPosition(): string {
+    const scale = OBSERVER_DISTANCE / (OBSERVER_DISTANCE - this.z);
+    return `translate(${this.x}px, ${this.y}px) scale(${scale})`;
+  }
+
+  get zIndex(): number {
+    return 10000 + this.z;
+  }
+
+  applyPhysics(): boolean {
     // newtons law
     this.vy += GRAVITY;
     // update position
     this.x += this.vx;
     this.y += this.vy;
+    this.z += this.vz;
     // floor collision
     if (this.y >= this.depth) {
       this.y = this.depth;
-      const angle =(4 + Math.random()) * Math.PI /3;
-      const currentVelocity = Math.sqrt(this.vx * this.vx + this.vy * this.vy);
+      const currentVelocity = Math.sqrt(this.vx * this.vx + this.vy * this.vy + this.vz * this.vz);
+      // die if too fast
       const newVelocity = currentVelocity + VELOCITY_STEP;
       if (newVelocity > KILL_VELOCITY) {
         return true;
       }
-      this.vy = Math.sin(angle) * newVelocity;
-      this.vx = Math.cos(angle) * newVelocity;
+      // bounce in random direction
+      const azimuth = 2 * Math.PI * Math.random();
+      const polar = Math.acos(-1 + 0.5 * Math.random());
+      this.vy = newVelocity * Math.cos(polar);
+      this.vx = newVelocity * Math.sin(polar) * Math.cos(azimuth);
+      this.vz = newVelocity * Math.sin(polar) * Math.sin(azimuth);
+      // die if requested
       return this.suicideRequested;
     }
-    // wall collision
-    else if (Math.abs(this.x) > BOUNCE_RADIUS) {
+    // wall collisions
+    if (Math.abs(this.x) > BOUNCE_RADIUS) {
       this.x = Math.sign(this.x) * BOUNCE_RADIUS;
       this.vx = -this.vx;
     }
+    if (Math.abs(this.z) > BOUNCE_RADIUS) {
+      this.z = Math.sign(this.z) * BOUNCE_RADIUS;
+      this.vz = -this.vz;
+    }
+    // survive
     return false;
   }
 }
@@ -107,6 +130,8 @@ const TIME_STEP = 30;
 const MAX_SPINNERS = 20;
 
 const BOUNCE_RADIUS = Math.min(window.outerWidth, 400) / 2;
+
+const OBSERVER_DISTANCE = 2 * BOUNCE_RADIUS;
 
 const FLOOR_DEPTH = window.outerHeight / 2 - 100;
 

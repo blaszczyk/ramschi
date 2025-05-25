@@ -6,7 +6,9 @@
   @if (showSpinner) {
     <div class="screenlock">
       @for (spinner of spinners; track spinner) {
-        <img [style.transform]="spinnerPosition(spinner)" src="/spinner-{{spinner.offset}}.gif" width="100" height="100" alt="huiii"/>
+        <img [style.transform]="spinner.cssPosition" 
+          [style.z-index]="spinner.zIndex"
+        src="/spinner-{{spinner.offset}}.gif" width="100" height="100" alt="huiii"/>
       }
     </div>
   }

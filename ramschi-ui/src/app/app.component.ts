@@ -48,10 +48,6 @@ export class AppComponent extends RoleAware implements OnInit, AfterViewInit {
     return this.credential.isInitialised();
   }
 
-  spinnerPosition(spinner: Spinner): string {
-    return `translate(${spinner.x}px, ${spinner.y}px)`;
-  };
-
   ngOnInit(): void {
     this.router.events.subscribe((event) => {
       if (event instanceof ActivationStart) {
