@@ -1,5 +1,6 @@
 package com.github.blaszczyk.ramschi.ramschi_server.controller;
 
+import com.github.blaszczyk.ramschi.ramschi_server.controller.util.AuthHelper;
 import com.github.blaszczyk.ramschi.ramschi_server.domain.BasicItem;
 import com.github.blaszczyk.ramschi.ramschi_server.domain.Item;
 import com.github.blaszczyk.ramschi.ramschi_server.domain.Role;
@@ -50,6 +51,7 @@ public class ItemController {
     Mono<ResponseEntity<UUID>> postItem(@RequestBody BasicItem item, @RequestHeader(RamschiHeader.AUTH) String ramschiAuth) {
         return authHelper.doIfAuthorised(ramschiAuth, Role.CONTRIBUTOR, () ->
                 itemService.saveItem(item)
+                        .map(ResponseEntity::ok)
         );
     }
 
@@ -59,6 +61,7 @@ public class ItemController {
             @RequestHeader(RamschiHeader.AUTH) String ramschiAuth) {
         return authHelper.doIfAuthorised(ramschiAuth, Role.ADMIN, () ->
                 itemService.deleteItem(id)
+                        .map(ResponseEntity::ok)
         );
     }
 
@@ -69,6 +72,7 @@ public class ItemController {
            @RequestHeader(RamschiHeader.AUTH) String ramschiAuth) {
         return authHelper.doIfAuthorised(ramschiAuth, assignee, () ->
                 itemService.addAssignee(itemId, assignee)
+                        .map(ResponseEntity::ok)
         );
     }
 
@@ -79,6 +83,7 @@ public class ItemController {
             @RequestHeader(RamschiHeader.AUTH) String ramschiAuth) {
         return authHelper.doIfAuthorised(ramschiAuth, assignee, () ->
                 itemService.deleteAssignee(itemId, assignee)
+                        .map(ResponseEntity::ok)
         );
     }
 
@@ -91,6 +96,7 @@ public class ItemController {
             @RequestHeader(RamschiHeader.AUTH) String ramschiAuth) {
         return authHelper.doIfAuthorised(ramschiAuth, Role.CONTRIBUTOR, () ->
                 imageService.createImage(itemId, data)
+                        .map(ResponseEntity::ok)
         );
     }
 
@@ -103,6 +109,7 @@ public class ItemController {
             @RequestHeader(RamschiHeader.AUTH) String ramschiAuth) {
         return authHelper.doIfAuthorised(ramschiAuth, Role.ASSIGNEE, () ->
                 imageService.createImage(itemId, data)
+                        .map(ResponseEntity::ok)
         );
     }
 }

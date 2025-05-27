@@ -1,5 +1,6 @@
 package com.github.blaszczyk.ramschi.ramschi_server.controller;
 
+import com.github.blaszczyk.ramschi.ramschi_server.controller.util.AuthHelper;
 import com.github.blaszczyk.ramschi.ramschi_server.domain.Comment;
 import com.github.blaszczyk.ramschi.ramschi_server.service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +38,7 @@ public class CommentController {
     Mono<ResponseEntity<Comment>> postComment(@RequestBody Comment comment, @RequestHeader(RamschiHeader.AUTH) String ramschiAuth) {
         return authHelper.doIfAuthorised(ramschiAuth, comment.author(), () ->
                 commentService.saveComment(comment)
+                        .map(ResponseEntity::ok)
         );
     }
 
@@ -48,6 +50,7 @@ public class CommentController {
                 .flatMap(author ->
                         authHelper.doIfAuthorised(ramschiAuth, author, () ->
                             commentService.deleteComment(id)
+                                    .map(ResponseEntity::ok)
                         )
                 );
     }
