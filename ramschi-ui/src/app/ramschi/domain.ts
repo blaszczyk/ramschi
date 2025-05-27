@@ -36,3 +36,8 @@ export interface IComment {
   text: string;
   lastEdit: number | undefined;
 }
+
+export interface IAssignee {
+  name: string;
+  role: Role;
+}

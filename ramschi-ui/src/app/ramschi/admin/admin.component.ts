@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { RamschiService } from '../ramschi.service';
 import { FormsModule } from '@angular/forms';
-import { ICategory } from '../domain';
+import { IAssignee, ICategory, Role } from '../domain';
 import { CredentialService, RoleAware } from '../../login/credential.service';
 
 @Component({
@@ -11,7 +11,10 @@ import { CredentialService, RoleAware } from '../../login/credential.service';
   styleUrl: './admin.component.css',
 })
 export class AdminComponent extends RoleAware implements OnInit {
-  assignees: string[] = [];
+
+  Role: typeof Role = Role;
+
+  assignees: IAssignee[] = [];
 
   categories: ICategory[] = [];
 
@@ -32,13 +35,6 @@ export class AdminComponent extends RoleAware implements OnInit {
     this.refresh();
   }
 
-  createNewAssignee(): void {
-    this.service.postAssignee(this.newAssignee!).subscribe(() => {
-      this.newAssignee = null;
-      this.refresh();
-    });
-  }
-
   deleteAssignee(name: string) {
     if (confirm(name + ' löschen?')) {
       this.service.deleteAssignee(name).subscribe(() => {
@@ -53,6 +49,14 @@ export class AdminComponent extends RoleAware implements OnInit {
         alert('Hat geklappt!');
       });
     }
+  }
+
+  toggleRole(assignee: IAssignee) {
+    const newRole = assignee.role === Role.ASSIGNEE ? Role.CONTRIBUTOR : Role.ASSIGNEE;
+    this.service.putAssigneeRole(assignee.name, newRole).subscribe(() => {
+      alert('Hat geklappt!');
+      this.refresh();
+    });
   }
 
   createNewCategory(): void {
@@ -76,7 +80,7 @@ export class AdminComponent extends RoleAware implements OnInit {
 
   private refresh() {
     this.service
-      .getAssignees()
+      .getFullAssignees()
       .subscribe((assignees) => (this.assignees = assignees));
     this.service
       .getCategories()

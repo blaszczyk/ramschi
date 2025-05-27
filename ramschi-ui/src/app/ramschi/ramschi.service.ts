@@ -7,6 +7,8 @@ import {
   IItem,
   ILoginResponse,
   IComment,
+  Role,
+  IAssignee,
 } from './domain';
 import { CredentialService } from '../login/credential.service';
 
@@ -47,6 +49,12 @@ export class RamschiService {
     return this.http.get<string[]>('/api/assignee');
   }
 
+  getFullAssignees(): Observable<IAssignee[]> {
+    return this.http.get<IAssignee[]>('/api/assignee/full', {
+      headers: this.getHeaders(),
+    });
+  }
+
   putItemAssignee(itemId: string, assignee: string): Observable<void> {
     return this.http.put<void>(
       '/api/item/' + itemId + '/assignee/' + encodeURIComponent(assignee),
@@ -62,16 +70,6 @@ export class RamschiService {
     );
   }
 
-  postAssignee(name: string): Observable<void> {
-    return this.http.post<void>(
-      '/api/assignee/' + encodeURIComponent(name),
-      null,
-      {
-        headers: this.getHeaders(),
-      },
-    );
-  }
-
   deleteAssignee(name: string): Observable<void> {
     return this.http.delete<void>('/api/assignee/' + encodeURIComponent(name), {
       headers: this.getHeaders(),
@@ -81,6 +79,16 @@ export class RamschiService {
   resetPassword(name: string): Observable<void> {
     return this.http.delete<void>(
       '/api/assignee/' + encodeURIComponent(name) + '/password',
+      {
+        headers: this.getHeaders(),
+      },
+    );
+  }
+
+  putAssigneeRole(name: string, role: Role): Observable<void> {
+    return this.http.put<void>(
+      `/api/assignee/${encodeURIComponent(name)}/role/${role}`,
+      null,
       {
         headers: this.getHeaders(),
       },

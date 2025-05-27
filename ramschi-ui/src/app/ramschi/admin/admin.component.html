@@ -1,18 +1,13 @@
 @if (isAdmin) {
-  @for (assignee of assignees; track assignee) {
+  @for (assignee of assignees; track assignee.name) {
     <p>
-      {{ assignee }}
-      <button (click)="deleteAssignee(assignee)">X</button>
-      <button (click)="resetPassword(assignee)">Reset PW</button>
+      {{ assignee.name }}
+      <button (click)="deleteAssignee(assignee.name)">X</button>
+      <button (click)="resetPassword(assignee.name)">Reset PW</button>
+      <button (click)="toggleRole(assignee)">{{ assignee.role === Role.ASSIGNEE ? 'Befördern' : 'Herabstufen' }}</button>
     </p>
   }
-  <input [(ngModel)]="newAssignee" />
-  <br />
-  <button (click)="createNewAssignee()" [disabled]="!newAssignee">
-    Neuer Interessent
-  </button>
-  <br />
-  @for (category of categories; track category) {
+  @for (category of categories; track category.id) {
     <p>
       {{ category.id }}
       <input [(ngModel)]="category.name" />

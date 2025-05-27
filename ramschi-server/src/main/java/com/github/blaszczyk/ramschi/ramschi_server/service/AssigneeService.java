@@ -1,5 +1,6 @@
 package com.github.blaszczyk.ramschi.ramschi_server.service;
 
+import com.github.blaszczyk.ramschi.ramschi_server.domain.Assignee;
 import com.github.blaszczyk.ramschi.ramschi_server.domain.Role;
 import com.github.blaszczyk.ramschi.ramschi_server.persistence.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,18 +20,16 @@ public class AssigneeService {
     @Autowired
     private AssigneeRepository assigneeRepository;
 
-    public Mono<List<String>> getAllAssignees() {
+    public Mono<List<String>> getAllAssigneeNames() {
         return assigneeRepository.findNames()
                 .map(AssigneeEntity::getName)
                 .collectList();
     }
 
-    public Mono<Void> createAssignee(String name) {
-        final var entity = new AssigneeEntity();
-        entity.setName(name);
-        entity.setRole(Role.ASSIGNEE);
-        return assigneeRepository.save(entity)
-                .then();
+    public Mono<List<Assignee>> getAllAssignees() {
+        return assigneeRepository.findAllOrderByName()
+                .map(entity -> new Assignee(entity.getName(), entity.getRole()))
+                .collectList();
     }
 
     public Mono<Void> deleteAssignee(String name) {
@@ -40,6 +39,11 @@ public class AssigneeService {
 
     public Mono<Void> resetPassword(String name) {
         return assigneeRepository.setPassword(name, EMPTY_BYTE_ARRAY, EMPTY_BYTE_ARRAY)
+                .then();
+    }
+
+    public Mono<Void> setRole(String name, Role role) {
+        return assigneeRepository.setRole(name, role)
                 .then();
     }
 }
