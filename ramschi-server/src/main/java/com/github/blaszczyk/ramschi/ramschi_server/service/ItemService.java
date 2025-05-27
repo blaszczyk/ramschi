@@ -11,8 +11,9 @@ import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.function.Function;
 import static com.google.common.collect.ImmutableListMultimap.toImmutableListMultimap;
+import static reactor.core.publisher.Mono.zip;
+
 
 @Service
 public class ItemService {
@@ -32,15 +33,23 @@ public class ItemService {
         final var entityFlux = includeSold
                 ? itemRepository.findAll()
                 : itemRepository.findUnsold();
-        return entityFlux
-                .collectList()
-                .flatMap(entities -> {
-                    final List<UUID> ids = entities.stream().map(ItemEntity::getId).toList();
-                    final var fetchAssignees = itemAssigneeRepository.findByItemIds(ids)
-                        .collect(toImmutableListMultimap(ItemAssigneeEntity::getItemId, ItemAssigneeEntity::getAssignee));
-                    final var fetchImages = imageRepository.findByItemIds(ids)
-                        .collect(toImmutableListMultimap(ImageEntity::getItemId, ImageEntity::getId));
-                    return Mono.zip(fetchAssignees, fetchImages).map(tuple -> {
+        return entityFlux.collectList().flatMap(entities -> {
+                    final var ids = entities.stream()
+                            .map(ItemEntity::getId)
+                            .toList();
+                    final var fetchAssignees = itemAssigneeRepository
+                            .findByItemIds(ids)
+                            .collect(toImmutableListMultimap(
+                                    ItemAssigneeEntity::getItemId,
+                                    ItemAssigneeEntity::getAssignee
+                            ));
+                    final var fetchImages = imageRepository
+                            .findByItemIds(ids)
+                            .collect(toImmutableListMultimap(
+                                    ImageEntity::getItemId,
+                                    ImageEntity::getId
+                            ));
+                    return zip(fetchAssignees, fetchImages).map(tuple -> {
                         final var assignees = tuple.getT1();
                         final var images = tuple.getT2();
                         return entities.stream().map(entity -> {
@@ -60,7 +69,7 @@ public class ItemService {
                 .map(ImageEntity::getId)
                 .collectList();
 
-        return Mono.zip(fetchItem, fetchAssignees, fetchImages)
+        return zip(fetchItem, fetchAssignees, fetchImages)
                 .map(tuple -> ItemTransformer.toItem(tuple.getT1(), tuple.getT2(), tuple.getT3()));
     }
 
