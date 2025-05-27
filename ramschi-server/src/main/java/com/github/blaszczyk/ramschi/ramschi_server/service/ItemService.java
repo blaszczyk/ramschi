@@ -3,8 +3,6 @@ package com.github.blaszczyk.ramschi.ramschi_server.service;
 import com.github.blaszczyk.ramschi.ramschi_server.domain.BasicItem;
 import com.github.blaszczyk.ramschi.ramschi_server.domain.Item;
 import com.github.blaszczyk.ramschi.ramschi_server.persistence.*;
-import com.google.common.collect.Multimap;
-import com.google.common.collect.HashMultimap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +12,7 @@ import reactor.core.publisher.Mono;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.function.Function;
+import static com.google.common.collect.ImmutableListMultimap.toImmutableListMultimap;
 
 @Service
 public class ItemService {
@@ -29,39 +28,37 @@ public class ItemService {
     @Autowired
     private ItemAssigneeRepository itemAssigneeRepository;
 
-    public Mono<List<Item>> filterItems(Optional<Boolean> includeSold) {
-        final var resultFlux = includeSold.orElse(Boolean.FALSE)
+    public Mono<List<Item>> filterItems(boolean includeSold) {
+        final var entityFlux = includeSold
                 ? itemRepository.findAll()
                 : itemRepository.findUnsold();
-        return resultFlux
+        return entityFlux
                 .collectList()
-                .flatMap(this::fetchSubentitiesAndTransform);
-    }
-
-    private Mono<? extends List<Item>> fetchSubentitiesAndTransform(List<ItemEntity> entities) {
-        final List<UUID> ids = entities.stream().map(ItemEntity::getId).toList();
-        final var fetchAssignees = itemAssigneeRepository.findByItemIds(ids)
-                .collectList();
-        final var fetchImages = imageRepository.findByItemIds(ids)
-                .collectList();
-        return Mono.zip(fetchAssignees, fetchImages)
-                .map(tuple -> {
-                    final var assignees = mapByItemId(tuple.getT1(), ItemAssigneeEntity::getItemId);
-                    final var images = mapByItemId(tuple.getT2(), ImageEntity::getItemId);
-                    return entities.stream().map(entity -> {
-                        final UUID id = entity.getId();
-                        return ItemTransformer.toItem(entity,
-                                List.copyOf(assignees.get(id)),
-                                List.copyOf(images.get(id))
-                        );
-                    }).toList();
+                .flatMap(entities -> {
+                    final List<UUID> ids = entities.stream().map(ItemEntity::getId).toList();
+                    final var fetchAssignees = itemAssigneeRepository.findByItemIds(ids)
+                        .collect(toImmutableListMultimap(ItemAssigneeEntity::getItemId, ItemAssigneeEntity::getAssignee));
+                    final var fetchImages = imageRepository.findByItemIds(ids)
+                        .collect(toImmutableListMultimap(ImageEntity::getItemId, ImageEntity::getId));
+                    return Mono.zip(fetchAssignees, fetchImages).map(tuple -> {
+                        final var assignees = tuple.getT1();
+                        final var images = tuple.getT2();
+                        return entities.stream().map(entity -> {
+                            final UUID id = entity.getId();
+                            return ItemTransformer.toItem(entity, assignees.get(id), images.get(id));
+                        }).toList();
+                    });
                 });
     }
 
     public Mono<Item> getItem(UUID id) {
         final var fetchItem = itemRepository.findById(id);
-        final var fetchAssignees = itemAssigneeRepository.findByItemId(id).collectList();
-        final var fetchImages = imageRepository.findIdsByItemId(id).collectList();
+        final var fetchAssignees = itemAssigneeRepository.findByItemId(id)
+                .map(ItemAssigneeEntity::getAssignee)
+                .collectList();
+        final var fetchImages = imageRepository.findIdsByItemId(id)
+                .map(ImageEntity::getId)
+                .collectList();
 
         return Mono.zip(fetchItem, fetchAssignees, fetchImages)
                 .map(tuple -> ItemTransformer.toItem(tuple.getT1(), tuple.getT2(), tuple.getT3()));
@@ -95,11 +92,4 @@ public class ItemService {
         return itemRepository.deleteById(id);
     }
 
-    private static <T> Multimap<UUID, T> mapByItemId(List<T> ts, Function<T, UUID> itemIdGetter) {
-        final Multimap<UUID, T> result = HashMultimap.create();
-        ts.forEach(t -> {
-            result.put(itemIdGetter.apply(t), t);
-        });
-        return result;
-    }
 }
