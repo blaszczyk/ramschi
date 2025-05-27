@@ -22,8 +22,8 @@ export class SpinnerService {
 
   update = () => {
     this.spinners.forEach((spinner) => {
-      const mustDie = spinner.applyPhysics();
-      if (mustDie) {
+      const state = spinner.applyPhysics();
+      if (state === 'DIE' || (state === 'BOUNCE' && !this.spawnMode)) {
         this.spinners.splice(this.spinners.indexOf(spinner), 1);
       }
     });
@@ -40,14 +40,13 @@ export class SpinnerService {
       this.spinners.length === 0
         ? 0
         : FLOOR_HEIGHT + Math.random() * (FLOOR_DEPTH - FLOOR_HEIGHT);
-    const newSpinner = new Spinner(depth, this.offset % 4);
+    const newSpinner = new Spinner(depth,this.offset, this.offset % 4);
     this.offset++;
     this.spinners.push(newSpinner);
   };
 
   hide = () => {
     this.spawnMode = false;
-    this.spinners.forEach((spinner) => (spinner.suicideRequested = true));
   };
 }
 
@@ -60,10 +59,9 @@ export class Spinner {
   private vy = 0;
   private vz = 0;
 
-  suicideRequested = false;
-
   constructor(
     private depth: number,
+    public readonly id: number,
     public readonly offset: number,
   ) {
     this.x = (Math.random() - 0.5) * BOUNCE_RADIUS;
@@ -81,7 +79,7 @@ export class Spinner {
     return 10000 + this.z;
   }
 
-  applyPhysics(): boolean {
+  applyPhysics(): 'SURVIVE' | 'DIE' | 'BOUNCE' {
     // newtons law
     this.vy += GRAVITY;
     // update position
@@ -90,23 +88,20 @@ export class Spinner {
     this.z += this.vz;
     // floor collision
     if (this.y >= this.depth) {
-      this.y = this.depth;
-      const currentVelocity = Math.sqrt(
-        this.vx * this.vx + this.vy * this.vy + this.vz * this.vz,
-      );
+      this.y = 2 * this.depth - this.y;
+      const currentEnergy = this.vx ** 2 + this.vy ** 2 + this.vz ** 2;
       // die if too fast
-      if (currentVelocity > KILL_VELOCITY) {
-        return true;
+      if (currentEnergy > KILL_ENERGY) {
+        return 'DIE';
       }
       // bounce in random direction
-      const newVelocity = Math.sqrt(currentVelocity ** 2 + BOUNCE_ENERGY);
+      const newVelocity = Math.sqrt(currentEnergy + BOUNCE_ENERGY);
       const azimuth = 2 * Math.PI * Math.random();
       const polar = Math.acos(-1 + 0.5 * Math.random());
       this.vy = newVelocity * Math.cos(polar);
       this.vx = newVelocity * Math.sin(polar) * Math.cos(azimuth);
       this.vz = newVelocity * Math.sin(polar) * Math.sin(azimuth);
-      // die if requested
-      return this.suicideRequested;
+      return 'BOUNCE';
     }
     // wall collisions
     if (Math.abs(this.x) > BOUNCE_RADIUS) {
@@ -118,13 +113,13 @@ export class Spinner {
       this.vz = -this.vz;
     }
     // survive
-    return false;
+    return 'SURVIVE';
   }
 }
 
 const BOUNCE_ENERGY = 200;
 
-const KILL_VELOCITY = 40;
+const KILL_ENERGY = 1600;
 
 const GRAVITY = 3;
 
@@ -138,5 +133,4 @@ const OBSERVER_DISTANCE = 2 * BOUNCE_RADIUS;
 
 const FLOOR_DEPTH = window.outerHeight / 2 - 100;
 
-const FLOOR_HEIGHT =
-  -window.outerHeight / 2 + KILL_VELOCITY ** 2 / (2 * GRAVITY);
+const FLOOR_HEIGHT = -window.outerHeight / 2 + KILL_ENERGY / (2 * GRAVITY);

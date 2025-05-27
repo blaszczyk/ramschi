@@ -5,7 +5,7 @@
   <link rel="preload" as="image" href="/spinner-3.gif" />
   @if (showSpinner) {
     <div class="screenlock">
-      @for (spinner of spinners; track spinner) {
+      @for (spinner of spinners; track spinner.id) {
         <img
           [style.transform]="spinner.cssPosition"
           [style.z-index]="spinner.zIndex"
