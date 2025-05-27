@@ -16,6 +16,9 @@ import java.security.SecureRandom;
 import java.util.Arrays;
 import java.util.Base64;
 
+import static com.github.blaszczyk.ramschi.ramschi_server.service.AuthInfo.*;
+import static reactor.core.publisher.Mono.just;
+
 @Service
 public class AuthService {
 
@@ -30,11 +33,11 @@ public class AuthService {
         return assigneeRepository.findByName(auth.name()).flatMap(entity -> {
             final LoginResponse response = LoginResponse.from(entity);
             if (hasPassword(entity)) {
-                if (verifyPassword(auth, entity)) {
-                    return Mono.just(response);
+                if (passwordMatches(auth, entity)) {
+                    return just(response);
                 }
                 else {
-                    return Mono.just(LoginResponse.FAIL);
+                    return just(LoginResponse.FAIL);
                 }
             }
             else {
@@ -42,7 +45,7 @@ public class AuthService {
                     return setPassword(auth).thenReturn(response);
                 }
                 else {
-                    return Mono.just(response);
+                    return just(response);
                 }
             }
         }).switchIfEmpty(createNewAssignee(auth));
@@ -50,22 +53,22 @@ public class AuthService {
 
     public Mono<AuthInfo> getAuthInfo(String ramschiAuthString) {
         if (StringUtils.isBlank(ramschiAuthString)) {
-            return Mono.just(AuthInfo.FAIL);
+            return just(FAIL);
         }
         final RamschiAuth auth = parse(ramschiAuthString);
         return assigneeRepository.findByName(auth.name()).map(entity -> {
             if (hasPassword(entity)) {
-                if (verifyPassword(auth, entity)) {
-                    return AuthInfo.success(entity.getName(), entity.getRole());
+                if (passwordMatches(auth, entity)) {
+                    return success(entity.getName(), entity.getRole());
                 }
                 else {
-                    return AuthInfo.FAIL;
+                    return FAIL;
                 }
             }
             else {
-                return AuthInfo.success(entity.getName(), Role.ASSIGNEE);
+                return success(entity.getName(), Role.ASSIGNEE);
             }
-        }).switchIfEmpty(Mono.just(AuthInfo.FAIL));
+        }).switchIfEmpty(just(FAIL));
     }
 
     private Mono<LoginResponse> createNewAssignee(RamschiAuth auth) {
@@ -79,7 +82,7 @@ public class AuthService {
                 return setPassword(auth).thenReturn(response);
             }
             else {
-                return Mono.just(response);
+                return just(response);
             }
         });
     }
@@ -100,7 +103,7 @@ public class AuthService {
         return salt;
     }
 
-    private static boolean verifyPassword(RamschiAuth auth, AssigneeEntity entity) {
+    private static boolean passwordMatches(RamschiAuth auth, AssigneeEntity entity) {
         final byte[] salt = entity.getSalt();
         final byte[] passwordSHA256 = addSaltAndDigestSHA256(auth.password(), salt);
         return Arrays.equals(passwordSHA256, entity.getPasswordSHA256());
