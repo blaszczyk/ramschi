@@ -1,6 +1,7 @@
 @if (isAdmin) {
   @for (assignee of assignees; track assignee) {
-    <p>{{ assignee }} 
+    <p>
+      {{ assignee }}
       <button (click)="deleteAssignee(assignee)">X</button>
       <button (click)="resetPassword(assignee)">Reset PW</button>
     </p>
@@ -18,7 +19,7 @@
       <button (click)="updateCategory(category)">Speichern</button>
     </p>
   }
-  
+
   <input [(ngModel)]="newCategoryId" />
   <input [(ngModel)]="newCategoryName" />
   <br />
@@ -28,7 +29,6 @@
   >
     Neue Kategorie
   </button>
-}
-@else {
+} @else {
   <h1>Netter Versuch</h1>
 }

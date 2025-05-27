@@ -54,9 +54,9 @@ public class CommentController {
     Mono<ResponseEntity<Void>> deleteComment(
             @PathVariable UUID id,
             @RequestHeader(RamschiHeader.AUTH) String ramschiAuth) {
-        return commentService.getComment(id)
-                .flatMap(comment ->
-                        authHelper.doIfAuthorised(ramschiAuth, comment.author(), () ->
+        return commentService.getAuthor(id)
+                .flatMap(author ->
+                        authHelper.doIfAuthorised(ramschiAuth, author, () ->
                             commentService.deleteComment(id)
                                     .map(ResponseEntity::ok)
                         )

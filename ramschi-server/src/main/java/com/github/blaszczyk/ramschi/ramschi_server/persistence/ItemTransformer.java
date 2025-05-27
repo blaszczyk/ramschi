@@ -3,12 +3,9 @@ package com.github.blaszczyk.ramschi.ramschi_server.persistence;
 import com.github.blaszczyk.ramschi.ramschi_server.domain.BasicItem;
 import com.github.blaszczyk.ramschi.ramschi_server.domain.Item;
 
-import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
-import java.util.function.Function;
 
 public class ItemTransformer {
 
@@ -23,7 +20,7 @@ public class ItemTransformer {
         return entity;
     }
 
-    public static Item toItem(ItemEntity entity, List<ItemAssigneeEntity> assignees, List<ImageEntity> images) {
+    public static Item toItem(ItemEntity entity, List<String> assignees, List<UUID> images) {
         return new Item(
                 entity.getId(),
                 entity.getName(),
@@ -32,13 +29,8 @@ public class ItemTransformer {
                 entity.getPrice(),
                 entity.getLastedit().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli(),
                 entity.isSold(),
-                mapNullable(assignees, ItemAssigneeEntity::getAssignee),
-                mapNullable(images, ImageEntity::getId)
+                assignees,
+                images
         );
-    }
-
-    private static <E, T> List<T> mapNullable(List<E> es, Function<E, T> function) {
-        return es == null ? Collections.emptyList()
-                : es.stream().map(function).toList();
     }
 }

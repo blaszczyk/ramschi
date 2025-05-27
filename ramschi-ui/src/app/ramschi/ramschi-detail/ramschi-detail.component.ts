@@ -13,7 +13,7 @@ import { SpinnerService } from '../../spinner.service';
 import { CategoryService } from '../category.service';
 import { AssigneeService } from '../assignee.service';
 import { CredentialService, RoleAware } from '../../login/credential.service';
-import { CommentsComponent } from "./comments/comments.component";
+import { CommentsComponent } from './comments/comments.component';
 import { ItemListService } from '../item-list.service';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 
@@ -28,13 +28,12 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
     MatGridListModule,
     MatCheckboxModule,
     FormsModule,
-    CommentsComponent
-],
+    CommentsComponent,
+  ],
   templateUrl: './ramschi-detail.component.html',
   styleUrl: './ramschi-detail.component.css',
 })
 export class RamschiDetailComponent extends RoleAware implements OnInit {
-
   @ViewChild('newImage')
   newImageElement!: ElementRef<HTMLInputElement>;
 
@@ -157,9 +156,7 @@ export class RamschiDetailComponent extends RoleAware implements OnInit {
   }
 
   assign(assignee: string): void {
-    if (
-      confirm(`Danke ${assignee} für Dein Interesse an ${this.item.name}!`)
-    ) {
+    if (confirm(`Danke ${assignee} für Dein Interesse an ${this.item.name}!`)) {
       this.spinner.show();
       this.service.putItemAssignee(this.item.id!, assignee).subscribe(() => {
         this.item.assignees.push(assignee);
@@ -171,19 +168,15 @@ export class RamschiDetailComponent extends RoleAware implements OnInit {
   }
 
   unassign(assignee: string): void {
-    if (
-      confirm(`Schade, ${assignee}, dass Dir ${this.item.name} egal ist!`)
-    ) {
+    if (confirm(`Schade, ${assignee}, dass Dir ${this.item.name} egal ist!`)) {
       this.spinner.show();
-      this.service
-        .deleteItemAssignee(this.item.id!, assignee)
-        .subscribe(() => {
-          const index = this.item.assignees.indexOf(assignee);
-          this.item.assignees.splice(index, 1);
-          this.itemList.requestItems().subscribe(() => {
-            this.spinner.hide();
-          });
+      this.service.deleteItemAssignee(this.item.id!, assignee).subscribe(() => {
+        const index = this.item.assignees.indexOf(assignee);
+        this.item.assignees.splice(index, 1);
+        this.itemList.requestItems().subscribe(() => {
+          this.spinner.hide();
         });
+      });
     }
   }
 }

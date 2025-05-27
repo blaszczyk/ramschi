@@ -2,15 +2,13 @@ import { Injectable } from '@angular/core';
 import { IItem } from './domain';
 import { RamschiService } from './ramschi.service';
 import { ScrollService } from '../scroll.service';
-import { SpinnerService } from '../spinner.service';
 import { Observable, tap } from 'rxjs';
 import { CredentialService } from '../login/credential.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ItemListService {
-
   private items: IItem[] = [];
 
   private filteredItems: IItem[] = [];
@@ -23,8 +21,8 @@ export class ItemListService {
 
   private latestFirst = false;
 
-
-  constructor(private readonly service: RamschiService,
+  constructor(
+    private readonly service: RamschiService,
     private readonly scroll: ScrollService,
     private readonly credential: CredentialService,
   ) {
@@ -40,7 +38,7 @@ export class ItemListService {
 
   getFilterCategory(): string | null {
     return this.filterCategory;
-  } 
+  }
 
   getFilterAssignee(): string | null {
     return this.filterAssignee;
@@ -49,24 +47,28 @@ export class ItemListService {
   getLatestFirst(): boolean {
     return this.latestFirst;
   }
-  
+
   setFilterName(filterName: string): void {
     this.filterName = filterName;
+    this.scroll.forgetPosition();
     this.setFilter();
   }
 
   setFilterCategory(filterCategory: string | null): void {
     this.filterCategory = filterCategory;
+    this.scroll.forgetPosition();
     this.setFilter();
   }
 
   setFilterAssignee(filterAssignee: string | null): void {
     this.filterAssignee = filterAssignee;
+    this.scroll.forgetPosition();
     this.setFilter();
   }
 
   setLatestFirst(latestFirst: boolean): void {
     this.latestFirst = latestFirst;
+    this.scroll.forgetPosition();
     this.setFilter();
   }
 
@@ -75,6 +77,7 @@ export class ItemListService {
     this.filterCategory = null;
     this.filterAssignee = null;
     this.latestFirst = false;
+    this.scroll.forgetPosition();
     this.setFilter();
   }
 
@@ -90,22 +93,23 @@ export class ItemListService {
       KEY_LATEST_FIRST,
       this.latestFirst ? 'yes please' : null,
     );
-    this.filteredItems = this.items.filter(item =>
-      (item.name.toLowerCase().includes(this.filterName.toLowerCase()))
-      && (!this.filterCategory || item.category === this.filterCategory)
-      && (!this.filterAssignee || item.assignees.includes(this.filterAssignee))
+    this.filteredItems = this.items.filter(
+      (item) =>
+        item.name.toLowerCase().includes(this.filterName.toLowerCase()) &&
+        (!this.filterCategory || item.category === this.filterCategory) &&
+        (!this.filterAssignee || item.assignees.includes(this.filterAssignee)),
     );
     this.filteredItems.sort(this.latestFirst ? byDate : byName);
-    this.scroll.forgetPosition();
   }
 
   requestItems(): Observable<IItem[]> {
     const includeSold = this.credential.isContributor();
-    return this.service
-      .getItems(includeSold).pipe(tap(items => {
+    return this.service.getItems(includeSold).pipe(
+      tap((items) => {
         this.items = items;
         this.setFilter();
-      }));
+      }),
+    );
   }
 }
 
@@ -124,4 +128,5 @@ function updateLocalStorage(key: string, value: string | null) {
 
 const byDate = (i1: IItem, i2: IItem) => i2.lastedit - i1.lastedit;
 
-const byName = (i1: IItem, i2: IItem) => i1.name.toLowerCase().localeCompare(i2.name.toLowerCase());
+const byName = (i1: IItem, i2: IItem) =>
+  i1.name.toLowerCase().localeCompare(i2.name.toLowerCase());

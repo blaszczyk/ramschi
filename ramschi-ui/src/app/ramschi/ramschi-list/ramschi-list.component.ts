@@ -9,17 +9,14 @@ import { SpinnerService } from '../../spinner.service';
 
 @Component({
   selector: 'app-ramschi-list',
-  imports: [
-    MatGridListModule
-],
+  imports: [MatGridListModule],
   templateUrl: './ramschi-list.component.html',
   styleUrl: './ramschi-list.component.css',
 })
 export class RamschiListComponent extends RoleAware implements OnInit {
-
   get items(): IItem[] {
     return this.itemList.getItems();
-  };
+  }
 
   constructor(
     private readonly scroll: ScrollService,
@@ -37,9 +34,8 @@ export class RamschiListComponent extends RoleAware implements OnInit {
       this.itemList.requestItems().subscribe(() => {
         this.scroll.restorePosition();
         this.spinner.hide();
-      })
-    }
-    else {
+      });
+    } else {
       this.scroll.restorePosition();
     }
   }

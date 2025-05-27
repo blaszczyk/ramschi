@@ -43,9 +43,8 @@ public class CommentService {
             return new Comment(entity.getId(), entity.getItemId(), entity.getAuthor(), entity.getText(), entity.getLastEdit());
     }
 
-    public Mono<Comment> getComment(UUID id) {
-        return commentRepository.findById(id)
-                .map(CommentService::toComment);
+    public Mono<String> getAuthor(UUID id) {
+        return commentRepository.findAuthorById(id);
     }
 
     public Mono<Void> deleteComment(UUID id) {

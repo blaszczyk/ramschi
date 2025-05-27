@@ -7,7 +7,7 @@ import { MatInputModule } from '@angular/material/input';
 import { CredentialService } from './credential.service';
 import { RamschiService } from '../ramschi/ramschi.service';
 import { SpinnerService } from '../spinner.service';
-import { RecaptchaV3Module, ReCaptchaV3Service } from "ng-recaptcha";
+import { RecaptchaV3Module, ReCaptchaV3Service } from 'ng-recaptcha';
 import { ItemListService } from '../ramschi/item-list.service';
 
 @Component({
@@ -32,16 +32,16 @@ export class LoginComponent {
     private readonly itemList: ItemListService,
   ) {}
 
-  name: string = '';
+  name = '';
 
-  password: string = '';
+  password = '';
 
   anonymous() {
     this.spinner.show();
-      this.itemList.requestItems().subscribe(() => {
-        this.spinner.hide();
-        this.credentials.setInitialised();
-      });
+    this.itemList.requestItems().subscribe(() => {
+      this.spinner.hide();
+      this.credentials.setInitialised();
+    });
   }
 
   login() {
@@ -56,9 +56,10 @@ export class LoginComponent {
             this.credentials.setInitialised();
             this.spinner.hide();
           });
-        }
-        else {
-          alert('Das hat leider nicht geklappt. Wenn Du Dein Passwort vergessen hast, wende Dich an den Admin Deines Vertrauens.');
+        } else {
+          alert(
+            'Das hat leider nicht geklappt. Wenn Du Dein Passwort vergessen hast, wende Dich an den Admin Deines Vertrauens.',
+          );
           this.spinner.hide();
         }
       });

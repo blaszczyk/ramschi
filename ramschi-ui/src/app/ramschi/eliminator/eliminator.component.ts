@@ -12,10 +12,11 @@ import { CredentialService, RoleAware } from '../../login/credential.service';
 export class EliminatorComponent extends RoleAware implements OnInit {
   items: IItem[] = [];
 
-  constructor(private readonly service: RamschiService,
+  constructor(
+    private readonly service: RamschiService,
     credential: CredentialService,
   ) {
-    super(credential);    
+    super(credential);
   }
 
   ngOnInit(): void {
