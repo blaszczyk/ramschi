@@ -41,4 +41,5 @@ export interface IAssignee {
   name: string;
   role: Role;
   secure: boolean;
+  active: boolean;
 }

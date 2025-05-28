@@ -47,21 +47,11 @@ export class AdminComponent extends RoleAware implements OnInit {
     }
   }
 
-  roleSymbol(assignee: IAssignee): string {
-    switch (assignee.role) {
-      case Role.ADMIN:
-        return '🧙';
-      case Role.CONTRIBUTOR:
-        return '🦸';
-      default:
-        return '';
-    }
-  }
-
   toggleRole(assignee: IAssignee) {
     if (
       confirm(
         assignee.name +
+          ' ' +
           (assignee.role === Role.ASSIGNEE ? 'befördern' : 'herabstufen') +
           '?',
       )

@@ -9,16 +9,23 @@ import reactor.core.publisher.Mono;
 
 import java.util.List;
 
+import static com.google.common.collect.ImmutableSet.toImmutableSet;
+import static reactor.core.publisher.Mono.zip;
+
 @Service
 public class AssigneeService {
 
     private static final byte[] EMPTY_BYTE_ARRAY = new byte[0];
 
     @Autowired
+    private AssigneeRepository assigneeRepository;
+
+    @Autowired
     private ItemAssigneeRepository itemAssigneeRepository;
 
     @Autowired
-    private AssigneeRepository assigneeRepository;
+    private CommentRepository commentRepository;
+
 
     public Mono<List<String>> getAllAssigneeNames() {
         return assigneeRepository.findNames()
@@ -27,13 +34,24 @@ public class AssigneeService {
     }
 
     public Mono<List<Assignee>> getAllAssignees() {
-        return assigneeRepository.findAllOrderByName()
-                .map(entity -> {
-                    final byte[] passwordSHA256 = entity.getPasswordSHA256();;
-                    final boolean secure = passwordSHA256 != null && passwordSHA256.length > 0;
-                    return new Assignee(entity.getName(), entity.getRole(), secure);
-                })
-                .collectList();
+        final var fetchAssignees = assigneeRepository.findAllOrderByName().collectList();
+        final var fetchItems = itemAssigneeRepository.findAll()
+                .map(ItemAssigneeEntity::getAssignee)
+                .collect(toImmutableSet());
+        final var fetchComments = commentRepository.findAll()
+                .map(CommentEntity::getAuthor)
+                .collect(toImmutableSet());
+        return zip(fetchAssignees, fetchItems, fetchComments).map(tuple -> {
+                    final var entities = tuple.getT1();
+                    final var items = tuple.getT2();
+                    final var comments = tuple.getT3();
+                    return entities.stream().map(entity -> {
+                        final byte[] passwordSHA256 = entity.getPasswordSHA256();;
+                        final boolean secure = passwordSHA256 != null && passwordSHA256.length > 0;
+                        final boolean active = items.contains(entity.getName()) || comments.contains(entity.getName());
+                        return new Assignee(entity.getName(), entity.getRole(), secure, active);
+                    }).toList();
+                });
     }
 
     public Mono<Void> deleteAssignee(String name) {

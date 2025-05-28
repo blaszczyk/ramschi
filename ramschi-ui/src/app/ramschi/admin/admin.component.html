@@ -1,34 +1,45 @@
 @if (isAdmin) {
   @for (assignee of assignees; track assignee.name) {
     <p>
-      {{ roleSymbol(assignee) }}
+      @if (assignee.role === Role.ADMIN) {
+        🧙
+      }
+      @if (assignee.role === Role.CONTRIBUTOR) {
+        🦸
+      }
       {{ assignee.name }}
       @if (assignee.secure) {
         🗝️
+        <button (click)="resetPassword(assignee.name)">🔓</button>
       }
-      <button (click)="deleteAssignee(assignee.name)">X</button>
-      <button (click)="resetPassword(assignee.name)">Reset PW</button>
-      <button (click)="toggleRole(assignee)">
-        {{ assignee.role === Role.ASSIGNEE ? "Befördern" : "Herabstufen" }}
-      </button>
+      @if (assignee.role !== Role.ADMIN) {
+        <button (click)="toggleRole(assignee)">
+          {{ assignee.role === Role.ASSIGNEE ? "🦸" : "🙋" }}
+        </button>
+        <button
+          [disabled]="assignee.active"
+          (click)="deleteAssignee(assignee.name)"
+        >
+          ☠️
+        </button>
+      }
     </p>
   }
   @for (category of categories; track category.id) {
     <p>
       {{ category.id }}
       <input [(ngModel)]="category.name" />
-      <button (click)="updateCategory(category)">Speichern</button>
+      <button (click)="updateCategory(category)">💾</button>
     </p>
   }
 
   <input [(ngModel)]="newCategoryId" />
   <input [(ngModel)]="newCategoryName" />
-  <br />
   <button
     (click)="createNewCategory()"
     [disabled]="!newCategoryId || !newCategoryName"
   >
-    Neue Kategorie
+    ➕️
   </button>
 } @else {
   <h1>Netter Versuch</h1>

@@ -25,13 +25,24 @@ export class EliminatorComponent extends RoleAware implements OnInit {
 
   deleteItem(item: IItem) {
     if (confirm(item.name + ' wirklich löschen?')) {
-      this.service.deleteItem(item).subscribe();
+      this.service.deleteItem(item).subscribe(this.alertSuccess);
     }
   }
 
   deleteImage(id: string) {
     if (confirm('Bild wirklich löschen?')) {
-      this.service.deleteImage(id).subscribe();
+      this.service.deleteImage(id).subscribe(this.alertSuccess);
     }
   }
+
+  private refresh() {
+    this.service.getItems(true).subscribe((items) => {
+      this.items = items;
+    });
+  }
+
+  private alertSuccess = () => {
+    alert('Hat geklappt!');
+    this.refresh();
+  };
 }
