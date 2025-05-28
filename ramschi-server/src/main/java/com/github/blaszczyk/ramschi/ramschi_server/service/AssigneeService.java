@@ -28,7 +28,11 @@ public class AssigneeService {
 
     public Mono<List<Assignee>> getAllAssignees() {
         return assigneeRepository.findAllOrderByName()
-                .map(entity -> new Assignee(entity.getName(), entity.getRole()))
+                .map(entity -> {
+                    final byte[] passwordSHA256 = entity.getPasswordSHA256();;
+                    final boolean secure = passwordSHA256 != null && passwordSHA256.length > 0;
+                    return new Assignee(entity.getName(), entity.getRole(), secure);
+                })
                 .collectList();
     }
 

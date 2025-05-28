@@ -3,6 +3,7 @@ import { RamschiService } from '../ramschi.service';
 import { FormsModule } from '@angular/forms';
 import { IAssignee, ICategory, Role } from '../domain';
 import { CredentialService, RoleAware } from '../../login/credential.service';
+import { tap } from 'rxjs';
 
 @Component({
   selector: 'app-admin',
@@ -36,27 +37,41 @@ export class AdminComponent extends RoleAware implements OnInit {
 
   deleteAssignee(name: string) {
     if (confirm(name + ' löschen?')) {
-      this.service.deleteAssignee(name).subscribe(() => {
-        this.refresh();
-      });
+      this.service.deleteAssignee(name).subscribe(this.alertSuccess);
     }
   }
 
   resetPassword(name: string) {
     if (confirm('Passwort von ' + name + ' zurücksetzen?')) {
-      this.service.resetPassword(name).subscribe(() => {
-        alert('Hat geklappt!');
-      });
+      this.service.resetPassword(name).subscribe(this.alertSuccess);
+    }
+  }
+
+  roleSymbol(assignee: IAssignee): string {
+    switch (assignee.role) {
+      case Role.ADMIN:
+        return '🧙';
+      case Role.CONTRIBUTOR:
+        return '🦸';
+      default:
+        return '';
     }
   }
 
   toggleRole(assignee: IAssignee) {
-    const newRole =
-      assignee.role === Role.ASSIGNEE ? Role.CONTRIBUTOR : Role.ASSIGNEE;
-    this.service.putAssigneeRole(assignee.name, newRole).subscribe(() => {
-      alert('Hat geklappt!');
-      this.refresh();
-    });
+    if (
+      confirm(
+        assignee.name +
+          (assignee.role === Role.ASSIGNEE ? 'befördern' : 'herabstufen') +
+          '?',
+      )
+    ) {
+      const newRole =
+        assignee.role === Role.ASSIGNEE ? Role.CONTRIBUTOR : Role.ASSIGNEE;
+      this.service
+        .putAssigneeRole(assignee.name, newRole)
+        .subscribe(this.alertSuccess);
+    }
   }
 
   createNewCategory(): void {
@@ -64,18 +79,19 @@ export class AdminComponent extends RoleAware implements OnInit {
       id: this.newCategoryId!.toUpperCase(),
       name: this.newCategoryName!,
     };
-    this.service.postCategory(category).subscribe(() => {
-      this.newCategoryId = null;
-      this.newCategoryName = null;
-      this.refresh();
-    });
+    this.service
+      .postCategory(category)
+      .pipe(
+        tap(() => {
+          this.newCategoryId = null;
+          this.newCategoryName = null;
+        }),
+      )
+      .subscribe(this.alertSuccess);
   }
 
   updateCategory(category: ICategory): void {
-    this.service.postCategory(category).subscribe(() => {
-      this.refresh();
-      alert('Hat geklappt!');
-    });
+    this.service.postCategory(category).subscribe(this.alertSuccess);
   }
 
   private refresh() {
@@ -86,4 +102,9 @@ export class AdminComponent extends RoleAware implements OnInit {
       .getCategories()
       .subscribe((categories) => (this.categories = categories));
   }
+
+  private alertSuccess = (): void => {
+    this.refresh();
+    alert('Hat geklappt!');
+  };
 }

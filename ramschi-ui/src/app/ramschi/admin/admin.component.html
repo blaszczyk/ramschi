@@ -1,7 +1,11 @@
 @if (isAdmin) {
   @for (assignee of assignees; track assignee.name) {
     <p>
+      {{ roleSymbol(assignee) }}
       {{ assignee.name }}
+      @if (assignee.secure) {
+        🗝️
+      }
       <button (click)="deleteAssignee(assignee.name)">X</button>
       <button (click)="resetPassword(assignee.name)">Reset PW</button>
       <button (click)="toggleRole(assignee)">
