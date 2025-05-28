@@ -27,30 +27,6 @@ public class AuthService {
     @Autowired
     private AssigneeRepository assigneeRepository;
 
-    public Mono<LoginResponse> login(String ramschiAuthString) {
-        final RamschiAuth auth = parse(ramschiAuthString);
-
-        return assigneeRepository.findByName(auth.name()).flatMap(entity -> {
-            final LoginResponse response = LoginResponse.from(entity);
-            if (hasPassword(entity)) {
-                if (passwordMatches(auth, entity)) {
-                    return just(response);
-                }
-                else {
-                    return just(LoginResponse.FAIL);
-                }
-            }
-            else {
-                if (auth.hasPassword()) {
-                    return setPassword(auth).thenReturn(response);
-                }
-                else {
-                    return just(response);
-                }
-            }
-        }).switchIfEmpty(createNewAssignee(auth));
-    }
-
     public Mono<AuthInfo> getAuthInfo(String ramschiAuthString) {
         if (StringUtils.isBlank(ramschiAuthString)) {
             return just(FAIL);
@@ -71,6 +47,30 @@ public class AuthService {
         }).switchIfEmpty(just(FAIL));
     }
 
+    public Mono<LoginResponse> login(String ramschiAuthString) {
+        final RamschiAuth auth = parse(ramschiAuthString);
+
+        return assigneeRepository.findByName(auth.name()).flatMap(entity -> {
+            final LoginResponse response = LoginResponse.from(entity);
+            if (hasPassword(entity)) {
+                if (passwordMatches(auth, entity)) {
+                    return just(response);
+                }
+                else {
+                    return just(LoginResponse.FAIL);
+                }
+            }
+            else {
+                if (auth.hasPassword()) {
+                    return storePassword(auth).thenReturn(response);
+                }
+                else {
+                    return just(response);
+                }
+            }
+        }).switchIfEmpty(createNewAssignee(auth));
+    }
+
     private Mono<LoginResponse> createNewAssignee(RamschiAuth auth) {
         final AssigneeEntity entity = new AssigneeEntity();
         entity.setName(auth.name());
@@ -79,7 +79,7 @@ public class AuthService {
         final LoginResponse response = LoginResponse.from(entity);
         return assigneeRepository.save(entity).flatMap(ignore -> {
             if (auth.hasPassword()) {
-                return setPassword(auth).thenReturn(response);
+                return storePassword(auth).thenReturn(response);
             }
             else {
                 return just(response);
@@ -87,7 +87,7 @@ public class AuthService {
         });
     }
 
-    private Mono<AssigneeEntity> setPassword(RamschiAuth auth) {
+    private Mono<AssigneeEntity> storePassword(RamschiAuth auth) {
         final byte[] salt = generateSalt();
         final byte[] passwordSHA256 = addSaltAndDigestSHA256(auth.password(), salt);
         return assigneeRepository.setPassword(auth.name(), passwordSHA256, salt);

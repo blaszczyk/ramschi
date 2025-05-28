@@ -1,5 +1,5 @@
 @if (isAdmin) {
-  @for (item of items; track item) {
+  @for (item of items; track item.id) {
     <p>
       {{ item.name }}
       <button (click)="deleteItem(item)">X</button>

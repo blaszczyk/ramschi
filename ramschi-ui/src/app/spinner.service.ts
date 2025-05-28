@@ -20,17 +20,21 @@ export class SpinnerService {
     this.update();
   }
 
-  update = () => {
+  hide() {
+    this.spawnMode = false;
+  }
+
+  private update = () => {
     this.spinners.forEach((spinner) => {
       const state = spinner.applyPhysics();
-      if (state === 'DIE' || (state === 'BOUNCE' && !this.spawnMode)) {
+      if (state === State.DIE || (state === State.BOUNCE && !this.spawnMode)) {
         this.spinners.splice(this.spinners.indexOf(spinner), 1);
       }
     });
     if (this.spawnMode && this.spinners.length < MAX_SPINNERS) {
       this.spawnSpinner();
     }
-    if (this.spawnMode || this.spinners.length > 0) {
+    if (this.spinners.length > 0) {
       setTimeout(this.update, TIME_STEP);
     }
   };
@@ -40,13 +44,8 @@ export class SpinnerService {
       this.spinners.length === 0
         ? 0
         : FLOOR_HEIGHT + Math.random() * (FLOOR_DEPTH - FLOOR_HEIGHT);
-    const newSpinner = new Spinner(depth,this.offset, this.offset % 4);
+    this.spinners.push(new Spinner(depth, this.offset, this.offset % 4));
     this.offset++;
-    this.spinners.push(newSpinner);
-  };
-
-  hide = () => {
-    this.spawnMode = false;
   };
 }
 
@@ -79,7 +78,7 @@ export class Spinner {
     return 10000 + this.z;
   }
 
-  applyPhysics(): 'SURVIVE' | 'DIE' | 'BOUNCE' {
+  applyPhysics(): State {
     // newtons law
     this.vy += GRAVITY;
     // update position
@@ -92,7 +91,7 @@ export class Spinner {
       const currentEnergy = this.vx ** 2 + this.vy ** 2 + this.vz ** 2;
       // die if too fast
       if (currentEnergy > KILL_ENERGY) {
-        return 'DIE';
+        return State.DIE;
       }
       // bounce in random direction
       const newVelocity = Math.sqrt(currentEnergy + BOUNCE_ENERGY);
@@ -101,7 +100,7 @@ export class Spinner {
       this.vy = newVelocity * Math.cos(polar);
       this.vx = newVelocity * Math.sin(polar) * Math.cos(azimuth);
       this.vz = newVelocity * Math.sin(polar) * Math.sin(azimuth);
-      return 'BOUNCE';
+      return State.BOUNCE;
     }
     // wall collisions
     if (Math.abs(this.x) > BOUNCE_RADIUS) {
@@ -113,7 +112,7 @@ export class Spinner {
       this.vz = -this.vz;
     }
     // survive
-    return 'SURVIVE';
+    return State.SURVIVE;
   }
 }
 
@@ -134,3 +133,9 @@ const OBSERVER_DISTANCE = 2 * BOUNCE_RADIUS;
 const FLOOR_DEPTH = window.outerHeight / 2 - 100;
 
 const FLOOR_HEIGHT = -window.outerHeight / 2 + KILL_ENERGY / (2 * GRAVITY);
+
+enum State {
+  SURVIVE,
+  DIE,
+  BOUNCE,
+}

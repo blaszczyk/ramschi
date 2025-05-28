@@ -1,5 +1,5 @@
 <mat-grid-list cols="1" rowHeight="70px">
-  @for (item of items; track item) {
+  @for (item of items; track item.id) {
     <mat-grid-tile>
       <div class="item" (click)="navigateTo(item)">
         <div class="item-name">{{ item.name }}</div>

@@ -2,7 +2,7 @@
   <mat-expansion-panel-header>
     <mat-panel-title>Kommentare ({{ comments.length }})</mat-panel-title>
   </mat-expansion-panel-header>
-  @for (comment of comments; track comment) {
+  @for (comment of comments; track comment.id) {
     <div class="comment">
       <b>{{ comment.author }}: </b>
       @if (comment.author === assignee) {

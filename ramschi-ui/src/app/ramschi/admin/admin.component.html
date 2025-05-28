@@ -4,7 +4,9 @@
       {{ assignee.name }}
       <button (click)="deleteAssignee(assignee.name)">X</button>
       <button (click)="resetPassword(assignee.name)">Reset PW</button>
-      <button (click)="toggleRole(assignee)">{{ assignee.role === Role.ASSIGNEE ? 'Befördern' : 'Herabstufen' }}</button>
+      <button (click)="toggleRole(assignee)">
+        {{ assignee.role === Role.ASSIGNEE ? "Befördern" : "Herabstufen" }}
+      </button>
     </p>
   }
   @for (category of categories; track category.id) {

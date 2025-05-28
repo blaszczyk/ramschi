@@ -11,7 +11,6 @@ import { CredentialService, RoleAware } from '../../login/credential.service';
   styleUrl: './admin.component.css',
 })
 export class AdminComponent extends RoleAware implements OnInit {
-
   Role: typeof Role = Role;
 
   assignees: IAssignee[] = [];
@@ -52,7 +51,8 @@ export class AdminComponent extends RoleAware implements OnInit {
   }
 
   toggleRole(assignee: IAssignee) {
-    const newRole = assignee.role === Role.ASSIGNEE ? Role.CONTRIBUTOR : Role.ASSIGNEE;
+    const newRole =
+      assignee.role === Role.ASSIGNEE ? Role.CONTRIBUTOR : Role.ASSIGNEE;
     this.service.putAssigneeRole(assignee.name, newRole).subscribe(() => {
       alert('Hat geklappt!');
       this.refresh();
