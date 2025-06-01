@@ -72,8 +72,10 @@ public class ItemController {
            @PathVariable String assignee,
            @RequestHeader(RamschiHeader.AUTH) String ramschiAuth) {
         return authHelper.doIfAuthorised(ramschiAuth, assignee, () ->
-                itemService.addAssignee(itemId, assignee)
-                        .map(ResponseEntity::ok)
+                authHelper.doIfUnsold(itemId, () ->
+                        itemService.addAssignee(itemId, assignee)
+                                .map(ResponseEntity::ok)
+                )
         );
     }
 
@@ -83,8 +85,10 @@ public class ItemController {
             @PathVariable String assignee,
             @RequestHeader(RamschiHeader.AUTH) String ramschiAuth) {
         return authHelper.doIfAuthorised(ramschiAuth, assignee, () ->
-                itemService.deleteAssignee(itemId, assignee)
-                        .map(ResponseEntity::ok)
+                    authHelper.doIfUnsold(itemId, () ->
+                            itemService.deleteAssignee(itemId, assignee)
+                                    .map(ResponseEntity::ok)
+                    )
         );
     }
 

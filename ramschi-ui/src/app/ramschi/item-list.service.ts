@@ -97,13 +97,14 @@ export class ItemListService {
       (item) =>
         item.name.toLowerCase().includes(this.filterName.toLowerCase()) &&
         (!this.filterCategory || item.category === this.filterCategory) &&
-        (!this.filterAssignee || item.assignees.includes(this.filterAssignee)),
+        (!this.filterAssignee || item.assignees.includes(this.filterAssignee)) &&
+        (!item.sold || item.assignees.includes(this.credential.getAssignee()!) || this.credential.isAdmin())
     );
     this.filteredItems.sort(this.latestFirst ? byDate : byName);
   }
 
   requestItems(): Observable<IItem[]> {
-    const includeSold = this.credential.isContributor();
+    const includeSold = this.credential.isAssignee();
     return this.service.getItems(includeSold).pipe(
       tap((items) => {
         this.items = items;

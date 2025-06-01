@@ -2,6 +2,9 @@
   @for (item of items; track item.id) {
     <mat-grid-tile>
       <div class="item" (click)="navigateTo(item)">
+        @if (item.sold && !item.assignees.includes(assignee!)) {
+          <div class="sold"></div>
+        }
         <div class="item-name">{{ item.name }}</div>
         <div class="item-description">
           @if (isAssignee) {

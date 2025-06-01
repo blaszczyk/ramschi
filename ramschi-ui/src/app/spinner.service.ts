@@ -66,7 +66,6 @@ export class Spinner {
     this.x = (Math.random() - 0.5) * BOUNCE_RADIUS;
     this.y = depth;
     this.z = 0;
-    this.applyPhysics();
   }
 
   get cssPosition(): string {
