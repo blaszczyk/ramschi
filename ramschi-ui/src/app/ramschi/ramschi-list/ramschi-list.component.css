@@ -12,7 +12,7 @@
   width: 100%;
   height: 100%;
   background-color: rgba(240, 240, 240, 0.5);
-  z-index: 1000;
+  z-index: 7;
 }
 
 .item-name {
