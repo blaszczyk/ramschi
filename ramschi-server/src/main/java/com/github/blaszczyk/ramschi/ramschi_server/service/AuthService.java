@@ -119,16 +119,16 @@ public class AuthService {
         }
     }
 
-    public static RamschiAuth parse(String ramschiAuth) {
+    private static RamschiAuth parse(String ramschiAuth) {
         final byte[] decodedBytes = Base64.getDecoder().decode(ramschiAuth);
         final String decodedHex = new String(decodedBytes, StandardCharsets.UTF_8);
         final String decoded = hexToUtf8(decodedHex);
         final String[] split = decoded.split(":", 2);
         if (split.length > 1) {
-            return new RamschiAuth(split[0], split[1].getBytes(StandardCharsets.UTF_8));
+            return new RamschiAuth(split[0].strip(), split[1].getBytes(StandardCharsets.UTF_8));
         }
         else {
-            return new RamschiAuth(decoded, new byte[0]);
+            return new RamschiAuth(decoded.strip(), new byte[0]);
         }
     }
 
