@@ -3,7 +3,7 @@ export interface ICategory {
   name: string;
 }
 
-export interface IBasicItem {
+export interface IPlainItem {
   id: string | null;
   name: string;
   description: string | null;
@@ -12,10 +12,16 @@ export interface IBasicItem {
   sold: boolean;
 }
 
-export interface IItem extends IBasicItem {
+export interface IItem extends IPlainItem {
   lastedit: number;
   assignees: string[];
   images: string[];
+}
+
+export interface IFullItem extends IPlainItem {
+  assignees: string[];
+  images: string[];
+  comments: IComment[];
 }
 
 export interface ILoginResponse {

@@ -137,7 +137,7 @@
     </div>
   }
   @if (isAssignee && item.id) {
-    <app-comments [item]="item"></app-comments>
+    <app-comments [itemId]="item.id" [comments]="item.comments"></app-comments>
   }
   @for (image of item.images; track image) {
     <a [href]="'/api/image/' + image">

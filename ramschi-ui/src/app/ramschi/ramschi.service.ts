@@ -3,12 +3,13 @@ import { Observable } from 'rxjs';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import {
   ICategory,
-  IBasicItem,
+  IPlainItem,
   IItem,
   ILoginResponse,
   IComment,
   Role,
   IAssignee,
+  IFullItem,
 } from './domain';
 import { CredentialService } from '../login/credential.service';
 
@@ -29,17 +30,17 @@ export class RamschiService {
     return this.http.get<IItem[]>('/api/item', { params });
   }
 
-  getItem(id: string): Observable<IItem> {
-    return this.http.get<IItem>('/api/item/' + id);
+  getItem(id: string): Observable<IFullItem> {
+    return this.http.get<IFullItem>('/api/item/' + id);
   }
 
-  postItem(item: IBasicItem): Observable<string> {
+  postItem(item: IPlainItem): Observable<string> {
     return this.http.post<string>('/api/item', item, {
       headers: this.getHeaders(),
     });
   }
 
-  deleteItem(item: IBasicItem): Observable<void> {
+  deleteItem(item: IPlainItem): Observable<void> {
     return this.http.delete<void>('/api/item/' + item.id, {
       headers: this.getHeaders(),
     });
@@ -124,10 +125,6 @@ export class RamschiService {
     return this.http.post<ILoginResponse>('/api/assignee/login', null, {
       headers: this.getHeaders(),
     });
-  }
-
-  getComments(itemId: string): Observable<IComment[]> {
-    return this.http.get<IComment[]>('/api/comment/' + itemId);
   }
 
   postComment(comment: IComment): Observable<IComment> {
