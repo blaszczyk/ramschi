@@ -12,6 +12,7 @@ html {
   --mat-sys-primary-fixed: #ffd9e1;
   --mat-sys-primary-fixed-dim: #ffb1c5;
   --mat-sys-on-primary-container: #c52657;
+  --mat-sys-surface-container: #f7ebec;
 
   /*
   
@@ -41,7 +42,6 @@ html {
   --mat-sys-shadow: #000000;
   --mat-sys-surface: #fff8f8;
   --mat-sys-surface-bright: #fff8f8;
-  --mat-sys-surface-container: #f7ebec;
   --mat-sys-surface-container-high: #f1e5e6;
   --mat-sys-surface-container-highest: #ece0e1;
   --mat-sys-surface-container-low: #fdf1f2;
