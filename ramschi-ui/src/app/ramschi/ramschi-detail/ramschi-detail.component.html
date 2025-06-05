@@ -100,7 +100,7 @@
           [style.visibility]="item.id ? 'visible' : 'hidden'"
           (click)="assign(assignee!)"
         >
-          Ich wäre interessiert!
+          Ich bin {{ item.assignees.length ? " auch " : "" }} interessiert!
         </button>
       }
       @if (isContributor) {
