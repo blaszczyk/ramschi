@@ -69,6 +69,8 @@
             </mat-select>
           </mat-form-field>
         </mat-grid-tile>
+      }
+      @if (isContributor && item.id) {
         <mat-grid-tile>
           <mat-checkbox [(ngModel)]="item.sold" (change)="setDirty()"
             >Verkauft</mat-checkbox

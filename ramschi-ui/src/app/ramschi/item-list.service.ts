@@ -101,7 +101,7 @@ export class ItemListService {
           item.assignees.includes(this.filterAssignee)) &&
         (!item.sold ||
           item.assignees.includes(this.credential.getAssignee()!) ||
-          this.credential.isAdmin()),
+          this.credential.isContributor()),
     );
     this.filteredItems.sort(this.latestFirst ? byDate : byName);
   }
