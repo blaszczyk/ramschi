@@ -1,30 +1,39 @@
 @if (isAdmin) {
-  @for (assignee of assignees; track assignee.name) {
-    <p>
-      @if (assignee.role === Role.ADMIN) {
-        🧙
+  <table>
+    <tbody>
+      @for (assignee of assignees; track assignee.name) {
+        <tr>
+          <td>
+            @if (assignee.role === Role.ADMIN) {
+              🧙
+            }
+            @if (assignee.role === Role.CONTRIBUTOR) {
+              🦸
+            }
+            {{ assignee.name }}
+          </td>
+          <td>
+            @if (assignee.secure) {
+              <button (click)="resetPassword(assignee.name)">🔓</button>
+            }
+          </td>
+          <td>
+            @if (assignee.role !== Role.ADMIN) {
+              <button (click)="toggleRole(assignee)">
+                {{ assignee.role === Role.ASSIGNEE ? "🦸" : "🙋" }}
+              </button>
+              <button
+                [disabled]="assignee.active"
+                (click)="deleteAssignee(assignee.name)"
+              >
+                ☠️
+              </button>
+            }
+          </td>
+        </tr>
       }
-      @if (assignee.role === Role.CONTRIBUTOR) {
-        🦸
-      }
-      {{ assignee.name }}
-      @if (assignee.secure) {
-        🗝️
-        <button (click)="resetPassword(assignee.name)">🔓</button>
-      }
-      @if (assignee.role !== Role.ADMIN) {
-        <button (click)="toggleRole(assignee)">
-          {{ assignee.role === Role.ASSIGNEE ? "🦸" : "🙋" }}
-        </button>
-        <button
-          [disabled]="assignee.active"
-          (click)="deleteAssignee(assignee.name)"
-        >
-          ☠️
-        </button>
-      }
-    </p>
-  }
+    </tbody>
+  </table>
   @for (category of categories; track category.id) {
     <p>
       {{ category.id }}

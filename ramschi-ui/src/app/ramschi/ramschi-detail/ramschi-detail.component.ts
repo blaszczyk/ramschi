@@ -1,4 +1,10 @@
-import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { RamschiService } from '../ramschi.service';
 import { ICategory, IItem } from '../domain';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -34,7 +40,10 @@ import { ItemHolderService } from '../../item.holder.service';
   templateUrl: './ramschi-detail.component.html',
   styleUrl: './ramschi-detail.component.css',
 })
-export class RamschiDetailComponent extends RoleAware implements OnInit, OnDestroy {
+export class RamschiDetailComponent
+  extends RoleAware
+  implements OnInit, OnDestroy
+{
   @ViewChild('newImage')
   newImageElement!: ElementRef<HTMLInputElement>;
 
@@ -89,7 +98,7 @@ export class RamschiDetailComponent extends RoleAware implements OnInit, OnDestr
         });
       } else {
         this.initialized = true;
-          this.itemHolder.clearItem();
+        this.itemHolder.clearItem();
       }
     });
   }
