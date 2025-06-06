@@ -6,12 +6,12 @@
 
 .logo {
   position: absolute;
-  top: 3px;
-  left: 0px;
+  top: 7px;
+  left: 2px;
   cursor: pointer;
 
   img {
-    height: 50px;
+    height: 40px;
   }
 }
 
@@ -23,7 +23,7 @@
 
   .assignee {
     display: inline-table;
-    font-size: 17px;
+    font-size: 15px;
   }
 
   button {

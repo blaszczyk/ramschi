@@ -9,6 +9,11 @@
         <mat-icon>add_circle</mat-icon>
       </button>
     }
+    @if (canShare() && isAssignee) {
+      <button mat-mini-fab (click)="share()">
+        <mat-icon>share</mat-icon>
+      </button>
+    }
     <button mat-mini-fab (click)="logout()">
       <mat-icon>{{ isAssignee ? "logout" : "login" }}</mat-icon>
     </button>
