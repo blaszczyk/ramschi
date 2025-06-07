@@ -1,55 +1,63 @@
 @if (isAdmin) {
   <table>
-    <tbody>
-      @for (assignee of assignees; track assignee.name) {
-        <tr>
-          <td>
-            @if (assignee.role === Role.ADMIN) {
-              🧙
-            }
-            @if (assignee.role === Role.CONTRIBUTOR) {
-              🦸
-            }
-            {{ assignee.name }}
-          </td>
-          <td>
-            @if (assignee.secure) {
-              <button (click)="resetPassword(assignee.name)">🔓</button>
-            }
-          </td>
-          <td>
-            @if (assignee.role !== Role.ADMIN) {
-              <button (click)="toggleRole(assignee)">
-                {{ assignee.role === Role.ASSIGNEE ? "🦸" : "🙋" }}
-              </button>
-              <button
-                [disabled]="assignee.active"
-                (click)="deleteAssignee(assignee.name)"
-              >
-                ☠️
-              </button>
-            }
-          </td>
-        </tr>
-      }
-    </tbody>
+    @for (assignee of assignees; track assignee.name) {
+      <tr>
+        <td>
+          @if (assignee.role === Role.ADMIN) {
+            🧙
+          }
+          @if (assignee.role === Role.CONTRIBUTOR) {
+            🦸
+          }
+          {{ assignee.name }}
+        </td>
+        <td>
+          @if (assignee.secure) {
+            <button (click)="resetPassword(assignee.name)">🔓</button>
+          }
+        </td>
+        <td>
+          @if (assignee.role !== Role.ADMIN) {
+            <button (click)="toggleRole(assignee)">
+              {{ assignee.role === Role.ASSIGNEE ? "🦸" : "🙋" }}
+            </button>
+            <button
+              [disabled]="assignee.itemCount > 0 || assignee.commentCount > 0"
+              (click)="deleteAssignee(assignee.name)"
+            >
+              ☠️
+            </button>
+          }
+        </td>
+        <td>&nbsp;&nbsp;☝️{{ assignee.itemCount }}</td>
+        <td>&nbsp;&nbsp;💬{{ assignee.commentCount }}</td>
+      </tr>
+    }
   </table>
-  @for (category of categories; track category.id) {
-    <p>
-      {{ category.id }}
-      <input [(ngModel)]="category.name" />
+  <table>
+    @for (category of categories; track category.id) {
+      <tr>
+        <td>{{ category.id }}</td>
+        <td>
+      <input [(ngModel)]="category.name" /></td>
+        <td>
       <button (click)="updateCategory(category)">💾</button>
-    </p>
-  }
-
-  <input [(ngModel)]="newCategoryId" />
-  <input [(ngModel)]="newCategoryName" />
-  <button
-    (click)="createNewCategory()"
-    [disabled]="!newCategoryId || !newCategoryName"
-  >
-    ➕️
-  </button>
+        </td>
+      </tr>
+    }
+    <tr>
+      <td><input [(ngModel)]="newCategoryId" /></td>
+      <td><input [(ngModel)]="newCategoryName" /></td>
+      <td>
+        <button
+          (click)="createNewCategory()"
+          [disabled]="!newCategoryId || !newCategoryName"
+        >
+          ➕️
+        </button>
+      </td>
+    </tr>
+  </table>
 } @else {
   <h1>Netter Versuch</h1>
 }
