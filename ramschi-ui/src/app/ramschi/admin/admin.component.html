@@ -29,8 +29,16 @@
             </button>
           }
         </td>
-        <td>&nbsp;&nbsp;☝️{{ assignee.itemCount }}</td>
-        <td>&nbsp;&nbsp;💬{{ assignee.commentCount }}</td>
+        <td>
+          @if (assignee.itemCount) {
+            &nbsp;&nbsp;{{ assignee.itemCount }}☝️
+          }
+        </td>
+        <td>
+          @if (assignee.commentCount) {
+            &nbsp;&nbsp;{{ assignee.commentCount }}💬
+          }
+        </td>
       </tr>
     }
   </table>
@@ -39,9 +47,10 @@
       <tr>
         <td>{{ category.id }}</td>
         <td>
-      <input [(ngModel)]="category.name" /></td>
+          <input [(ngModel)]="category.name" />
+        </td>
         <td>
-      <button (click)="updateCategory(category)">💾</button>
+          <button (click)="updateCategory(category)">💾</button>
         </td>
       </tr>
     }

@@ -58,6 +58,13 @@ export class RamschiFilterComponent extends RoleAware {
     this.itemList.setLatestFirst(value);
   }
 
+  get excludeSold(): boolean {
+    return this.itemList.getExcludeSold();
+  }
+  set excludeSold(value: boolean) {
+    this.itemList.setExcludeSold(value);
+  }
+
   get filterSummary(): string {
     const filters: string[] = [];
     if (this.filterName) {

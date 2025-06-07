@@ -44,4 +44,9 @@
   <mat-checkbox [(ngModel)]="latestFirst" name="latest first"
     >Neuster Ramsch zuerst</mat-checkbox
   >
+  @if (isContributor) {
+    <mat-checkbox [(ngModel)]="excludeSold" name="sold"
+      >Nur unverkauftes</mat-checkbox
+    >
+  }
 </mat-expansion-panel>

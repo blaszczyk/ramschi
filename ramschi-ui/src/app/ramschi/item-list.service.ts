@@ -21,6 +21,8 @@ export class ItemListService {
 
   private latestFirst = false;
 
+  private excludeSold = false;
+
   constructor(
     private readonly service: RamschiService,
     private readonly scroll: ScrollService,
@@ -30,6 +32,7 @@ export class ItemListService {
     this.filterCategory = localStorage.getItem(KEY_FILTER_CATEGORY);
     this.filterAssignee = localStorage.getItem(KEY_FILTER_ASSIGNEE);
     this.latestFirst = !!localStorage.getItem(KEY_LATEST_FIRST);
+    this.excludeSold = !!localStorage.getItem(KEY_EXCLUDE_SOLD);
   }
 
   getFilterName(): string {
@@ -46,6 +49,10 @@ export class ItemListService {
 
   getLatestFirst(): boolean {
     return this.latestFirst;
+  }
+
+  getExcludeSold(): boolean {
+    return this.excludeSold;
   }
 
   setFilterName(filterName: string): void {
@@ -72,11 +79,18 @@ export class ItemListService {
     this.setFilter();
   }
 
+  setExcludeSold(excludeSold: boolean): void {
+    this.excludeSold = excludeSold;
+    this.scroll.forgetPosition();
+    this.setFilter();
+  }
+
   clearFilter(): void {
     this.filterName = '';
     this.filterCategory = null;
     this.filterAssignee = null;
     this.latestFirst = false;
+    this.excludeSold = false;
     this.scroll.forgetPosition();
     this.setFilter();
   }
@@ -93,6 +107,10 @@ export class ItemListService {
       KEY_LATEST_FIRST,
       this.latestFirst ? 'yes please' : null,
     );
+    updateLocalStorage(
+      KEY_EXCLUDE_SOLD,
+      this.excludeSold ? 'yes please' : null,
+    );
     this.filteredItems = this.items.filter(
       (item) =>
         item.name.toLowerCase().includes(this.filterName.toLowerCase()) &&
@@ -101,7 +119,7 @@ export class ItemListService {
           item.assignees.includes(this.filterAssignee)) &&
         (!item.sold ||
           item.assignees.includes(this.credential.getAssignee()!) ||
-          this.credential.isContributor()),
+          (this.credential.isContributor() && !this.excludeSold)),
     );
     this.filteredItems.sort(this.latestFirst ? byDate : byName);
   }
@@ -121,6 +139,7 @@ const KEY_FILTER_NAME = 'filter-name';
 const KEY_FILTER_CATEGORY = 'filter-category';
 const KEY_FILTER_ASSIGNEE = 'filter-assignee';
 const KEY_LATEST_FIRST = 'latest-first';
+const KEY_EXCLUDE_SOLD = 'exclude-sold';
 
 function updateLocalStorage(key: string, value: string | null) {
   if (value) {
