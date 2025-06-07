@@ -33,4 +33,15 @@ public class ItemTransformer {
                 images
         );
     }
+
+    public static BasicItem toBasicItem(ItemEntity entity) {
+        return new BasicItem(
+                entity.getId(),
+                entity.getName(),
+                entity.getDescription(),
+                entity.getCategory(),
+                entity.getPrice(),
+                entity.isSold()
+        );
+    }
 }

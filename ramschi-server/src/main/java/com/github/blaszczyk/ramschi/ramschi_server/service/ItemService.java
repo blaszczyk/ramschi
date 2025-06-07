@@ -29,6 +29,9 @@ public class ItemService {
     @Autowired
     private ItemAssigneeRepository itemAssigneeRepository;
 
+    @Autowired
+    private CommentRepository commentRepository;
+
     public Mono<List<Item>> filterItems(boolean includeSold) {
         final var entityFlux = includeSold
                 ? itemRepository.findAll()
@@ -71,6 +74,17 @@ public class ItemService {
 
         return zip(fetchItem, fetchAssignees, fetchImages)
                 .map(tuple -> ItemTransformer.toItem(tuple.getT1(), tuple.getT2(), tuple.getT3()));
+    }
+
+    public Mono<List<BasicItem>> getItemsForAssignee(String assignee) {
+        final var assignedItemIds = itemAssigneeRepository.findByAssignee(assignee)
+                .map(ItemAssigneeEntity::getItemId);
+        final var commentedItemIds = commentRepository.findByAuthor(assignee)
+                .map(CommentEntity::getItemId)
+                .distinct();
+        return itemRepository.findAllById(assignedItemIds.concatWith(commentedItemIds))
+                .map(ItemTransformer::toBasicItem)
+                .collectList();
     }
 
     public Mono<UUID> saveItem(BasicItem item) {

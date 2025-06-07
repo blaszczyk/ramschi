@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { RamschiService } from '../ramschi.service';
 import { FormsModule } from '@angular/forms';
-import { IAssignee, ICategory, Role } from '../domain';
+import { IAssignee, ICategory, IItem, Role } from '../domain';
 import { CredentialService, RoleAware } from '../../login/credential.service';
 import { tap } from 'rxjs';
 
@@ -23,6 +23,8 @@ export class AdminComponent extends RoleAware implements OnInit {
   newCategoryId: string | null = null;
 
   newCategoryName: string | null = null;
+
+  popupItems: IItem[] = [];
 
   constructor(
     private readonly service: RamschiService,
@@ -62,6 +64,12 @@ export class AdminComponent extends RoleAware implements OnInit {
         .putAssigneeRole(assignee.name, newRole)
         .subscribe(this.alertSuccess);
     }
+  }
+
+  showItems(assignee: IAssignee) {
+    this.service
+      .getItemsForAssignee(assignee.name)
+      .subscribe((items) => (this.popupItems = items));
   }
 
   createNewCategory(): void {

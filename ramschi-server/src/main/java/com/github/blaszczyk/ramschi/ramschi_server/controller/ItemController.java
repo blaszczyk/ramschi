@@ -46,6 +46,13 @@ public class ItemController {
                 .map(ResponseEntity::ok);
     }
 
+    @GetMapping(path = "/assignee/{assignee}",
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    Mono<ResponseEntity<List<BasicItem>>> getItemsForAssignee(@PathVariable String assignee) {
+        return itemService.getItemsForAssignee(assignee)
+                .map(ResponseEntity::ok);
+    }
+
     @PostMapping(path = "",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)

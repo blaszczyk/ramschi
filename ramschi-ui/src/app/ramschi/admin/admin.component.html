@@ -1,4 +1,14 @@
 @if (isAdmin) {
+  @if (popupItems.length) {
+    <div class="assignee-items-popup" [style.visible]="popupItems.length">
+      <button (click)="popupItems = []">❌</button>
+      @for (item of popupItems; track item.id) {
+        <br /><a [href]="'/ramsch/' + item.id">{{
+          item.name
+        }}</a>
+      }
+    </div>
+  }
   <table>
     @for (assignee of assignees; track assignee.name) {
       <tr>
@@ -31,12 +41,16 @@
         </td>
         <td>
           @if (assignee.itemCount) {
-            &nbsp;&nbsp;{{ assignee.itemCount }}☝️
+            <span (click)="showItems(assignee)" class="clickable"
+              >&nbsp;&nbsp;{{ assignee.itemCount }}☝️</span
+            >
           }
         </td>
         <td>
           @if (assignee.commentCount) {
-            &nbsp;&nbsp;{{ assignee.commentCount }}💬
+            <span (click)="showItems(assignee)" class="clickable">
+              &nbsp;&nbsp;{{ assignee.commentCount }}💬</span
+            >
           }
         </td>
       </tr>

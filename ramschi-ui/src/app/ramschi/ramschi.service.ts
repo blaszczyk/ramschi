@@ -95,6 +95,15 @@ export class RamschiService {
     );
   }
 
+  getItemsForAssignee(name: string): Observable<IItem[]> {
+    return this.http.get<IItem[]>(
+      '/api/item/assignee/' + encodeURIComponent(name),
+      {
+        headers: this.getHeaders(),
+      },
+    );
+  }
+
   postImage(itemId: string, file: File): Observable<string> {
     return this.http.post<string>('/api/item/' + itemId + '/image', file, {
       headers: {
