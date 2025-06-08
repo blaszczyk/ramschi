@@ -9,7 +9,7 @@ import { tap } from 'rxjs';
   selector: 'app-admin',
   imports: [FormsModule],
   templateUrl: './admin.component.html',
-  styleUrl: './admin.component.css',
+  styleUrl: './admin.component.scss',
 })
 export class AdminComponent extends RoleAware implements OnInit {
   Role: typeof Role = Role;

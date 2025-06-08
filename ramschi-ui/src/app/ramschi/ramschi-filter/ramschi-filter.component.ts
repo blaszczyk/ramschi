@@ -26,7 +26,7 @@ import { ItemListService } from '../item-list.service';
     FormsModule,
   ],
   templateUrl: './ramschi-filter.component.html',
-  styleUrl: './ramschi-filter.component.css',
+  styleUrl: './ramschi-filter.component.scss',
 })
 export class RamschiFilterComponent extends RoleAware {
   get filterName(): string {

@@ -22,7 +22,7 @@ import { RamschiHeaderComponent } from './ramschi-header/ramschi-header.componen
     RamschiHeaderComponent,
   ],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.css',
+  styleUrl: './app.component.scss',
 })
 export class AppComponent extends RoleAware implements OnInit, AfterViewInit {
   title = 'ramschi-ui';

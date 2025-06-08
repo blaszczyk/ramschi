@@ -7,8 +7,8 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "prettier": "prettier --check --end-of-line lf \"src/**/*.{js,ts,css,html,json}\"",
-    "prettier:fix": "prettier --write --end-of-line lf \"src/**/*.{js,ts,css,html,json}\"",
+    "prettier": "prettier --check --end-of-line lf \"**/*.{js,ts,css,html,json}\"",
+    "prettier:fix": "prettier --write --end-of-line lf \"**/*.{js,ts,css,html,json}\"",
     "lint": "ng lint",
     "lint:fix": "ng lint --fix"
   },
@@ -45,6 +45,7 @@
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
+    "schematics-scss-migrate": "^2.3.17",
     "typescript": "~5.7.2"
   }
 }

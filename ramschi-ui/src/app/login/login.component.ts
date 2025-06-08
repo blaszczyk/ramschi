@@ -19,7 +19,7 @@ import { ItemListService } from '../ramschi/item-list.service';
     FormsModule,
   ],
   templateUrl: './login.component.html',
-  styleUrl: './login.component.css',
+  styleUrl: './login.component.scss',
 })
 export class LoginComponent {
   constructor(
