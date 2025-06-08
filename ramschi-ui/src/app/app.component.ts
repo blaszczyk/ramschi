@@ -12,6 +12,7 @@ import { CredentialService, RoleAware } from './login/credential.service';
 import { LoginComponent } from './login/login.component';
 import { RamschiFilterComponent } from './ramschi/ramschi-filter/ramschi-filter.component';
 import { RamschiHeaderComponent } from './ramschi-header/ramschi-header.component';
+import { RamschiFooterComponent } from './ramschi-footer/ramschi-footer.component';
 
 @Component({
   selector: 'app-root',
@@ -20,6 +21,7 @@ import { RamschiHeaderComponent } from './ramschi-header/ramschi-header.componen
     LoginComponent,
     RamschiFilterComponent,
     RamschiHeaderComponent,
+    RamschiFooterComponent,
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',

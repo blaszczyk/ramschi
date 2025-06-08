@@ -6,6 +6,10 @@ button {
   margin-left: 7px;
 }
 
+input {
+  width: 137px;
+}
+
 .assignee-items-popup {
   position: absolute;
   top: 10px;

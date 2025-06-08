@@ -47,7 +47,7 @@ export class RamschiHeaderComponent extends RoleAware {
       : 'Ramschi';
     const text = this.itemHolder.hasItem()
       ? `Schau mal, vielleicht wäre das was für dich: ${this.itemHolder.getItem()!.name}`
-      : `Ramschi - Der Mütti Cyber Trödel`;
+      : `Ramschi - Mütti Cyber Trödel`;
     const url = window.location.href;
     navigator.share({ title, text, url });
   }

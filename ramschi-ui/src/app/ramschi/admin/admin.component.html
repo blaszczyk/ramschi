@@ -3,9 +3,7 @@
     <div class="assignee-items-popup" [style.visible]="popupItems.length">
       <button (click)="popupItems = []">❌</button>
       @for (item of popupItems; track item.id) {
-        <br /><a [href]="'/ramsch/' + item.id">{{
-          item.name
-        }}</a>
+        <br /><a [href]="'/ramsch/' + item.id">{{ item.name }}</a>
       }
     </div>
   }
