@@ -4,6 +4,6 @@ import { Component } from '@angular/core';
   selector: 'app-faq',
   imports: [],
   templateUrl: './faq.component.html',
-  styleUrl: './faq.component.css',
+  styleUrl: './faq.component.scss',
 })
 export class FaqComponent {}
