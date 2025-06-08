@@ -3,11 +3,12 @@ import { CredentialService, RoleAware } from '../login/credential.service';
 import { Router } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
 import { ItemHolderService } from '../item.holder.service';
 
 @Component({
   selector: 'app-ramschi-header',
-  imports: [MatButtonModule, MatIconModule],
+  imports: [MatButtonModule, MatIconModule, MatMenuModule],
   templateUrl: './ramschi-header.component.html',
   styleUrl: './ramschi-header.component.css',
 })
