@@ -24,7 +24,7 @@ import { RamschiFooterComponent } from './ramschi-footer/ramschi-footer.componen
     RamschiFooterComponent,
   ],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.css',
+  styleUrl: './app.component.scss',
 })
 export class AppComponent extends RoleAware implements OnInit, AfterViewInit {
   title = 'ramschi-ui';

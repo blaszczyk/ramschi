@@ -7,7 +7,7 @@ import { CredentialService, RoleAware } from '../../login/credential.service';
   selector: 'app-eliminator',
   imports: [],
   templateUrl: './eliminator.component.html',
-  styleUrl: './eliminator.component.css',
+  styleUrl: './eliminator.component.scss',
 })
 export class EliminatorComponent extends RoleAware implements OnInit {
   items: IItem[] = [];

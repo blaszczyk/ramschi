@@ -38,7 +38,7 @@ import { ItemHolderService } from '../../item.holder.service';
     CommentsComponent,
   ],
   templateUrl: './ramschi-detail.component.html',
-  styleUrl: './ramschi-detail.component.css',
+  styleUrl: './ramschi-detail.component.scss',
 })
 export class RamschiDetailComponent
   extends RoleAware

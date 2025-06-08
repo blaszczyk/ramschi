@@ -10,7 +10,7 @@ import { ItemHolderService } from '../item.holder.service';
   selector: 'app-ramschi-header',
   imports: [MatButtonModule, MatIconModule, MatMenuModule],
   templateUrl: './ramschi-header.component.html',
-  styleUrl: './ramschi-header.component.css',
+  styleUrl: './ramschi-header.component.scss',
 })
 export class RamschiHeaderComponent extends RoleAware {
   constructor(
