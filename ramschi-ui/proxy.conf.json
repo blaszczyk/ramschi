@@ -1,9 +1,9 @@
 {
-    "/api/**": {
-        "target": "http://localhost",
-//        "target": "http://heizi.fritz.box",
-        "secure": false,
-        "logLevel": "debug",
-        "changeOrigin": false
-    }
+  "/api/**": {
+    "target": "http://localhost",
+    //        "target": "http://heizi.fritz.box",
+    "secure": false,
+    "logLevel": "debug",
+    "changeOrigin": false
+  }
 }
