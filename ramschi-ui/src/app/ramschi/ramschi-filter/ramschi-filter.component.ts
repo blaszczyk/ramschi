@@ -65,6 +65,14 @@ export class RamschiFilterComponent extends RoleAware {
     this.itemList.setExcludeSold(value);
   }
 
+  get excludeAssigned(): boolean {
+    return this.itemList.getExcludeAssigned();
+  }
+
+  set excludeAssigned(value: boolean) {
+    this.itemList.setExcludeAssigned(value);
+  }
+
   get filterSummary(): string {
     const filters: string[] = [];
     if (this.filterName) {
@@ -78,6 +86,12 @@ export class RamschiFilterComponent extends RoleAware {
     }
     if (this.latestFirst) {
       filters.push('neustes zuerst');
+    }
+    if (this.excludeSold) {
+      filters.push('nur unverkauftes');
+    }
+    if (this.excludeAssigned) {
+      filters.push('nur unzugewiesenes');
     }
     return filters.join(', ');
   }

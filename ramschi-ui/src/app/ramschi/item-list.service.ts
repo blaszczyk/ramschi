@@ -23,6 +23,8 @@ export class ItemListService {
 
   private excludeSold = false;
 
+  private excludeAssigned = false;
+
   constructor(
     private readonly service: RamschiService,
     private readonly scroll: ScrollService,
@@ -33,6 +35,7 @@ export class ItemListService {
     this.filterAssignee = localStorage.getItem(KEY_FILTER_ASSIGNEE);
     this.latestFirst = !!localStorage.getItem(KEY_LATEST_FIRST);
     this.excludeSold = !!localStorage.getItem(KEY_EXCLUDE_SOLD);
+    this.excludeAssigned = !!localStorage.getItem(KEY_EXCLUDE_ASSIGNED);
   }
 
   getFilterName(): string {
@@ -53,6 +56,10 @@ export class ItemListService {
 
   getExcludeSold(): boolean {
     return this.excludeSold;
+  }
+
+  getExcludeAssigned(): boolean {
+    return this.excludeAssigned;
   }
 
   setFilterName(filterName: string): void {
@@ -85,6 +92,12 @@ export class ItemListService {
     this.setFilter();
   }
 
+  setExcludeAssigned(excludeAssigned: boolean): void {
+    this.excludeAssigned = excludeAssigned;
+    this.scroll.forgetPosition();
+    this.setFilter();
+  }
+
   clearFilter(): void {
     this.filterName = '';
     this.filterCategory = null;
@@ -111,6 +124,10 @@ export class ItemListService {
       KEY_EXCLUDE_SOLD,
       this.excludeSold ? 'yes please' : null,
     );
+    updateLocalStorage(
+      KEY_EXCLUDE_ASSIGNED,
+      this.excludeAssigned ? 'yes please' : null,
+    );
     this.filteredItems = this.items.filter(
       (item) =>
         item.name.toLowerCase().includes(this.filterName.toLowerCase()) &&
@@ -119,7 +136,8 @@ export class ItemListService {
           item.assignees.includes(this.filterAssignee)) &&
         (!item.sold ||
           item.assignees.includes(this.credential.getAssignee()!) ||
-          (this.credential.isContributor() && !this.excludeSold)),
+          (this.credential.isContributor() && !this.excludeSold)) &&
+        (!this.excludeAssigned || item.assignees.length == 0),
     );
     this.filteredItems.sort(this.latestFirst ? byDate : byName);
   }
@@ -140,6 +158,7 @@ const KEY_FILTER_CATEGORY = 'filter-category';
 const KEY_FILTER_ASSIGNEE = 'filter-assignee';
 const KEY_LATEST_FIRST = 'latest-first';
 const KEY_EXCLUDE_SOLD = 'exclude-sold';
+const KEY_EXCLUDE_ASSIGNED = 'exclude-assigned';
 
 function updateLocalStorage(key: string, value: string | null) {
   if (value) {
