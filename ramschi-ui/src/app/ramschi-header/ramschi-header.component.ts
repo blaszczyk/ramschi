@@ -3,16 +3,18 @@ import { CredentialService, RoleAware } from '../login/credential.service';
 import { Router } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { MatMenuModule } from '@angular/material/menu';
 import { ItemHolderService } from '../item.holder.service';
+import { DropDownAnimation } from './animations';
 
 @Component({
   selector: 'app-ramschi-header',
-  imports: [MatButtonModule, MatIconModule, MatMenuModule],
+  imports: [MatButtonModule, MatIconModule],
+  animations: [DropDownAnimation],
   templateUrl: './ramschi-header.component.html',
   styleUrl: './ramschi-header.component.scss',
 })
 export class RamschiHeaderComponent extends RoleAware {
+  showMenu = false;
   constructor(
     private readonly router: Router,
     private readonly itemHolder: ItemHolderService,
@@ -22,10 +24,12 @@ export class RamschiHeaderComponent extends RoleAware {
   }
 
   navigateTo(url: string): void {
+    this.showMenu = false;
     this.router.navigateByUrl(url);
   }
 
   logout(): void {
+    this.showMenu = false;
     if (this.credential.isAssignee()) {
       const message = `${this.credential.getAssignee()} abmelden?`;
       if (confirm(message)) {
@@ -43,6 +47,7 @@ export class RamschiHeaderComponent extends RoleAware {
   }
 
   share(): void {
+    this.showMenu = false;
     const title = this.itemHolder.hasItem()
       ? this.itemHolder.getItem()!.name
       : 'Ramschi';
