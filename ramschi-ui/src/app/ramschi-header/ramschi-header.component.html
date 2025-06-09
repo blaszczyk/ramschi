@@ -6,7 +6,7 @@
       (click)="showMenu = !showMenu"
       aria-label="menu"
     >
-      <mat-icon>more_vert</mat-icon>
+      <mat-icon>menu</mat-icon>
     </button>
   </div>
   <div class="menu" [@openClose]="showMenu ? 'open' : 'closed'">
@@ -19,13 +19,6 @@
         <mat-icon>home</mat-icon>
       </button>
     </div>
-    <div class="menu-button">
-      @if (canShare() && isAssignee) {
-        <button mat-mini-fab class="menu-button" (click)="share()">
-          <mat-icon>share</mat-icon>
-        </button>
-      }
-    </div>
     @if (isContributor) {
       <div class="menu-button">
         <button
@@ -37,6 +30,13 @@
         </button>
       </div>
     }
+    <div class="menu-button">
+      @if (canShare()) {
+        <button mat-mini-fab class="menu-button" (click)="share()">
+          <mat-icon>share</mat-icon>
+        </button>
+      }
+    </div>
     @if (isAdmin) {
       <div class="menu-button">
         <button mat-mini-fab class="menu-button" (click)="navigateTo('/admin')">
