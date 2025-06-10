@@ -1,6 +1,6 @@
 set JAVA_HOME="c:\tools\java\openlogic-openjdk-17.0.15+6-windows-x64\"
 
-set RAMSCHI_VERSION=1.5.5
+set RAMSCHI_VERSION=1.5.6
 set IMAGE_TAG=blaszczyk/ramschi:%RAMSCHI_VERSION%
 
 cd ramschi-ui
