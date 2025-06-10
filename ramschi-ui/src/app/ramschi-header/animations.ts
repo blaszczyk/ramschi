@@ -33,7 +33,7 @@ export const DropDownAnimation = trigger('openClose', [
     sequence([
       animate('200ms', style({ height: '*' })),
       query('.menu-button', [
-        stagger(20, [
+        stagger(80, [
           animate('400ms ease', style({ opacity: 1, transform: 'none' })),
         ]),
       ]),
@@ -51,7 +51,7 @@ export const DropDownAnimation = trigger('openClose', [
           ),
         ]),
       ]),
-      animate('200ms', style({ height: 0 })),
+      animate('20ms', style({ height: 0 })),
     ]),
   ]),
 ]);

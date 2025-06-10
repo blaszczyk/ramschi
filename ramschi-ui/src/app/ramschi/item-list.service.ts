@@ -104,6 +104,7 @@ export class ItemListService {
     this.filterAssignee = null;
     this.latestFirst = false;
     this.excludeSold = false;
+    this.excludeAssigned = false;
     this.scroll.forgetPosition();
     this.setFilter();
   }
