@@ -21,7 +21,7 @@ public class RouterConfig {
 
     private static final String BASE_PATH = "/";
 
-    private static final List<String> INDEX_PATHS = List.of("/ramsch/**", "/admin/**", "/faq");
+    private static final List<String> INDEX_PATHS = List.of("/ramsch/**", "/r/**", "/admin/**", "/faq");
 
     @Bean
     public RouterFunction<ServerResponse> indexRouter(@Value("classpath:/static/index.html") final Resource indexHtml) {
