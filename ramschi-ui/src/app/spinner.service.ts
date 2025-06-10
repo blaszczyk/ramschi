@@ -16,7 +16,6 @@ export class SpinnerService {
 
   show() {
     this.spawnMode = true;
-    this.offset = 0;
     this.update();
   }
 

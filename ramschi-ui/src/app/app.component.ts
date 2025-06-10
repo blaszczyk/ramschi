@@ -39,7 +39,7 @@ export class AppComponent extends RoleAware implements OnInit, AfterViewInit {
     super(credential);
   }
 
-  showFilter = false;
+  showListView = false;
 
   get showSpinner(): boolean {
     return this.spinnerService.isVisible();
@@ -56,7 +56,7 @@ export class AppComponent extends RoleAware implements OnInit, AfterViewInit {
   ngOnInit(): void {
     this.router.events.subscribe((event) => {
       if (event instanceof ActivationStart) {
-        this.showFilter = !event.snapshot.routeConfig?.path;
+        this.showListView = !event.snapshot.routeConfig?.path;
       }
     });
   }

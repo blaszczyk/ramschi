@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Role } from '../ramschi/domain';
+import { ActivatedRoute, NavigationStart, Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root',
@@ -13,13 +14,20 @@ export class CredentialService {
 
   private initialised = false;
 
-  constructor() {
+  constructor(router: Router) {
     this.assignee = localStorage.getItem(KEY_CURRENT_ASSIGNEE);
     this.password = localStorage.getItem(KEY_CURRENT_PASSWORD);
     this.role = localStorage.getItem(KEY_CURRENT_ROLE) as Role;
     if (this.assignee) {
       this.initialised = true;
     }
+    router.events.subscribe((event) => {
+      if (event instanceof NavigationStart) {
+        if (event.url.startsWith('/r/')) {
+          this.initialised = true;
+        }
+      }
+    });
   }
 
   setCredentials(assignee: string, password: string) {

@@ -9,6 +9,7 @@ export const routes: Routes = [
   { path: '', component: RamschiListComponent },
   { path: 'ramsch', component: RamschiDetailComponent },
   { path: 'ramsch/:id', component: RamschiDetailComponent },
+  { path: 'r/:id', component: RamschiDetailComponent },
   { path: 'admin', component: AdminComponent },
   { path: 'admin/sauber', component: EliminatorComponent },
   { path: 'faq', component: FaqComponent },
