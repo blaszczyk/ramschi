@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Role } from '../ramschi/domain';
-import { ActivatedRoute, NavigationStart, Router } from '@angular/router';
+import { NavigationStart, Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root',

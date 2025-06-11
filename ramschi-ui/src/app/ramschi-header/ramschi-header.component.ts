@@ -14,17 +14,7 @@ import { DropDownAnimation } from './animations';
   styleUrl: './ramschi-header.component.scss',
 })
 export class RamschiHeaderComponent extends RoleAware {
-
-  private _showMenu = false;
-
-  get showMenu(): boolean {
-    return this._showMenu;
-  }
-
-  set showMenu(value: boolean) {
-    this._showMenu = value;
-    document.addEventListener('click', () => (this._showMenu = false), true)
-  }
+  showMenu = false;
 
   constructor(
     private readonly router: Router,
@@ -32,6 +22,16 @@ export class RamschiHeaderComponent extends RoleAware {
     credential: CredentialService,
   ) {
     super(credential);
+  }
+
+  toggleMenu(event: Event): void {
+    event.stopPropagation();
+    this.showMenu = !this.showMenu;
+    if (this.showMenu) {
+      window.addEventListener('click', () => (this.showMenu = false), {
+        once: true,
+      });
+    }
   }
 
   navigateTo(url: string): void {
@@ -61,7 +61,7 @@ export class RamschiHeaderComponent extends RoleAware {
       ? `Schau mal, vielleicht wäre das was für dich: ${this.itemHolder.getItem()!.name}`
       : `Ramschi - Mütti Cyber Trödel`;
     const url = this.itemHolder.hasItem()
-      ? window.location.href.replace(/amsch\//g, '\/')
+      ? window.location.href.replace(/amsch\//g, '/')
       : window.location.href;
     navigator.share({ title, text, url });
   }
