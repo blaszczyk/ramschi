@@ -111,17 +111,4 @@ public class ItemController {
                         .map(ResponseEntity::ok)
         );
     }
-
-    @PostMapping(path = "/{itemId}/comment",
-            consumes = { MediaType.APPLICATION_JSON_VALUE },
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    Mono<ResponseEntity<UUID>> postComment(
-            @PathVariable UUID itemId,
-            @RequestBody byte[] data,
-            @RequestHeader(RamschiHeader.AUTH) String ramschiAuth) {
-        return authHelper.doIfAuthorised(ramschiAuth, Role.ASSIGNEE, () ->
-                imageService.createImage(itemId, data)
-                        .map(ResponseEntity::ok)
-        );
-    }
 }
