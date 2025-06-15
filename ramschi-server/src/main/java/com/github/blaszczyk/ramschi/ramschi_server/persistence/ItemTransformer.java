@@ -15,7 +15,6 @@ public class ItemTransformer {
         entity.setName(item.name());
         entity.setDescription(item.description());
         entity.setCategory(item.category());
-        entity.setPrice(item.price());
         entity.setSold(item.sold());
         return entity;
     }
@@ -26,7 +25,6 @@ public class ItemTransformer {
                 entity.getName(),
                 entity.getDescription(),
                 entity.getCategory(),
-                entity.getPrice(),
                 entity.getLastedit().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli(),
                 entity.isSold(),
                 assignees,
@@ -40,7 +38,6 @@ public class ItemTransformer {
                 entity.getName(),
                 entity.getDescription(),
                 entity.getCategory(),
-                entity.getPrice(),
                 entity.isSold()
         );
     }

@@ -8,7 +8,6 @@ export interface IBasicItem {
   name: string;
   description: string | null;
   category: string | null;
-  price: number | null;
   sold: boolean;
 }
 

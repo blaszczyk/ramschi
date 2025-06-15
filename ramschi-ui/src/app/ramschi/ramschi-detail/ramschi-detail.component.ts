@@ -60,7 +60,6 @@ export class RamschiDetailComponent
     name: '',
     description: null,
     category: null,
-    price: null,
     lastedit: 0,
     sold: false,
     assignees: [],

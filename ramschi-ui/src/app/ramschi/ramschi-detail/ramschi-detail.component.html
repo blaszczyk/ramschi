@@ -41,19 +41,6 @@
           </mat-select>
         </mat-form-field>
       </mat-grid-tile>
-      <mat-grid-tile>
-        <mat-form-field>
-          <mat-label>Preisvorstellung in €</mat-label>
-          <input
-            class="price"
-            matInput
-            type="number"
-            placeholder="Preis"
-            [(ngModel)]="item.price"
-            (change)="setDirty()"
-          />
-        </mat-form-field>
-      </mat-grid-tile>
       @if (isAdmin && item.id) {
         <mat-grid-tile>
           <mat-form-field>
