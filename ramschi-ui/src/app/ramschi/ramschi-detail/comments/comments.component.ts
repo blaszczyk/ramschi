@@ -31,7 +31,6 @@ import { RamschiService } from '../../ramschi.service';
   styleUrl: './comments.component.scss',
 })
 export class CommentsComponent extends RoleAware {
-
   @Input()
   comments: IComment[] = [];
 
