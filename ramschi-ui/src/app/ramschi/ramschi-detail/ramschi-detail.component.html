@@ -92,13 +92,19 @@
     }
     <div [style.text-align]="isContributor ? 'right' : 'center'">
       @if (isAssigned) {
-        <button class="assign" mat-stroked-button (click)="unassign(assignee!)">
+        <button
+          class="assign"
+          mat-stroked-button
+          [disabled]="item.sold"
+          (click)="unassign(assignee!)"
+        >
           Kein Interesse mehr
         </button>
       } @else {
         <button
           class="assign"
           mat-flat-button
+          [disabled]="item.sold"
           [style.visibility]="item.id ? 'visible' : 'hidden'"
           (click)="assign(assignee!)"
         >
