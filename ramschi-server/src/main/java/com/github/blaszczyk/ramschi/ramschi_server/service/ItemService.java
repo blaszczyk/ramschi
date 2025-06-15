@@ -80,6 +80,17 @@ public class ItemService {
                 .map(tuple -> ItemTransformer.toFullItem(tuple.getT1(), tuple.getT2(), tuple.getT3(), tuple.getT4()));
     }
 
+    public Mono<List<PlainItem>> getItemsForAssignee(String assignee) {
+        final var assignedItemIds = itemAssigneeRepository.findByAssignee(assignee)
+                .map(ItemAssigneeEntity::getItemId);
+        final var commentedItemIds = commentRepository.findByAuthor(assignee)
+                .map(CommentEntity::getItemId)
+                .distinct();
+        return itemRepository.findAllById(assignedItemIds.concatWith(commentedItemIds))
+                .map(ItemTransformer::toPlainItem)
+                .collectList();
+    }
+
     public Mono<UUID> saveItem(PlainItem item) {
         LOG.info("Saving Item: {}", item);
         final ItemEntity entity = ItemTransformer.toEntity(item);

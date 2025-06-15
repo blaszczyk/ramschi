@@ -1,4 +1,10 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { RamschiService } from '../ramschi.service';
 import { ICategory, IFullItem, IPlainItem } from '../domain';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -16,6 +22,7 @@ import { CredentialService, RoleAware } from '../../login/credential.service';
 import { CommentsComponent } from './comments/comments.component';
 import { ItemListService } from '../item-list.service';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { ItemHolderService } from '../../item.holder.service';
 
 @Component({
   selector: 'app-ramschi-detail',
@@ -31,9 +38,12 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
     CommentsComponent,
   ],
   templateUrl: './ramschi-detail.component.html',
-  styleUrl: './ramschi-detail.component.css',
+  styleUrl: './ramschi-detail.component.scss',
 })
-export class RamschiDetailComponent extends RoleAware implements OnInit {
+export class RamschiDetailComponent
+  extends RoleAware
+  implements OnInit, OnDestroy
+{
   @ViewChild('newImage')
   newImageElement!: ElementRef<HTMLInputElement>;
 
@@ -50,7 +60,6 @@ export class RamschiDetailComponent extends RoleAware implements OnInit {
     name: '',
     description: null,
     category: null,
-    price: null,
     sold: false,
     assignees: [],
     images: [],
@@ -69,6 +78,7 @@ export class RamschiDetailComponent extends RoleAware implements OnInit {
     private readonly route: ActivatedRoute,
     private readonly router: Router,
     private readonly spinner: SpinnerService,
+    private readonly itemHolder: ItemHolderService,
     credential: CredentialService,
   ) {
     super(credential);
@@ -83,11 +93,17 @@ export class RamschiDetailComponent extends RoleAware implements OnInit {
           this.item = item;
           this.initialized = true;
           this.spinner.hide();
+          this.itemHolder.setItem(item);
         });
       } else {
         this.initialized = true;
+        this.itemHolder.clearItem();
       }
     });
+  }
+
+  ngOnDestroy(): void {
+    this.itemHolder.clearItem();
   }
 
   get categoryName(): string {
@@ -112,7 +128,6 @@ export class RamschiDetailComponent extends RoleAware implements OnInit {
       name: this.item.name,
       description: this.item.description,
       category: this.item.category,
-      price: this.item.price,
       sold: this.item.sold,
     };
     this.service.postItem(plainItem).subscribe((id) => {

@@ -47,6 +47,13 @@ public class ItemController {
                 .map(ResponseEntity::ok);
     }
 
+    @GetMapping(path = "/assignee/{assignee}",
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    Mono<ResponseEntity<List<PlainItem>>> getItemsForAssignee(@PathVariable String assignee) {
+        return itemService.getItemsForAssignee(assignee)
+                .map(ResponseEntity::ok);
+    }
+
     @PostMapping(path = "",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
@@ -101,19 +108,6 @@ public class ItemController {
             @RequestBody byte[] data,
             @RequestHeader(RamschiHeader.AUTH) String ramschiAuth) {
         return authHelper.doIfAuthorised(ramschiAuth, Role.CONTRIBUTOR, () ->
-                imageService.createImage(itemId, data)
-                        .map(ResponseEntity::ok)
-        );
-    }
-
-    @PostMapping(path = "/{itemId}/comment",
-            consumes = { MediaType.APPLICATION_JSON_VALUE },
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    Mono<ResponseEntity<UUID>> postComment(
-            @PathVariable UUID itemId,
-            @RequestBody byte[] data,
-            @RequestHeader(RamschiHeader.AUTH) String ramschiAuth) {
-        return authHelper.doIfAuthorised(ramschiAuth, Role.ASSIGNEE, () ->
                 imageService.createImage(itemId, data)
                         .map(ResponseEntity::ok)
         );

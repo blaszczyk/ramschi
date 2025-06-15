@@ -8,7 +8,6 @@ public record FullItem(
         String name,
         String description,
         String category,
-        int price,
         boolean sold,
         List<String> assignees,
         List<UUID> images,

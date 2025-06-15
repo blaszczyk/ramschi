@@ -1,8 +1,4 @@
 <div class="page">
-  <link rel="preload" as="image" href="/spinner-0.gif" />
-  <link rel="preload" as="image" href="/spinner-1.gif" />
-  <link rel="preload" as="image" href="/spinner-2.gif" />
-  <link rel="preload" as="image" href="/spinner-3.gif" />
   @if (showSpinner) {
     <div class="screenlock">
       @for (spinner of spinners; track spinner.id) {
@@ -20,7 +16,7 @@
   <div #container class="container">
     @if (loggedIn) {
       <app-ramschi-header></app-ramschi-header>
-      @if (showFilter) {
+      @if (showListView) {
         <app-ramschi-filter></app-ramschi-filter>
       }
       <div class="scrollarea">

@@ -8,7 +8,6 @@ export interface IPlainItem {
   name: string;
   description: string | null;
   category: string | null;
-  price: number | null;
   sold: boolean;
 }
 
@@ -47,5 +46,6 @@ export interface IAssignee {
   name: string;
   role: Role;
   secure: boolean;
-  active: boolean;
+  itemCount: number;
+  commentCount: number;
 }

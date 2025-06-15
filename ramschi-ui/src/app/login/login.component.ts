@@ -19,7 +19,7 @@ import { ItemListService } from '../ramschi/item-list.service';
     FormsModule,
   ],
   templateUrl: './login.component.html',
-  styleUrl: './login.component.css',
+  styleUrl: './login.component.scss',
 })
 export class LoginComponent {
   constructor(
@@ -54,7 +54,7 @@ export class LoginComponent {
         });
       } else {
         alert(
-          'Das hat leider nicht geklappt. Wenn Du Dein Passwort vergessen hast, wende Dich an den Admin Deines Vertrauens.',
+          'Der Name ist schon vergeben. Wenn Du Dein Passwort vergessen hast, wende Dich an den Admin Deines Vertrauens.',
         );
         this.spinner.hide();
       }

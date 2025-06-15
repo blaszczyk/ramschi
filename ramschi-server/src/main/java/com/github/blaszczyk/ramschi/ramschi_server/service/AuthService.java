@@ -125,10 +125,10 @@ public class AuthService {
         final String decoded = hexToUtf8(decodedHex);
         final String[] split = decoded.split(":", 2);
         if (split.length > 1) {
-            return new RamschiAuth(split[0].strip(), split[1].getBytes(StandardCharsets.UTF_8));
+            return new RamschiAuth(split[0], split[1].getBytes(StandardCharsets.UTF_8));
         }
         else {
-            return new RamschiAuth(decoded.strip(), new byte[0]);
+            return new RamschiAuth(decoded, new byte[0]);
         }
     }
 

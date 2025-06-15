@@ -41,19 +41,6 @@
           </mat-select>
         </mat-form-field>
       </mat-grid-tile>
-      <mat-grid-tile>
-        <mat-form-field>
-          <mat-label>Preisvorstellung in €</mat-label>
-          <input
-            class="price"
-            matInput
-            type="number"
-            placeholder="Preis"
-            [(ngModel)]="item.price"
-            (change)="setDirty()"
-          />
-        </mat-form-field>
-      </mat-grid-tile>
       @if (isAdmin && item.id) {
         <mat-grid-tile>
           <mat-form-field>
@@ -69,6 +56,8 @@
             </mat-select>
           </mat-form-field>
         </mat-grid-tile>
+      }
+      @if (isContributor && item.id) {
         <mat-grid-tile>
           <mat-checkbox [(ngModel)]="item.sold" (change)="setDirty()"
             >Verkauft</mat-checkbox
@@ -90,17 +79,23 @@
     }
     <div [style.text-align]="isContributor ? 'right' : 'center'">
       @if (isAssigned) {
-        <button class="assign" mat-stroked-button (click)="unassign(assignee!)">
+        <button
+          class="assign"
+          mat-stroked-button
+          [disabled]="item.sold"
+          (click)="unassign(assignee!)"
+        >
           Kein Interesse mehr
         </button>
       } @else {
         <button
           class="assign"
           mat-flat-button
+          [disabled]="item.sold"
           [style.visibility]="item.id ? 'visible' : 'hidden'"
           (click)="assign(assignee!)"
         >
-          Ich wäre interessiert!
+          Ich bin {{ item.assignees.length ? " auch " : "" }} interessiert!
         </button>
       }
       @if (isContributor) {

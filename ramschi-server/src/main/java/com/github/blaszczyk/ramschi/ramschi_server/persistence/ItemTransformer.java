@@ -17,9 +17,18 @@ public class ItemTransformer {
         entity.setName(item.name());
         entity.setDescription(item.description());
         entity.setCategory(item.category());
-        entity.setPrice(item.price());
         entity.setSold(item.sold());
         return entity;
+    }
+
+    public static PlainItem toPlainItem(ItemEntity entity) {
+        return new PlainItem(
+                entity.getId(),
+                entity.getName(),
+                entity.getDescription(),
+                entity.getCategory(),
+                entity.isSold()
+        );
     }
 
     public static Item toItem(ItemEntity entity, List<String> assignees, List<UUID> images) {
@@ -28,7 +37,6 @@ public class ItemTransformer {
                 entity.getName(),
                 entity.getDescription(),
                 entity.getCategory(),
-                entity.getPrice(),
                 entity.getLastedit().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli(),
                 entity.isSold(),
                 assignees,
@@ -45,7 +53,6 @@ public class ItemTransformer {
                 entity.getName(),
                 entity.getDescription(),
                 entity.getCategory(),
-                entity.getPrice(),
                 entity.isSold(),
                 assignees,
                 images,

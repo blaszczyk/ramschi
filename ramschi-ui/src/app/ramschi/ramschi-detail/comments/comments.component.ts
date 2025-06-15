@@ -28,7 +28,7 @@ import { RamschiService } from '../../ramschi.service';
     FormsModule,
   ],
   templateUrl: './comments.component.html',
-  styleUrl: './comments.component.css',
+  styleUrl: './comments.component.scss',
 })
 export class CommentsComponent extends RoleAware {
 

@@ -26,7 +26,7 @@ import { ItemListService } from '../item-list.service';
     FormsModule,
   ],
   templateUrl: './ramschi-filter.component.html',
-  styleUrl: './ramschi-filter.component.css',
+  styleUrl: './ramschi-filter.component.scss',
 })
 export class RamschiFilterComponent extends RoleAware {
   get filterName(): string {
@@ -58,6 +58,21 @@ export class RamschiFilterComponent extends RoleAware {
     this.itemList.setLatestFirst(value);
   }
 
+  get excludeSold(): boolean {
+    return this.itemList.getExcludeSold();
+  }
+  set excludeSold(value: boolean) {
+    this.itemList.setExcludeSold(value);
+  }
+
+  get excludeAssigned(): boolean {
+    return this.itemList.getExcludeAssigned();
+  }
+
+  set excludeAssigned(value: boolean) {
+    this.itemList.setExcludeAssigned(value);
+  }
+
   get filterSummary(): string {
     const filters: string[] = [];
     if (this.filterName) {
@@ -71,6 +86,12 @@ export class RamschiFilterComponent extends RoleAware {
     }
     if (this.latestFirst) {
       filters.push('neustes zuerst');
+    }
+    if (this.excludeSold) {
+      filters.push('nur unverkauftes');
+    }
+    if (this.excludeAssigned) {
+      filters.push('nur unzugewiesenes');
     }
     return filters.join(', ');
   }

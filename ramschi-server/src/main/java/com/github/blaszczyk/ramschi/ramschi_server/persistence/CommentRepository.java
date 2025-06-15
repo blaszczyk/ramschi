@@ -14,4 +14,6 @@ public interface CommentRepository extends ReactiveCrudRepository<CommentEntity,
     @Query("SELECT author FROM ramschi.comment WHERE id = :id")
     Mono<String>findAuthorById(UUID id);
 
+    Flux<CommentEntity> findByAuthor(String author);
+
 }
