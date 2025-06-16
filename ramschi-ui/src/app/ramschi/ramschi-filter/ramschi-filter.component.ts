@@ -1,10 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, viewChild } from '@angular/core';
 import { ICategory } from '../domain';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
-import { MatExpansionModule } from '@angular/material/expansion';
+import { MatAccordion, MatExpansionModule } from '@angular/material/expansion';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { FormsModule } from '@angular/forms';
 import { CategoryService } from '../category.service';
@@ -29,6 +29,8 @@ import { ItemListService } from '../item-list.service';
   styleUrl: './ramschi-filter.component.scss',
 })
 export class RamschiFilterComponent extends RoleAware {
+  accordion = viewChild.required(MatAccordion);
+
   get filterName(): string {
     return this.itemList.getFilterName();
   }
@@ -113,6 +115,10 @@ export class RamschiFilterComponent extends RoleAware {
     credential: CredentialService,
   ) {
     super(credential);
+  }
+
+  hide(): void {
+    this.accordion().closeAll();
   }
 
   clearFilter(event: Event): void {

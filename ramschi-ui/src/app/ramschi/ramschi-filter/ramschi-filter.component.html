@@ -1,55 +1,76 @@
-<mat-expansion-panel class="filter">
-  <mat-expansion-panel-header>
-    <mat-panel-title>Filter:</mat-panel-title>
-    <mat-panel-description
-      >{{ filterSummary }}
-      @if (filterSummary) {
-        <span (click)="clearFilter($event)"
-          ><mat-icon class="cancel">cancel</mat-icon></span
-        >
-      }
-    </mat-panel-description>
-  </mat-expansion-panel-header>
-
-  <mat-form-field>
-    <mat-label>Suche</mat-label>
-    <input matInput placeholder="Suche" [(ngModel)]="filterName" />
-  </mat-form-field>
-
-  <mat-form-field>
-    <mat-label>Kategorie</mat-label>
-    <mat-select [(ngModel)]="filterCategory" name="category">
-      <mat-option [value]="undefined">Alle</mat-option>
-      @for (category of categories; track category) {
-        <mat-option [value]="category.id">{{ category.name }}</mat-option>
-      }
-    </mat-select>
-  </mat-form-field>
-
-  @if (isAssignee) {
-    <mat-form-field>
-      <mat-label>Interessent</mat-label>
-      <mat-select [(ngModel)]="filterAssignee" name="assignee">
-        @if (isAssignee) {
-          <mat-option [value]="assignee">{{ assignee }}</mat-option>
+<mat-accordion>
+  <mat-expansion-panel class="filter">
+    <mat-expansion-panel-header>
+      <mat-panel-title>Filter:</mat-panel-title>
+      <mat-panel-description
+        >{{ filterSummary }}
+        @if (filterSummary) {
+          <span (click)="clearFilter($event)"
+            ><mat-icon class="cancel">cancel</mat-icon></span
+          >
         }
+      </mat-panel-description>
+    </mat-expansion-panel-header>
+
+    <mat-form-field>
+      <mat-label>Suche</mat-label>
+      <input
+        matInput
+        placeholder="Suche"
+        (blur)="hide()"
+        [(ngModel)]="filterName"
+      />
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Kategorie</mat-label>
+      <mat-select
+        [(ngModel)]="filterCategory"
+        (valueChange)="hide()"
+        name="category"
+      >
         <mat-option [value]="undefined">Alle</mat-option>
-        @for (otherAssignee of otherAssignees; track otherAssignee) {
-          <mat-option [value]="otherAssignee">{{ otherAssignee }}</mat-option>
+        @for (category of categories; track category) {
+          <mat-option [value]="category.id">{{ category.name }}</mat-option>
         }
       </mat-select>
     </mat-form-field>
-  }
 
-  <mat-checkbox [(ngModel)]="latestFirst" name="latest first"
-    >neustes zuerst</mat-checkbox
-  >
-  @if (isContributor) {
-    <mat-checkbox [(ngModel)]="excludeSold" name="sold"
-      >nur unverkauftes</mat-checkbox
+    @if (isAssignee) {
+      <mat-form-field>
+        <mat-label>Interessent</mat-label>
+        <mat-select
+          [(ngModel)]="filterAssignee"
+          (valueChange)="hide()"
+          name="assignee"
+        >
+          @if (isAssignee) {
+            <mat-option [value]="assignee">{{ assignee }}</mat-option>
+          }
+          <mat-option [value]="undefined">Alle</mat-option>
+          @for (otherAssignee of otherAssignees; track otherAssignee) {
+            <mat-option [value]="otherAssignee">{{ otherAssignee }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    }
+
+    <mat-checkbox
+      [(ngModel)]="latestFirst"
+      (change)="hide()"
+      name="latest first"
+      >neustes zuerst</mat-checkbox
     >
-    <mat-checkbox [(ngModel)]="excludeAssigned" name="assigned"
-      >nur unzugewiesenes</mat-checkbox
-    >
-  }
-</mat-expansion-panel>
+    @if (isContributor) {
+      <mat-checkbox [(ngModel)]="excludeSold" (change)="hide()" name="sold"
+        >nur unverkauftes</mat-checkbox
+      >
+      <mat-checkbox
+        [(ngModel)]="excludeAssigned"
+        (change)="hide()"
+        name="assigned"
+        >nur unzugewiesenes</mat-checkbox
+      >
+    }
+  </mat-expansion-panel>
+</mat-accordion>
