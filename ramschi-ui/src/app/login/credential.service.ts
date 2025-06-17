@@ -12,22 +12,25 @@ export class CredentialService {
 
   private role: Role | null = null;
 
-  private initialised = false;
+  private requiresLogin = true;
 
   constructor(router: Router) {
     this.assignee = localStorage.getItem(KEY_CURRENT_ASSIGNEE);
     this.password = localStorage.getItem(KEY_CURRENT_PASSWORD);
-    this.role = localStorage.getItem(KEY_CURRENT_ROLE) as Role;
     if (this.assignee) {
-      this.initialised = true;
+      this.requiresLogin = false;
     }
     router.events.subscribe((event) => {
       if (event instanceof NavigationStart) {
         if (event.url.startsWith('/r/')) {
-          this.initialised = true;
+          this.requiresLogin = false;
         }
       }
     });
+  }
+
+  hasCredentials(): boolean {
+    return this.assignee !== null;
   }
 
   setCredentials(assignee: string, password: string) {
@@ -38,17 +41,23 @@ export class CredentialService {
   storeCredentials() {
     localStorage.setItem(KEY_CURRENT_ASSIGNEE, this.assignee || '');
     localStorage.setItem(KEY_CURRENT_PASSWORD, this.password || '');
-    localStorage.setItem(KEY_CURRENT_ROLE, this.role || '');
+  }
+
+  getRequiresLogin(): boolean {
+    return this.requiresLogin;
+  }
+
+  setLoggedIn() {
+    this.requiresLogin = false;
   }
 
   logout(): void {
     this.assignee = null;
     this.password = null;
     this.role = null;
-    this.initialised = false;
+    this.requiresLogin = true;
     localStorage.removeItem(KEY_CURRENT_ASSIGNEE);
     localStorage.removeItem(KEY_CURRENT_PASSWORD);
-    localStorage.removeItem(KEY_CURRENT_ROLE);
   }
 
   getAuthHeader(): string {
@@ -66,14 +75,6 @@ export class CredentialService {
 
   setRole(role: Role) {
     this.role = role;
-  }
-
-  setInitialised() {
-    this.initialised = true;
-  }
-
-  isInitialised(): boolean {
-    return this.initialised;
   }
 
   getAssignee(): string | null {
@@ -126,8 +127,6 @@ export class RoleAware {
 const KEY_CURRENT_ASSIGNEE = 'current_assignee';
 
 const KEY_CURRENT_PASSWORD = 'current_password';
-
-const KEY_CURRENT_ROLE = 'current_role';
 
 function utf8ToHex(text: string): string {
   const encoder = new TextEncoder();

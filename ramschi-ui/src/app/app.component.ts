@@ -12,6 +12,7 @@ import { CredentialService, RoleAware } from './login/credential.service';
 import { LoginComponent } from './login/login.component';
 import { RamschiFilterComponent } from './ramschi/ramschi-filter/ramschi-filter.component';
 import { RamschiHeaderComponent } from './ramschi-header/ramschi-header.component';
+import { RamschiService } from './ramschi/ramschi.service';
 
 @Component({
   selector: 'app-root',
@@ -34,6 +35,7 @@ export class AppComponent extends RoleAware implements OnInit, AfterViewInit {
     private readonly spinnerService: SpinnerService,
     private readonly router: Router,
     private readonly scroll: ScrollService,
+    private readonly service: RamschiService,
     credential: CredentialService,
   ) {
     super(credential);
@@ -49,8 +51,8 @@ export class AppComponent extends RoleAware implements OnInit, AfterViewInit {
     return this.spinnerService.spinners;
   }
 
-  get loggedIn(): boolean {
-    return this.credential.isInitialised();
+  get requiresLogin(): boolean {
+    return this.credential.getRequiresLogin();
   }
 
   ngOnInit(): void {
@@ -59,6 +61,16 @@ export class AppComponent extends RoleAware implements OnInit, AfterViewInit {
         this.showListView = !event.snapshot.routeConfig?.path;
       }
     });
+    if (this.credential.hasCredentials()) {
+      this.service.login().subscribe((response) => {
+        if (response.success) {
+          this.credential.setLoggedIn();
+          this.credential.setRole(response.role);
+        } else {
+          this.credential.logout();
+        }
+      });
+    }
   }
 
   ngAfterViewInit(): void {
