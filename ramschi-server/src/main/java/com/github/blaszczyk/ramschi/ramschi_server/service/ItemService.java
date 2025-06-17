@@ -1,6 +1,7 @@
 package com.github.blaszczyk.ramschi.ramschi_server.service;
 
-import com.github.blaszczyk.ramschi.ramschi_server.domain.BasicItem;
+import com.github.blaszczyk.ramschi.ramschi_server.domain.FullItem;
+import com.github.blaszczyk.ramschi.ramschi_server.domain.PlainItem;
 import com.github.blaszczyk.ramschi.ramschi_server.domain.Item;
 import com.github.blaszczyk.ramschi.ramschi_server.persistence.*;
 import org.slf4j.Logger;
@@ -63,7 +64,7 @@ public class ItemService {
                 });
     }
 
-    public Mono<Item> getItem(UUID id) {
+    public Mono<FullItem> getItem(UUID id) {
         final var fetchItem = itemRepository.findById(id);
         final var fetchAssignees = itemAssigneeRepository.findByItemId(id)
                 .map(ItemAssigneeEntity::getAssignee)
@@ -71,23 +72,26 @@ public class ItemService {
         final var fetchImages = imageRepository.findIdsByItemId(id)
                 .map(ImageEntity::getId)
                 .collectList();
+        final var fetchComments = commentRepository.findByItemIdOrderByLastEditAsc(id)
+                .map(ItemTransformer::toComment)
+                .collectList();
 
-        return zip(fetchItem, fetchAssignees, fetchImages)
-                .map(tuple -> ItemTransformer.toItem(tuple.getT1(), tuple.getT2(), tuple.getT3()));
+        return zip(fetchItem, fetchAssignees, fetchImages, fetchComments)
+                .map(tuple -> ItemTransformer.toFullItem(tuple.getT1(), tuple.getT2(), tuple.getT3(), tuple.getT4()));
     }
 
-    public Mono<List<BasicItem>> getItemsForAssignee(String assignee) {
+    public Mono<List<PlainItem>> getItemsForAssignee(String assignee) {
         final var assignedItemIds = itemAssigneeRepository.findByAssignee(assignee)
                 .map(ItemAssigneeEntity::getItemId);
         final var commentedItemIds = commentRepository.findByAuthor(assignee)
                 .map(CommentEntity::getItemId)
                 .distinct();
         return itemRepository.findAllById(assignedItemIds.concatWith(commentedItemIds))
-                .map(ItemTransformer::toBasicItem)
+                .map(ItemTransformer::toPlainItem)
                 .collectList();
     }
 
-    public Mono<UUID> saveItem(BasicItem item) {
+    public Mono<UUID> saveItem(PlainItem item) {
         LOG.info("Saving Item: {}", item);
         final ItemEntity entity = ItemTransformer.toEntity(item);
         entity.setLastedit(LocalDateTime.now());

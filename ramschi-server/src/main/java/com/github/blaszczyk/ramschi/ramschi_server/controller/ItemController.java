@@ -1,7 +1,8 @@
 package com.github.blaszczyk.ramschi.ramschi_server.controller;
 
 import com.github.blaszczyk.ramschi.ramschi_server.controller.util.AuthHelper;
-import com.github.blaszczyk.ramschi.ramschi_server.domain.BasicItem;
+import com.github.blaszczyk.ramschi.ramschi_server.domain.FullItem;
+import com.github.blaszczyk.ramschi.ramschi_server.domain.PlainItem;
 import com.github.blaszczyk.ramschi.ramschi_server.domain.Item;
 import com.github.blaszczyk.ramschi.ramschi_server.domain.Role;
 import com.github.blaszczyk.ramschi.ramschi_server.service.ImageService;
@@ -41,14 +42,14 @@ public class ItemController {
 
     @GetMapping(path = "/{id}",
             produces = MediaType.APPLICATION_JSON_VALUE)
-    Mono<ResponseEntity<Item>> getItem(@PathVariable UUID id) {
+    Mono<ResponseEntity<FullItem>> getItem(@PathVariable UUID id) {
         return itemService.getItem(id)
                 .map(ResponseEntity::ok);
     }
 
     @GetMapping(path = "/assignee/{assignee}",
             produces = MediaType.APPLICATION_JSON_VALUE)
-    Mono<ResponseEntity<List<BasicItem>>> getItemsForAssignee(@PathVariable String assignee) {
+    Mono<ResponseEntity<List<PlainItem>>> getItemsForAssignee(@PathVariable String assignee) {
         return itemService.getItemsForAssignee(assignee)
                 .map(ResponseEntity::ok);
     }
@@ -56,7 +57,7 @@ public class ItemController {
     @PostMapping(path = "",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    Mono<ResponseEntity<UUID>> postItem(@RequestBody BasicItem item, @RequestHeader(RamschiHeader.AUTH) String ramschiAuth) {
+    Mono<ResponseEntity<UUID>> postItem(@RequestBody PlainItem item, @RequestHeader(RamschiHeader.AUTH) String ramschiAuth) {
         return authHelper.doIfAuthorised(ramschiAuth, Role.CONTRIBUTOR, () ->
                 itemService.saveItem(item)
                         .map(ResponseEntity::ok)

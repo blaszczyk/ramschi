@@ -21,4 +21,8 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="delete_column_item_price" author="micha">
+        <dropColumn tableName="item" schemaName="ramschi" columnName="price"/>
+    </changeSet>
+
 </databaseChangeLog>

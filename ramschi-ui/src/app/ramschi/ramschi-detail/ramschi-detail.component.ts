@@ -6,7 +6,7 @@ import {
   ViewChild,
 } from '@angular/core';
 import { RamschiService } from '../ramschi.service';
-import { ICategory, IItem } from '../domain';
+import { ICategory, IFullItem, IPlainItem } from '../domain';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
@@ -55,16 +55,15 @@ export class RamschiDetailComponent
     return this.categoryService.getAll();
   }
 
-  item: IItem = {
+  item: IFullItem = {
     id: null,
     name: '',
     description: null,
     category: null,
-    price: null,
-    lastedit: 0,
     sold: false,
     assignees: [],
     images: [],
+    comments: [],
   };
 
   initialized = false;
@@ -123,16 +122,21 @@ export class RamschiDetailComponent
   }
 
   saveItem(): void {
-    if (!this.saveDisabled()) {
-      this.spinner.show();
-      this.service.postItem(this.item).subscribe((id) => {
-        this.pristine = true;
-        this.router.navigateByUrl('/ramsch/' + id);
-        this.itemList.requestItems().subscribe(() => {
-          this.spinner.hide();
-        });
+    this.spinner.show();
+    const plainItem: IPlainItem = {
+      id: this.item.id,
+      name: this.item.name,
+      description: this.item.description,
+      category: this.item.category,
+      sold: this.item.sold,
+    };
+    this.service.postItem(plainItem).subscribe((id) => {
+      this.pristine = true;
+      this.router.navigateByUrl('/ramsch/' + id);
+      this.itemList.requestItems().subscribe(() => {
+        this.spinner.hide();
       });
-    }
+    });
   }
 
   uploadNewImage(event: Event) {

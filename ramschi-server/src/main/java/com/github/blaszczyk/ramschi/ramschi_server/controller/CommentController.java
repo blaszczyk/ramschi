@@ -9,7 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
-import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -22,15 +21,6 @@ public class CommentController {
 
     @Autowired
     private AuthHelper authHelper;
-
-    @GetMapping(path = "/{itemId}",
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    Mono<ResponseEntity<List<Comment>>> getCommentsForItem(
-            @PathVariable UUID itemId
-    ) {
-        return commentService.getComments(itemId)
-                .map(ResponseEntity::ok);
-    }
 
     @PostMapping(path = "",
             consumes = MediaType.APPLICATION_JSON_VALUE,

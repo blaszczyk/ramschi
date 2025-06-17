@@ -1,19 +1,19 @@
 import { Injectable } from '@angular/core';
-import { IItem } from './ramschi/domain';
+import { IFullItem } from './ramschi/domain';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ItemHolderService {
-  private item: IItem | undefined;
+  private item: IFullItem | undefined;
 
   hasItem(): boolean {
     return this.item !== undefined;
   }
-  getItem(): IItem | undefined {
+  getItem(): IFullItem | undefined {
     return this.item;
   }
-  setItem(item: IItem): void {
+  setItem(item: IFullItem): void {
     this.item = item;
   }
   clearItem(): void {

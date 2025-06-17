@@ -41,19 +41,6 @@
           </mat-select>
         </mat-form-field>
       </mat-grid-tile>
-      <mat-grid-tile>
-        <mat-form-field>
-          <mat-label>Preisvorstellung in €</mat-label>
-          <input
-            class="price"
-            matInput
-            type="number"
-            placeholder="Preis"
-            [(ngModel)]="item.price"
-            (change)="setDirty()"
-          />
-        </mat-form-field>
-      </mat-grid-tile>
       @if (isAdmin && item.id) {
         <mat-grid-tile>
           <mat-form-field>
@@ -92,13 +79,19 @@
     }
     <div [style.text-align]="isContributor ? 'right' : 'center'">
       @if (isAssigned) {
-        <button class="assign" mat-stroked-button (click)="unassign(assignee!)">
+        <button
+          class="assign"
+          mat-stroked-button
+          [disabled]="item.sold"
+          (click)="unassign(assignee!)"
+        >
           Kein Interesse mehr
         </button>
       } @else {
         <button
           class="assign"
           mat-flat-button
+          [disabled]="item.sold"
           [style.visibility]="item.id ? 'visible' : 'hidden'"
           (click)="assign(assignee!)"
         >
@@ -139,7 +132,7 @@
     </div>
   }
   @if (isAssignee && item.id) {
-    <app-comments [item]="item"></app-comments>
+    <app-comments [itemId]="item.id" [comments]="item.comments"></app-comments>
   }
   @for (image of item.images; track image) {
     <a [href]="'/api/image/' + image">

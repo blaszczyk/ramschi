@@ -14,7 +14,9 @@
     </div>
   }
   <div #container class="container">
-    @if (loggedIn) {
+    @if (requiresLogin) {
+      <app-login></app-login>
+    } @else {
       <app-ramschi-header></app-ramschi-header>
       @if (showListView) {
         <app-ramschi-filter></app-ramschi-filter>
@@ -22,8 +24,6 @@
       <div class="scrollarea">
         <router-outlet></router-outlet>
       </div>
-    } @else {
-      <app-login></app-login>
     }
   </div>
 </div>

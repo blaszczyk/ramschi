@@ -79,7 +79,7 @@ export class Spinner {
   applyPhysics(): State {
     // newtons law
     this.vy += GRAVITY;
-    // update position
+    // move
     this.x += this.vx;
     this.y += this.vy;
     this.z += this.vz;
@@ -87,11 +87,9 @@ export class Spinner {
     if (this.y >= this.depth) {
       this.y = 2 * this.depth - this.y;
       const currentEnergy = this.vx ** 2 + this.vy ** 2 + this.vz ** 2;
-      // die if too fast
       if (currentEnergy > KILL_ENERGY) {
         return State.DIE;
       }
-      // bounce in random direction
       const newVelocity = Math.sqrt(currentEnergy + BOUNCE_ENERGY);
       const azimuth = 2 * Math.PI * Math.random();
       const polar = Math.acos(-1 + 0.5 * Math.random());
@@ -109,7 +107,6 @@ export class Spinner {
       this.z = 2 * Math.sign(this.z) * BOUNCE_RADIUS - this.z;
       this.vz = -this.vz;
     }
-    // survive
     return State.SURVIVE;
   }
 }
