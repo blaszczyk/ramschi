@@ -22,12 +22,8 @@ export class RamschiService {
     private readonly credential: CredentialService,
   ) {}
 
-  getItems(includeSold: boolean): Observable<IItem[]> {
-    let params = new HttpParams();
-    if (includeSold) {
-      params = params.set('includeSold', true);
-    }
-    return this.http.get<IItem[]>('/api/item', { params });
+  getItems(): Observable<IItem[]> {
+    return this.http.get<IItem[]>('/api/item');
   }
 
   getItem(id: string): Observable<IFullItem> {

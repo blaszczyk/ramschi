@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @RestController
@@ -33,10 +32,8 @@ public class ItemController {
 
     @GetMapping(path = "",
             produces = MediaType.APPLICATION_JSON_VALUE)
-    Mono<ResponseEntity<List<Item>>> getItems(
-            @RequestParam Optional<Boolean> includeSold
-    ) {
-        return itemService.filterItems(includeSold.orElse(Boolean.FALSE))
+    Mono<ResponseEntity<List<Item>>> getItems() {
+        return itemService.getItems()
                 .map(ResponseEntity::ok);
     }
 

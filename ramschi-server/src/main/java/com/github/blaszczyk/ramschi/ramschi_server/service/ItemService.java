@@ -33,11 +33,8 @@ public class ItemService {
     @Autowired
     private CommentRepository commentRepository;
 
-    public Mono<List<Item>> filterItems(boolean includeSold) {
-        final var entityFlux = includeSold
-                ? itemRepository.findAll()
-                : itemRepository.findUnsold();
-        return entityFlux.collectList().flatMap(entities -> {
+    public Mono<List<Item>> getItems() {
+        return itemRepository.findAll().collectList().flatMap(entities -> {
                     final var ids = entities.stream()
                             .map(ItemEntity::getId)
                             .toList();

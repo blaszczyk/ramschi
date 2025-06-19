@@ -144,8 +144,7 @@ export class ItemListService {
   }
 
   requestItems(): Observable<IItem[]> {
-    const includeSold = this.credential.isAssignee();
-    return this.service.getItems(includeSold).pipe(
+    return this.service.getItems().pipe(
       tap((items) => {
         this.items = items;
         this.setFilter();
