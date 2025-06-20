@@ -114,6 +114,11 @@ export class ItemListService {
   }
 
   private setFilter(): void {
+    this.storeFilter();
+    this.applyFilter();
+  }
+
+  private storeFilter() { 
     updateLocalStorage(KEY_FILTER_NAME, this.filterName);
     updateLocalStorage(KEY_FILTER_CATEGORY, this.filterCategory);
     updateLocalStorage(KEY_FILTER_ASSIGNEE, this.filterAssignee);
@@ -129,6 +134,9 @@ export class ItemListService {
       KEY_EXCLUDE_ASSIGNED,
       this.excludeAssigned ? 'yes please' : null,
     );
+  }
+  
+  applyFilter() {
     this.filteredItems = this.items.filter(
       (item) =>
         item.name.toLowerCase().includes(this.filterName.toLowerCase()) &&

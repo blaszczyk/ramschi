@@ -13,6 +13,7 @@ import { LoginComponent } from './login/login.component';
 import { RamschiFilterComponent } from './ramschi/ramschi-filter/ramschi-filter.component';
 import { RamschiHeaderComponent } from './ramschi-header/ramschi-header.component';
 import { RamschiService } from './ramschi/ramschi.service';
+import { ItemListService } from './ramschi/item-list.service';
 
 @Component({
   selector: 'app-root',
@@ -36,6 +37,7 @@ export class AppComponent extends RoleAware implements OnInit, AfterViewInit {
     private readonly router: Router,
     private readonly scroll: ScrollService,
     private readonly service: RamschiService,
+    private readonly list: ItemListService,
     credential: CredentialService,
   ) {
     super(credential);
@@ -66,6 +68,7 @@ export class AppComponent extends RoleAware implements OnInit, AfterViewInit {
         if (response.success) {
           this.credential.setLoggedIn();
           this.credential.setRole(response.role);
+          this.list.applyFilter();
         } else {
           this.credential.logout();
         }
