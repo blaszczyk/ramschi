@@ -42,7 +42,7 @@ public class ItemService {
                         ItemAssigneeEntity::getAssignee
                 ));
         final var fetchImages = imageRepository
-                .findAll()
+                .findAllIds()
                 .collect(toImmutableListMultimap(
                         ImageEntity::getItemId,
                         ImageEntity::getId
