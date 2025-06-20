@@ -34,31 +34,28 @@ public class ItemService {
     private CommentRepository commentRepository;
 
     public Mono<List<Item>> getItems() {
-        return itemRepository.findAll().collectList().flatMap(entities -> {
-                    final var ids = entities.stream()
-                            .map(ItemEntity::getId)
-                            .toList();
-                    final var fetchAssignees = itemAssigneeRepository
-                            .findByItemIds(ids)
-                            .collect(toImmutableListMultimap(
-                                    ItemAssigneeEntity::getItemId,
-                                    ItemAssigneeEntity::getAssignee
-                            ));
-                    final var fetchImages = imageRepository
-                            .findByItemIds(ids)
-                            .collect(toImmutableListMultimap(
-                                    ImageEntity::getItemId,
-                                    ImageEntity::getId
-                            ));
-                    return zip(fetchAssignees, fetchImages).map(tuple -> {
-                        final var assignees = tuple.getT1();
-                        final var images = tuple.getT2();
-                        return entities.stream().map(entity -> {
-                            final UUID id = entity.getId();
-                            return ItemTransformer.toItem(entity, assignees.get(id), images.get(id));
-                        }).toList();
-                    });
-                });
+        final var fetchItems = itemRepository.findAll().collectList();
+        final var fetchAssignees = itemAssigneeRepository
+                .findAll()
+                .collect(toImmutableListMultimap(
+                        ItemAssigneeEntity::getItemId,
+                        ItemAssigneeEntity::getAssignee
+                ));
+        final var fetchImages = imageRepository
+                .findAll()
+                .collect(toImmutableListMultimap(
+                        ImageEntity::getItemId,
+                        ImageEntity::getId
+                ));
+        return zip(fetchItems, fetchAssignees, fetchImages).map(tuple -> {
+                final var items = tuple.getT1();
+                final var assignees = tuple.getT2();
+                final var images = tuple.getT3();
+                return items.stream().map(entity -> {
+                    final UUID id = entity.getId();
+                    return ItemTransformer.toItem(entity, assignees.get(id), images.get(id));
+                }).toList();
+        });
     }
 
     public Mono<FullItem> getItem(UUID id) {
