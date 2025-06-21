@@ -118,24 +118,15 @@ export class ItemListService {
     this.applyFilter();
   }
 
-  private storeFilter() { 
+  private storeFilter() {
     updateLocalStorage(KEY_FILTER_NAME, this.filterName);
     updateLocalStorage(KEY_FILTER_CATEGORY, this.filterCategory);
     updateLocalStorage(KEY_FILTER_ASSIGNEE, this.filterAssignee);
-    updateLocalStorage(
-      KEY_LATEST_FIRST,
-      this.latestFirst ? 'yes please' : null,
-    );
-    updateLocalStorage(
-      KEY_EXCLUDE_SOLD,
-      this.excludeSold ? 'yes please' : null,
-    );
-    updateLocalStorage(
-      KEY_EXCLUDE_ASSIGNED,
-      this.excludeAssigned ? 'yes please' : null,
-    );
+    updateLocalStorage(KEY_LATEST_FIRST, this.latestFirst);
+    updateLocalStorage(KEY_EXCLUDE_SOLD, this.excludeSold);
+    updateLocalStorage(KEY_EXCLUDE_ASSIGNED, this.excludeAssigned);
   }
-  
+
   applyFilter() {
     this.filteredItems = this.items.filter(
       (item) =>
@@ -168,7 +159,10 @@ const KEY_LATEST_FIRST = 'latest-first';
 const KEY_EXCLUDE_SOLD = 'exclude-sold';
 const KEY_EXCLUDE_ASSIGNED = 'exclude-assigned';
 
-function updateLocalStorage(key: string, value: string | null) {
+function updateLocalStorage(key: string, value: string | boolean | null) {
+  if ( typeof value === 'boolean') {
+    value = value ? 'yep' : null;
+  }
   if (value) {
     localStorage.setItem(key, value);
   } else {
