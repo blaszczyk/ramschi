@@ -146,7 +146,7 @@ export class ItemListService {
     return this.service.getItems().pipe(
       tap((items) => {
         this.items = items;
-        this.setFilter();
+        this.applyFilter();
       }),
     );
   }
