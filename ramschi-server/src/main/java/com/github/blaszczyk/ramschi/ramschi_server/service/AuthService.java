@@ -16,6 +16,9 @@ import java.security.SecureRandom;
 import java.util.Arrays;
 import java.util.Base64;
 
+import static com.github.blaszczyk.ramschi.ramschi_server.service.AuthInfo.*;
+import static reactor.core.publisher.Mono.just;
+
 @Service
 public class AuthService {
 
@@ -24,48 +27,48 @@ public class AuthService {
     @Autowired
     private AssigneeRepository assigneeRepository;
 
+    public Mono<AuthInfo> getAuthInfo(String ramschiAuthString) {
+        if (StringUtils.isBlank(ramschiAuthString)) {
+            return just(FAIL);
+        }
+        final RamschiAuth auth = parse(ramschiAuthString);
+        return assigneeRepository.findByName(auth.name()).map(entity -> {
+            if (hasPassword(entity)) {
+                if (passwordMatches(auth, entity)) {
+                    return success(entity.getName(), entity.getRole());
+                }
+                else {
+                    return FAIL;
+                }
+            }
+            else {
+                return success(entity.getName(), Role.ASSIGNEE);
+            }
+        }).switchIfEmpty(just(FAIL));
+    }
+
     public Mono<LoginResponse> login(String ramschiAuthString) {
         final RamschiAuth auth = RamschiAuth.parse(ramschiAuthString);
 
         return assigneeRepository.findByName(auth.name()).flatMap(entity -> {
             final LoginResponse response = LoginResponse.from(entity);
             if (hasPassword(entity)) {
-                if (verifyPassword(auth, entity)) {
-                    return Mono.just(response);
+                if (passwordMatches(auth, entity)) {
+                    return just(response);
                 }
                 else {
-                    return Mono.just(LoginResponse.FAIL);
+                    return just(LoginResponse.FAIL);
                 }
             }
             else {
                 if (auth.hasPassword()) {
-                    return setPassword(auth).thenReturn(response);
+                    return storePassword(auth).thenReturn(response);
                 }
                 else {
-                    return Mono.just(response);
+                    return just(response);
                 }
             }
         }).switchIfEmpty(createNewAssignee(auth));
-    }
-
-    public Mono<AuthInfo> getAuthInfo(String ramschiAuthString) {
-        if (StringUtils.isBlank(ramschiAuthString)) {
-            return Mono.just(AuthInfo.FAIL);
-        }
-        final RamschiAuth auth = RamschiAuth.parse(ramschiAuthString);
-        return assigneeRepository.findByName(auth.name()).map(entity -> {
-            if (hasPassword(entity)) {
-                if (verifyPassword(auth, entity)) {
-                    return AuthInfo.success(entity.getName(), entity.getRole());
-                }
-                else {
-                    return AuthInfo.FAIL;
-                }
-            }
-            else {
-                return AuthInfo.success(entity.getName(), Role.ASSIGNEE);
-            }
-        }).switchIfEmpty(Mono.just(AuthInfo.FAIL));
     }
 
     private Mono<LoginResponse> createNewAssignee(RamschiAuth auth) {
@@ -76,15 +79,15 @@ public class AuthService {
         final LoginResponse response = LoginResponse.from(entity);
         return assigneeRepository.save(entity).flatMap(ignore -> {
             if (auth.hasPassword()) {
-                return setPassword(auth).thenReturn(response);
+                return storePassword(auth).thenReturn(response);
             }
             else {
-                return Mono.just(response);
+                return just(response);
             }
         });
     }
 
-    private Mono<AssigneeEntity> setPassword(RamschiAuth auth) {
+    private Mono<AssigneeEntity> storePassword(RamschiAuth auth) {
         final byte[] salt = generateSalt();
         final byte[] passwordSHA256 = addSaltAndDigestSHA256(auth.password(), salt);
         return assigneeRepository.setPassword(auth.name(), passwordSHA256, salt);
@@ -100,7 +103,7 @@ public class AuthService {
         return salt;
     }
 
-    private static boolean verifyPassword(RamschiAuth auth, AssigneeEntity entity) {
+    private static boolean passwordMatches(RamschiAuth auth, AssigneeEntity entity) {
         final byte[] salt = entity.getSalt();
         final byte[] passwordSHA256 = addSaltAndDigestSHA256(auth.password(), salt);
         return Arrays.equals(passwordSHA256, entity.getPasswordSHA256());
@@ -113,6 +116,19 @@ public class AuthService {
             return MessageDigest.getInstance("SHA256").digest(pwAndSalt);
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    private static RamschiAuth parse(String ramschiAuth) {
+        final byte[] decodedBytes = Base64.getDecoder().decode(ramschiAuth);
+        final String decodedHex = new String(decodedBytes, StandardCharsets.UTF_8);
+        final String decoded = hexToUtf8(decodedHex);
+        final String[] split = decoded.split(":", 2);
+        if (split.length > 1) {
+            return new RamschiAuth(split[0], split[1].getBytes(StandardCharsets.UTF_8));
+        }
+        else {
+            return new RamschiAuth(decoded, new byte[0]);
         }
     }
 

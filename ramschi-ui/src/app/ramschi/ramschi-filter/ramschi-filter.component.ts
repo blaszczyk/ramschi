@@ -1,10 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, viewChild } from '@angular/core';
 import { ICategory } from '../domain';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
-import { MatExpansionModule } from '@angular/material/expansion';
+import { MatAccordion, MatExpansionModule } from '@angular/material/expansion';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { FormsModule } from '@angular/forms';
 import { CategoryService } from '../category.service';
@@ -26,9 +26,11 @@ import { ItemListService } from '../item-list.service';
     FormsModule,
   ],
   templateUrl: './ramschi-filter.component.html',
-  styleUrl: './ramschi-filter.component.css',
+  styleUrl: './ramschi-filter.component.scss',
 })
 export class RamschiFilterComponent extends RoleAware {
+  accordion = viewChild.required(MatAccordion);
+
   get filterName(): string {
     return this.itemList.getFilterName();
   }
@@ -58,6 +60,21 @@ export class RamschiFilterComponent extends RoleAware {
     this.itemList.setLatestFirst(value);
   }
 
+  get excludeSold(): boolean {
+    return this.itemList.getExcludeSold();
+  }
+  set excludeSold(value: boolean) {
+    this.itemList.setExcludeSold(value);
+  }
+
+  get excludeAssigned(): boolean {
+    return this.itemList.getExcludeAssigned();
+  }
+
+  set excludeAssigned(value: boolean) {
+    this.itemList.setExcludeAssigned(value);
+  }
+
   get filterSummary(): string {
     const filters: string[] = [];
     if (this.filterName) {
@@ -71,6 +88,12 @@ export class RamschiFilterComponent extends RoleAware {
     }
     if (this.latestFirst) {
       filters.push('neustes zuerst');
+    }
+    if (this.excludeSold) {
+      filters.push('nur unverkauftes');
+    }
+    if (this.excludeAssigned) {
+      filters.push('nur unzugewiesenes');
     }
     return filters.join(', ');
   }
@@ -92,6 +115,10 @@ export class RamschiFilterComponent extends RoleAware {
     credential: CredentialService,
   ) {
     super(credential);
+  }
+
+  hide(): void {
+    this.accordion().closeAll();
   }
 
   clearFilter(event: Event): void {

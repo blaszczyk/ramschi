@@ -8,7 +8,6 @@ public record Item(
         String name,
         String description,
         String category,
-        int price,
         long lastedit,
         boolean sold,
         List<String> assignees,

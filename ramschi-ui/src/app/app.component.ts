@@ -12,6 +12,9 @@ import { CredentialService, RoleAware } from './login/credential.service';
 import { LoginComponent } from './login/login.component';
 import { RamschiFilterComponent } from './ramschi/ramschi-filter/ramschi-filter.component';
 import { RamschiHeaderComponent } from './ramschi-header/ramschi-header.component';
+import { RamschiService } from './ramschi/ramschi.service';
+import { ItemListService } from './ramschi/item-list.service';
+import { ReCaptchaV3Service } from 'ng-recaptcha';
 
 @Component({
   selector: 'app-root',
@@ -22,7 +25,7 @@ import { RamschiHeaderComponent } from './ramschi-header/ramschi-header.componen
     RamschiHeaderComponent,
   ],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.css',
+  styleUrl: './app.component.scss',
 })
 export class AppComponent extends RoleAware implements OnInit, AfterViewInit {
   title = 'ramschi-ui';
@@ -34,12 +37,15 @@ export class AppComponent extends RoleAware implements OnInit, AfterViewInit {
     private readonly spinnerService: SpinnerService,
     private readonly router: Router,
     private readonly scroll: ScrollService,
+    private readonly service: RamschiService,
+    private readonly list: ItemListService,
+    private recaptchaV3Service: ReCaptchaV3Service,
     credential: CredentialService,
   ) {
     super(credential);
   }
 
-  showFilter = false;
+  showListView = false;
 
   get showSpinner(): boolean {
     return this.spinnerService.isVisible();
@@ -49,16 +55,29 @@ export class AppComponent extends RoleAware implements OnInit, AfterViewInit {
     return this.spinnerService.spinners;
   }
 
-  get loggedIn(): boolean {
-    return this.credential.isInitialised();
+  get requiresLogin(): boolean {
+    return this.credential.getRequiresLogin();
   }
 
   ngOnInit(): void {
     this.router.events.subscribe((event) => {
       if (event instanceof ActivationStart) {
-        this.showFilter = !event.snapshot.routeConfig?.path;
+        this.showListView = !event.snapshot.routeConfig?.path;
       }
     });
+    if (this.credential.hasCredentials()) {
+      this.recaptchaV3Service.execute('login').subscribe((token) => {
+        this.service.login(token).subscribe((response) => {
+          if (response.success) {
+            this.credential.setLoggedIn();
+            this.credential.setRole(response.role);
+            this.list.applyFilter();
+          } else {
+            this.credential.logout();
+          }
+        });
+      });
+    }
   }
 
   ngAfterViewInit(): void {

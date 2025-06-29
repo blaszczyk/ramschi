@@ -13,8 +13,8 @@ public interface ImageRepository  extends ReactiveCrudRepository<ImageEntity, UU
     @Query("SELECT id FROM ramschi.image WHERE item_id = :itemId")
     Flux<ImageEntity> findIdsByItemId(UUID itemId);
 
-    @Query("SELECT id, item_id FROM ramschi.image WHERE item_id IN (:itemIds)")
-    Flux<ImageEntity> findByItemIds(List<UUID> itemIds);
+    @Query("SELECT id, item_id FROM ramschi.image")
+    Flux<ImageEntity> findAllIds();
 
     @Query("SELECT original FROM ramschi.image WHERE id = :id")
     Mono<ImageEntity> getOriginal(UUID id);

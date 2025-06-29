@@ -10,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
-import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -26,15 +25,6 @@ public class CommentController {
 
     @Autowired
     private RecaptchaV3Helper recaptchaV3Helper;
-
-    @GetMapping(path = "/{itemId}",
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    Mono<ResponseEntity<List<Comment>>> getCommentsForItem(
-            @PathVariable UUID itemId
-    ) {
-        return commentService.getComments(itemId)
-                .map(ResponseEntity::ok);
-    }
 
     @PostMapping(path = "",
             consumes = MediaType.APPLICATION_JSON_VALUE,

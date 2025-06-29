@@ -11,7 +11,7 @@ import { SpinnerService } from '../../spinner.service';
   selector: 'app-ramschi-list',
   imports: [MatGridListModule],
   templateUrl: './ramschi-list.component.html',
-  styleUrl: './ramschi-list.component.css',
+  styleUrl: './ramschi-list.component.scss',
 })
 export class RamschiListComponent extends RoleAware implements OnInit {
   get items(): IItem[] {

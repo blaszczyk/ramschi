@@ -3,19 +3,24 @@ export interface ICategory {
   name: string;
 }
 
-export interface IBasicItem {
+export interface IPlainItem {
   id: string | null;
   name: string;
   description: string | null;
   category: string | null;
-  price: number | null;
   sold: boolean;
 }
 
-export interface IItem extends IBasicItem {
+export interface IItem extends IPlainItem {
   lastedit: number;
   assignees: string[];
   images: string[];
+}
+
+export interface IFullItem extends IPlainItem {
+  assignees: string[];
+  images: string[];
+  comments: IComment[];
 }
 
 export interface ILoginResponse {
@@ -35,4 +40,12 @@ export interface IComment {
   author: string;
   text: string;
   lastEdit: number | undefined;
+}
+
+export interface IAssignee {
+  name: string;
+  role: Role;
+  secure: boolean;
+  itemCount: number;
+  commentCount: number;
 }

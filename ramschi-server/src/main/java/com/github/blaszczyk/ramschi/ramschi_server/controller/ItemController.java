@@ -1,7 +1,8 @@
 package com.github.blaszczyk.ramschi.ramschi_server.controller;
 
 import com.github.blaszczyk.ramschi.ramschi_server.controller.util.AuthHelper;
-import com.github.blaszczyk.ramschi.ramschi_server.domain.BasicItem;
+import com.github.blaszczyk.ramschi.ramschi_server.domain.FullItem;
+import com.github.blaszczyk.ramschi.ramschi_server.domain.PlainItem;
 import com.github.blaszczyk.ramschi.ramschi_server.domain.Item;
 import com.github.blaszczyk.ramschi.ramschi_server.domain.Role;
 import com.github.blaszczyk.ramschi.ramschi_server.service.ImageService;
@@ -31,24 +32,29 @@ public class ItemController {
 
     @GetMapping(path = "",
             produces = MediaType.APPLICATION_JSON_VALUE)
-    Mono<ResponseEntity<List<Item>>> getItems(
-            @RequestParam Boolean includeSold
-    ) {
-        return itemService.filterItems(includeSold != null ?includeSold.booleanValue() :Boolean.FALSE)
+    Mono<ResponseEntity<List<Item>>> getItems() {
+        return itemService.getItems()
                 .map(ResponseEntity::ok);
     }
 
     @GetMapping(path = "/{id}",
             produces = MediaType.APPLICATION_JSON_VALUE)
-    Mono<ResponseEntity<Item>> getItem(@PathVariable UUID id) {
+    Mono<ResponseEntity<FullItem>> getItem(@PathVariable UUID id) {
         return itemService.getItem(id)
+                .map(ResponseEntity::ok);
+    }
+
+    @GetMapping(path = "/assignee/{assignee}",
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    Mono<ResponseEntity<List<PlainItem>>> getItemsForAssignee(@PathVariable String assignee) {
+        return itemService.getItemsForAssignee(assignee)
                 .map(ResponseEntity::ok);
     }
 
     @PostMapping(path = "",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    Mono<ResponseEntity<UUID>> postItem(@RequestBody BasicItem item, @RequestHeader(RamschiHeader.AUTH) String ramschiAuth) {
+    Mono<ResponseEntity<UUID>> postItem(@RequestBody PlainItem item, @RequestHeader(RamschiHeader.AUTH) String ramschiAuth) {
         return authHelper.doIfAuthorised(ramschiAuth, Role.CONTRIBUTOR, () ->
                 itemService.saveItem(item)
                         .map(ResponseEntity::ok)
@@ -71,8 +77,10 @@ public class ItemController {
            @PathVariable String assignee,
            @RequestHeader(RamschiHeader.AUTH) String ramschiAuth) {
         return authHelper.doIfAuthorised(ramschiAuth, assignee, () ->
-                itemService.addAssignee(itemId, assignee)
-                        .map(ResponseEntity::ok)
+                authHelper.doIfUnsold(itemId, () ->
+                        itemService.addAssignee(itemId, assignee)
+                                .map(ResponseEntity::ok)
+                )
         );
     }
 
@@ -82,8 +90,10 @@ public class ItemController {
             @PathVariable String assignee,
             @RequestHeader(RamschiHeader.AUTH) String ramschiAuth) {
         return authHelper.doIfAuthorised(ramschiAuth, assignee, () ->
-                itemService.deleteAssignee(itemId, assignee)
-                        .map(ResponseEntity::ok)
+                    authHelper.doIfUnsold(itemId, () ->
+                            itemService.deleteAssignee(itemId, assignee)
+                                    .map(ResponseEntity::ok)
+                    )
         );
     }
 
@@ -95,19 +105,6 @@ public class ItemController {
             @RequestBody byte[] data,
             @RequestHeader(RamschiHeader.AUTH) String ramschiAuth) {
         return authHelper.doIfAuthorised(ramschiAuth, Role.CONTRIBUTOR, () ->
-                imageService.createImage(itemId, data)
-                        .map(ResponseEntity::ok)
-        );
-    }
-
-    @PostMapping(path = "/{itemId}/comment",
-            consumes = { MediaType.APPLICATION_JSON_VALUE },
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    Mono<ResponseEntity<UUID>> postComment(
-            @PathVariable UUID itemId,
-            @RequestBody byte[] data,
-            @RequestHeader(RamschiHeader.AUTH) String ramschiAuth) {
-        return authHelper.doIfAuthorised(ramschiAuth, Role.ASSIGNEE, () ->
                 imageService.createImage(itemId, data)
                         .map(ResponseEntity::ok)
         );

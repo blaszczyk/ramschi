@@ -1,4 +1,4 @@
-import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, Input, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatExpansionModule } from '@angular/material/expansion';
@@ -11,7 +11,7 @@ import {
   CredentialService,
   RoleAware,
 } from '../../../login/credential.service';
-import { IComment, IItem } from '../../domain';
+import { IComment } from '../../domain';
 import { SpinnerService } from '../../../spinner.service';
 import { RamschiService } from '../../ramschi.service';
 import { RecaptchaV3Module, ReCaptchaV3Service } from 'ng-recaptcha';
@@ -30,16 +30,17 @@ import { RecaptchaV3Module, ReCaptchaV3Service } from 'ng-recaptcha';
     FormsModule,
   ],
   templateUrl: './comments.component.html',
-  styleUrl: './comments.component.css',
+  styleUrl: './comments.component.scss',
 })
-export class CommentsComponent extends RoleAware implements OnInit {
+export class CommentsComponent extends RoleAware {
   @Input()
-  item!: IItem;
+  comments: IComment[] = [];
+
+  @Input()
+  itemId: string | null = null;
 
   @ViewChild('newCommentTextArea')
   newCommentElement!: ElementRef<HTMLTextAreaElement>;
-
-  comments: IComment[] = [];
 
   newComment = '';
 
@@ -52,14 +53,6 @@ export class CommentsComponent extends RoleAware implements OnInit {
     super(credential);
   }
 
-  ngOnInit(): void {
-    if (this.item.id) {
-      this.service.getComments(this.item.id!).subscribe((comments) => {
-        this.comments = comments;
-      });
-    }
-  }
-
   saveNewComment(): void {
     this.spinner.show();
     this.reCaptchaV3Service.execute('comment').subscribe((token) => {
@@ -67,7 +60,7 @@ export class CommentsComponent extends RoleAware implements OnInit {
         .postComment(
           {
             id: null,
-            itemId: this.item.id!,
+            itemId: this.itemId!,
             author: this.credential.getAssignee()!,
             text: this.newComment,
             lastEdit: undefined,

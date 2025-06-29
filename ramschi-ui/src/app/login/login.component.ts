@@ -21,11 +21,11 @@ import { ItemListService } from '../ramschi/item-list.service';
     FormsModule,
   ],
   templateUrl: './login.component.html',
-  styleUrl: './login.component.css',
+  styleUrl: './login.component.scss',
 })
 export class LoginComponent {
   constructor(
-    private readonly credentials: CredentialService,
+    private readonly credential: CredentialService,
     private readonly service: RamschiService,
     private readonly spinner: SpinnerService,
     private recaptchaV3Service: ReCaptchaV3Service,
@@ -40,25 +40,25 @@ export class LoginComponent {
     this.spinner.show();
     this.itemList.requestItems().subscribe(() => {
       this.spinner.hide();
-      this.credentials.setInitialised();
+      this.credential.setLoggedIn();
     });
   }
 
   login() {
-    this.credentials.setCredentials(this.name, this.password);
+    this.credential.setCredentials(this.name, this.password);
     this.spinner.show();
     this.recaptchaV3Service.execute('login').subscribe((token) => {
       this.service.login(token).subscribe((response) => {
         if (response.success) {
-          this.credentials.setRole(response.role);
-          this.credentials.storeCredentials();
+          this.credential.setRole(response.role);
+          this.credential.storeCredentials();
           this.itemList.requestItems().subscribe(() => {
-            this.credentials.setInitialised();
+            this.credential.setLoggedIn();
             this.spinner.hide();
           });
         } else {
           alert(
-            'Das hat leider nicht geklappt. Wenn Du Dein Passwort vergessen hast, wende Dich an den Admin Deines Vertrauens.',
+            'Der Name ist schon vergeben. Wenn Du Dein Passwort vergessen hast, wende Dich an den Admin Deines Vertrauens.',
           );
           this.spinner.hide();
         }
