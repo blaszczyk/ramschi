@@ -127,17 +127,21 @@ export class ItemListService {
     updateLocalStorage(KEY_EXCLUDE_ASSIGNED, this.excludeAssigned);
   }
 
+  // prettier-ignore
   applyFilter() {
     this.filteredItems = this.items.filter(
       (item) =>
-        item.name.toLowerCase().includes(this.filterName.toLowerCase()) &&
-        (!this.filterCategory || item.category === this.filterCategory) &&
-        (!this.filterAssignee ||
-          item.assignees.includes(this.filterAssignee)) &&
-        (!item.sold ||
-          item.assignees.includes(this.credential.getAssignee()!) ||
-          (this.credential.isContributor() && !this.excludeSold)) &&
-        (!this.excludeAssigned || item.assignees.length == 0),
+        item.name.toLowerCase().includes(this.filterName.toLowerCase())
+        && (!this.filterCategory 
+          || item.category === this.filterCategory)
+        && (!this.filterAssignee
+          || item.assignees.includes(this.filterAssignee))
+        && (!item.sold
+          || item.assignees.includes(this.credential.getAssignee()!)
+          || (this.credential.isContributor() 
+            && !this.excludeSold))
+        && (!this.excludeAssigned
+          || item.assignees.length == 0),
     );
     this.filteredItems.sort(this.latestFirst ? byDate : byName);
   }
@@ -160,7 +164,7 @@ const KEY_EXCLUDE_SOLD = 'exclude-sold';
 const KEY_EXCLUDE_ASSIGNED = 'exclude-assigned';
 
 function updateLocalStorage(key: string, value: string | boolean | null) {
-  if ( typeof value === 'boolean') {
+  if (typeof value === 'boolean') {
     value = value ? 'yep' : null;
   }
   if (value) {

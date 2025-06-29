@@ -1,5 +1,5 @@
 database:
-  instance: ''
+  instance: 'ramschi:region:ramschi-sql'
   name: 'postgres'
 
 spring:
