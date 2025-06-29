@@ -1,52 +1,66 @@
 package com.github.blaszczyk.ramschi.ramschi_server.persistence;
 
-import com.github.blaszczyk.ramschi.ramschi_server.domain.BasicItem;
+import com.github.blaszczyk.ramschi.ramschi_server.domain.Comment;
+import com.github.blaszczyk.ramschi.ramschi_server.domain.FullItem;
+import com.github.blaszczyk.ramschi.ramschi_server.domain.PlainItem;
 import com.github.blaszczyk.ramschi.ramschi_server.domain.Item;
 
-import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
-import java.util.function.Function;
 
 public class ItemTransformer {
 
-    public static ItemEntity toEntity(BasicItem item) {
+    public static ItemEntity toEntity(PlainItem item) {
         final var entity = new ItemEntity();
         entity.setId(item.id());
         entity.setName(item.name());
         entity.setDescription(item.description());
         entity.setCategory(item.category());
-        entity.setPrice(item.price());
+        entity.setSold(item.sold());
         return entity;
     }
 
-    public static BasicItem toBasicItem(ItemEntity entity) {
-        return new BasicItem(
+    public static PlainItem toPlainItem(ItemEntity entity) {
+        return new PlainItem(
                 entity.getId(),
                 entity.getName(),
                 entity.getDescription(),
                 entity.getCategory(),
-                entity.getPrice()
+                entity.isSold()
         );
     }
 
-    public static Item toItem(ItemEntity entity, List<ItemAssigneeEntity> assignees, List<ImageEntity> images) {
+    public static Item toItem(ItemEntity entity, List<String> assignees, List<UUID> images) {
         return new Item(
                 entity.getId(),
                 entity.getName(),
                 entity.getDescription(),
                 entity.getCategory(),
-                entity.getPrice(),
                 entity.getLastedit().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli(),
-                mapNullable(assignees, ItemAssigneeEntity::getAssignee),
-                mapNullable(images, ImageEntity::getId)
+                entity.isSold(),
+                assignees,
+                images
         );
     }
 
-    private static <E, T> List<T> mapNullable(List<E> es, Function<E, T> function) {
-        return es == null ? Collections.emptyList()
-                : es.stream().map(function).toList();
+    public static FullItem toFullItem(ItemEntity entity,
+                                      List<String> assignees,
+                                      List<UUID> images,
+                                      List<Comment> comments) {
+        return new FullItem(
+                entity.getId(),
+                entity.getName(),
+                entity.getDescription(),
+                entity.getCategory(),
+                entity.isSold(),
+                assignees,
+                images,
+                comments
+        );
+    }
+
+    public static Comment toComment(CommentEntity entity) {
+        return new Comment(entity.getId(), entity.getItemId(), entity.getAuthor(), entity.getText(), entity.getLastEdit());
     }
 }

@@ -1,7 +1,16 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { ICategory, IBasicItem, IItem, ILoginResponse, IComment } from './domain';
+import {
+  ICategory,
+  IPlainItem,
+  IItem,
+  ILoginResponse,
+  IComment,
+  Role,
+  IAssignee,
+  IFullItem,
+} from './domain';
 import { CredentialService } from '../login/credential.service';
 
 @Injectable({
@@ -13,39 +22,21 @@ export class RamschiService {
     private readonly credential: CredentialService,
   ) {}
 
-  getItems(
-    filter = '',
-    category: string | undefined = undefined,
-    assignee: string | undefined = undefined,
-    latestFirst = false,
-  ): Observable<IItem[]> {
-    let params = new HttpParams();
-    if (filter) {
-      params = params.set('filter', filter);
-    }
-    if (category) {
-      params = params.set('category', category);
-    }
-    if (assignee) {
-      params = params.set('assignee', assignee);
-    }
-    if (latestFirst) {
-      params = params.set('latestFirst', true);
-    }
-    return this.http.get<IItem[]>('/api/item', { params });
+  getItems(): Observable<IItem[]> {
+    return this.http.get<IItem[]>('/api/item');
   }
 
-  getItem(id: string): Observable<IItem> {
-    return this.http.get<IItem>('/api/item/' + id);
+  getItem(id: string): Observable<IFullItem> {
+    return this.http.get<IFullItem>('/api/item/' + id);
   }
 
-  postItem(item: IBasicItem): Observable<string> {
+  postItem(item: IPlainItem): Observable<string> {
     return this.http.post<string>('/api/item', item, {
       headers: this.getHeaders(),
     });
   }
 
-  deleteItem(item: IBasicItem): Observable<void> {
+  deleteItem(item: IPlainItem): Observable<void> {
     return this.http.delete<void>('/api/item/' + item.id, {
       headers: this.getHeaders(),
     });
@@ -53,6 +44,12 @@ export class RamschiService {
 
   getAssignees(): Observable<string[]> {
     return this.http.get<string[]>('/api/assignee');
+  }
+
+  getFullAssignees(): Observable<IAssignee[]> {
+    return this.http.get<IAssignee[]>('/api/assignee/full', {
+      headers: this.getHeaders(),
+    });
   }
 
   putItemAssignee(itemId: string, assignee: string): Observable<void> {
@@ -70,12 +67,6 @@ export class RamschiService {
     );
   }
 
-  postAssignee(name: string): Observable<void> {
-    return this.http.post<void>('/api/assignee/' + encodeURIComponent(name), null, {
-      headers: this.getHeaders(),
-    });
-  }
-
   deleteAssignee(name: string): Observable<void> {
     return this.http.delete<void>('/api/assignee/' + encodeURIComponent(name), {
       headers: this.getHeaders(),
@@ -83,9 +74,31 @@ export class RamschiService {
   }
 
   resetPassword(name: string): Observable<void> {
-    return this.http.delete<void>('/api/assignee/' + encodeURIComponent(name) + '/password', {
-      headers: this.getHeaders(),
-    });
+    return this.http.delete<void>(
+      '/api/assignee/' + encodeURIComponent(name) + '/password',
+      {
+        headers: this.getHeaders(),
+      },
+    );
+  }
+
+  putAssigneeRole(name: string, role: Role): Observable<void> {
+    return this.http.put<void>(
+      `/api/assignee/${encodeURIComponent(name)}/role/${role}`,
+      null,
+      {
+        headers: this.getHeaders(),
+      },
+    );
+  }
+
+  getItemsForAssignee(name: string): Observable<IItem[]> {
+    return this.http.get<IItem[]>(
+      '/api/item/assignee/' + encodeURIComponent(name),
+      {
+        headers: this.getHeaders(),
+      },
+    );
   }
 
   postImage(itemId: string, blob: Blob, type: string): Observable<string> {
@@ -119,17 +132,13 @@ export class RamschiService {
     });
   }
 
-  getComments(itemId: string): Observable<IComment[]> {
-    return this.http.get<IComment[]>('/api/comment/' + itemId);
-  }
-
   postComment(comment: IComment): Observable<IComment> {
     return this.http.post<IComment>('/api/comment', comment, {
       headers: this.getHeaders(),
     });
- }
+  }
 
- deleteComment(id: string): Observable<void> {
+  deleteComment(id: string): Observable<void> {
     return this.http.delete<void>('/api/comment/' + id, {
       headers: this.getHeaders(),
     });

@@ -1,6 +1,12 @@
-import { ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef,
+  Component,
+  ElementRef,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { RamschiService } from '../ramschi.service';
-import { ICategory, IItem } from '../domain';
+import { ICategory, IFullItem, IPlainItem } from '../domain';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
@@ -13,9 +19,11 @@ import { SpinnerService } from '../../spinner.service';
 import { CategoryService } from '../category.service';
 import { AssigneeService } from '../assignee.service';
 import { CredentialService, RoleAware } from '../../login/credential.service';
-import { CommentsComponent } from "./comments/comments.component";
+import { CommentsComponent } from './comments/comments.component';
 import { ItemListService } from '../item-list.service';
 import { scaleImage } from '../util';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { ItemHolderService } from '../../item.holder.service';
 
 @Component({
   selector: 'app-ramschi-detail',
@@ -26,14 +34,17 @@ import { scaleImage } from '../util';
     MatSelectModule,
     MatButtonModule,
     MatGridListModule,
+    MatCheckboxModule,
     FormsModule,
-    CommentsComponent
-],
+    CommentsComponent,
+  ],
   templateUrl: './ramschi-detail.component.html',
-  styleUrl: './ramschi-detail.component.css',
+  styleUrl: './ramschi-detail.component.scss',
 })
-export class RamschiDetailComponent extends RoleAware implements OnInit {
-
+export class RamschiDetailComponent
+  extends RoleAware
+  implements OnInit, OnDestroy
+{
   @ViewChild('newImage')
   newImageElement!: ElementRef<HTMLInputElement>;
 
@@ -45,15 +56,15 @@ export class RamschiDetailComponent extends RoleAware implements OnInit {
     return this.categoryService.getAll();
   }
 
-  item: IItem = {
+  item: IFullItem = {
     id: null,
     name: '',
     description: null,
     category: null,
-    price: null,
-    lastedit: 0,
+    sold: false,
     assignees: [],
     images: [],
+    comments: [],
   };
 
   initialized = false;
@@ -69,6 +80,7 @@ export class RamschiDetailComponent extends RoleAware implements OnInit {
     private readonly router: Router,
     private readonly spinner: SpinnerService,
     private readonly cdr: ChangeDetectorRef,
+    private readonly itemHolder: ItemHolderService,
     credential: CredentialService,
   ) {
     super(credential);
@@ -83,11 +95,17 @@ export class RamschiDetailComponent extends RoleAware implements OnInit {
           this.item = item;
           this.initialized = true;
           this.spinner.hide();
+          this.itemHolder.setItem(item);
         });
       } else {
         this.initialized = true;
+        this.itemHolder.clearItem();
       }
     });
+  }
+
+  ngOnDestroy(): void {
+    this.itemHolder.clearItem();
   }
 
   get categoryName(): string {
@@ -106,15 +124,21 @@ export class RamschiDetailComponent extends RoleAware implements OnInit {
   }
 
   saveItem(): void {
-    if (!this.saveDisabled()) {
-      this.spinner.show();
-      this.service.postItem(this.item).subscribe((id) => {
+    this.spinner.show();
+    const plainItem: IPlainItem = {
+      id: this.item.id,
+      name: this.item.name,
+      description: this.item.description,
+      category: this.item.category,
+      sold: this.item.sold,
+    };
+    this.service.postItem(plainItem).subscribe((id) => {
+      this.pristine = true;
+      this.router.navigateByUrl('/ramsch/' + id);
+      this.itemList.requestItems().subscribe(() => {
         this.spinner.hide();
-        this.pristine = true;
-        this.router.navigateByUrl('/ramsch/' + id);
-        this.itemList.refresh();
       });
-    }
+    });
   }
 
   uploadNewImage(event: Event) {
@@ -123,9 +147,9 @@ export class RamschiDetailComponent extends RoleAware implements OnInit {
     scaleImage(file, blob => {
       this.service.postImage(this.item!.id!, blob, file.type).subscribe((id) => {
         this.item.images.push(id);
-        this.spinner.hide();
-      this.itemList.refresh();
-        this.cdr.detectChanges();
+        this.itemList.requestItems().subscribe(() => {
+          this.spinner.hide();
+        });
       });
     })
   }
@@ -157,31 +181,27 @@ export class RamschiDetailComponent extends RoleAware implements OnInit {
   }
 
   assign(assignee: string): void {
-    if (
-      confirm(`Danke ${assignee} für Dein Interesse an ${this.item.name}!`)
-    ) {
+    if (confirm(`Danke ${assignee} für Dein Interesse an ${this.item.name}!`)) {
       this.spinner.show();
       this.service.putItemAssignee(this.item.id!, assignee).subscribe(() => {
         this.item.assignees.push(assignee);
-        this.spinner.hide();
-        this.itemList.refresh();
+        this.itemList.requestItems().subscribe(() => {
+          this.spinner.hide();
+        });
       });
     }
   }
 
   unassign(assignee: string): void {
-    if (
-      confirm(`Schade, ${assignee}, dass Dir ${this.item.name} egal ist!`)
-    ) {
+    if (confirm(`Schade, ${assignee}, dass Dir ${this.item.name} egal ist!`)) {
       this.spinner.show();
-      this.service
-        .deleteItemAssignee(this.item.id!, assignee)
-        .subscribe(() => {
-          const index = this.item.assignees.indexOf(assignee);
-          this.item.assignees.splice(index, 1);
+      this.service.deleteItemAssignee(this.item.id!, assignee).subscribe(() => {
+        const index = this.item.assignees.indexOf(assignee);
+        this.item.assignees.splice(index, 1);
+        this.itemList.requestItems().subscribe(() => {
           this.spinner.hide();
-          this.itemList.refresh();
         });
+      });
     }
   }
 }

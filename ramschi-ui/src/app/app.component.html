@@ -1,20 +1,29 @@
 <div class="page">
   @if (showSpinner) {
     <div class="screenlock">
-      <mat-spinner></mat-spinner>
+      @for (spinner of spinners; track spinner.id) {
+        <img
+          [style.transform]="spinner.cssPosition"
+          [style.z-index]="spinner.zIndex"
+          src="/spinner-{{ spinner.offset }}.gif"
+          width="100"
+          height="100"
+          alt="huiii"
+        />
+      }
     </div>
   }
   <div #container class="container">
-    @if (loggedIn) {
+    @if (requiresLogin) {
+      <app-login></app-login>
+    } @else {
       <app-ramschi-header></app-ramschi-header>
-      @if (showFilter) {
+      @if (showListView) {
         <app-ramschi-filter></app-ramschi-filter>
       }
       <div class="scrollarea">
         <router-outlet></router-outlet>
       </div>
-    } @else {
-      <app-login></app-login>
     }
   </div>
 </div>

@@ -1,6 +1,7 @@
 package com.github.blaszczyk.ramschi.ramschi_server.service;
 
-import com.github.blaszczyk.ramschi.ramschi_server.domain.BasicItem;
+import com.github.blaszczyk.ramschi.ramschi_server.domain.FullItem;
+import com.github.blaszczyk.ramschi.ramschi_server.domain.PlainItem;
 import com.github.blaszczyk.ramschi.ramschi_server.domain.Item;
 import com.github.blaszczyk.ramschi.ramschi_server.persistence.*;
 import org.slf4j.Logger;
@@ -11,16 +12,14 @@ import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.function.Function;
+import static com.google.common.collect.ImmutableListMultimap.toImmutableListMultimap;
+import static reactor.core.publisher.Mono.zip;
+
 
 @Service
 public class ItemService {
 
     private static Logger LOG = LoggerFactory.getLogger(ItemService.class);
-
-    private static final Comparator<ItemEntity> BY_NAME = Comparator.comparing(ItemEntity::getName);
-
-    private static final Comparator<ItemEntity> BY_LAST_EDIT = Comparator.comparing(ItemEntity::getLastedit).reversed();
 
     @Autowired
     private ItemRepository itemRepository;
@@ -31,56 +30,62 @@ public class ItemService {
     @Autowired
     private ItemAssigneeRepository itemAssigneeRepository;
 
-    public Mono<List<Item>> filterItems(
-            Optional<String> filter,
-            Optional<String> category,
-            Optional<String> assignee,
-            boolean latestFirst
-    ) {
-        final String filterTerm = filter.map(s -> "%" + s + "%").orElse("%");
-        return assignee.map(s -> itemAssigneeRepository.findByAssignee(s)
-                .map(ItemAssigneeEntity::getItemId)
-                .collectList()
-                .flatMap(itemIds -> filterItems(filterTerm, category, latestFirst, itemIds)))
-                .orElseGet(() -> filterItems(filterTerm, category, latestFirst, null));
+    @Autowired
+    private CommentRepository commentRepository;
+
+    public Mono<List<Item>> getItems() {
+        final var fetchItems = itemRepository.findAll().collectList();
+        final var fetchAssignees = itemAssigneeRepository
+                .findAll()
+                .collect(toImmutableListMultimap(
+                        ItemAssigneeEntity::getItemId,
+                        ItemAssigneeEntity::getAssignee
+                ));
+        final var fetchImages = imageRepository
+                .findAllIds()
+                .collect(toImmutableListMultimap(
+                        ImageEntity::getItemId,
+                        ImageEntity::getId
+                ));
+        return zip(fetchItems, fetchAssignees, fetchImages).map(tuple -> {
+                final var items = tuple.getT1();
+                final var assignees = tuple.getT2();
+                final var images = tuple.getT3();
+                return items.stream().map(entity -> {
+                    final UUID id = entity.getId();
+                    return ItemTransformer.toItem(entity, assignees.get(id), images.get(id));
+                }).toList();
+        });
     }
 
-    private Mono<List<Item>> filterItems(String filterTerm, Optional<String> category, boolean latestFirst, List<UUID> itemIds) {
-        final var resultFlux = category.isPresent()
-                ? itemRepository.findByNameLikeAndCategory(filterTerm, category.get())
-                : itemRepository.findByNameLike(filterTerm);
-        return resultFlux
-                .filter(entity -> itemIds == null || itemIds.contains(entity.getId()))
-                .sort(latestFirst ? BY_LAST_EDIT : BY_NAME)
-                .collectList()
-                .flatMap(entities -> {
-                    final List<UUID> ids = entities.stream().map(ItemEntity::getId).toList();
-                    final var fetchAssignees = itemAssigneeRepository.findByItemIds(ids)
-                            .collectList();
-                    final var fetchImages = imageRepository.findByItemIds(ids)
-                            .collectList();
-                    return Mono.zip(fetchAssignees, fetchImages)
-                            .map(tuple -> {
-                                final var assignees = mapByItemId(tuple.getT1(), ItemAssigneeEntity::getItemId);
-                                final var images = mapByItemId(tuple.getT2(), ImageEntity::getItemId);
-                                return entities.stream().map(entity -> {
-                                    final UUID id = entity.getId();
-                                    return ItemTransformer.toItem(entity, assignees.get(id), images.get(id));
-                                }).toList();
-                            });
-                });
-    }
-
-    public Mono<Item> getItem(UUID id) {
+    public Mono<FullItem> getItem(UUID id) {
         final var fetchItem = itemRepository.findById(id);
-        final var fetchAssignees = itemAssigneeRepository.findByItemId(id).collectList();
-        final var fetchImages = imageRepository.findIdsByItemId(id).collectList();
+        final var fetchAssignees = itemAssigneeRepository.findByItemId(id)
+                .map(ItemAssigneeEntity::getAssignee)
+                .collectList();
+        final var fetchImages = imageRepository.findIdsByItemId(id)
+                .map(ImageEntity::getId)
+                .collectList();
+        final var fetchComments = commentRepository.findByItemIdOrderByLastEditAsc(id)
+                .map(ItemTransformer::toComment)
+                .collectList();
 
-        return Mono.zip(fetchItem, fetchAssignees, fetchImages)
-                .map(tuple -> ItemTransformer.toItem(tuple.getT1(), tuple.getT2(), tuple.getT3()));
+        return zip(fetchItem, fetchAssignees, fetchImages, fetchComments)
+                .map(tuple -> ItemTransformer.toFullItem(tuple.getT1(), tuple.getT2(), tuple.getT3(), tuple.getT4()));
     }
 
-    public Mono<UUID> saveItem(BasicItem item) {
+    public Mono<List<PlainItem>> getItemsForAssignee(String assignee) {
+        final var assignedItemIds = itemAssigneeRepository.findByAssignee(assignee)
+                .map(ItemAssigneeEntity::getItemId);
+        final var commentedItemIds = commentRepository.findByAuthor(assignee)
+                .map(CommentEntity::getItemId)
+                .distinct();
+        return itemRepository.findAllById(assignedItemIds.concatWith(commentedItemIds))
+                .map(ItemTransformer::toPlainItem)
+                .collectList();
+    }
+
+    public Mono<UUID> saveItem(PlainItem item) {
         LOG.info("Saving Item: {}", item);
         final ItemEntity entity = ItemTransformer.toEntity(item);
         entity.setLastedit(LocalDateTime.now());
@@ -108,15 +113,4 @@ public class ItemService {
         return itemRepository.deleteById(id);
     }
 
-    private <T> Map<UUID, List<T>> mapByItemId(List<T> ts, Function<T, UUID> itemIdGetter) {
-        final var result = new HashMap<UUID, List<T>>();
-        ts.forEach(t -> {
-            final UUID itemId = itemIdGetter.apply(t);
-            if (!result.containsKey(itemId)) {
-                result.put(itemId, new ArrayList<>());
-            }
-            result.get(itemId).add(t);
-        });
-        return result;
-    }
 }

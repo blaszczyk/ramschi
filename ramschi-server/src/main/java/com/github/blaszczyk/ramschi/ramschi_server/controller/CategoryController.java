@@ -1,5 +1,6 @@
 package com.github.blaszczyk.ramschi.ramschi_server.controller;
 
+import com.github.blaszczyk.ramschi.ramschi_server.controller.util.AuthHelper;
 import com.github.blaszczyk.ramschi.ramschi_server.domain.Category;
 import com.github.blaszczyk.ramschi.ramschi_server.domain.Role;
 import com.github.blaszczyk.ramschi.ramschi_server.service.CategoryService;
@@ -35,6 +36,7 @@ public class CategoryController {
                                             @RequestHeader(RamschiHeader.AUTH) String ramschiAuth) {
         return authHelper.doIfAuthorised(ramschiAuth, Role.ADMIN, () ->
                 categoryService.createCategory(category)
+                        .map(ResponseEntity::ok)
         );
     }
 }

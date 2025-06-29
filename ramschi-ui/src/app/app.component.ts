@@ -1,24 +1,30 @@
-import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { ActivationStart, Router, RouterOutlet } from '@angular/router';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { SpinnerService } from './spinner.service';
+import { Spinner, SpinnerService } from './spinner.service';
 import { ScrollService } from './scroll.service';
 import { CredentialService, RoleAware } from './login/credential.service';
 import { LoginComponent } from './login/login.component';
 import { RamschiFilterComponent } from './ramschi/ramschi-filter/ramschi-filter.component';
-import { RamschiHeaderComponent } from "./ramschi-header/ramschi-header.component";
+import { RamschiHeaderComponent } from './ramschi-header/ramschi-header.component';
+import { RamschiService } from './ramschi/ramschi.service';
+import { ItemListService } from './ramschi/item-list.service';
 
 @Component({
   selector: 'app-root',
   imports: [
     RouterOutlet,
-    MatProgressSpinnerModule,
     LoginComponent,
     RamschiFilterComponent,
-    RamschiHeaderComponent
-],
+    RamschiHeaderComponent,
+  ],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.css',
+  styleUrl: './app.component.scss',
 })
 export class AppComponent extends RoleAware implements OnInit, AfterViewInit {
   title = 'ramschi-ui';
@@ -27,30 +33,47 @@ export class AppComponent extends RoleAware implements OnInit, AfterViewInit {
   container!: ElementRef<HTMLDivElement>;
 
   constructor(
-    private readonly spinner: SpinnerService,
+    private readonly spinnerService: SpinnerService,
     private readonly router: Router,
     private readonly scroll: ScrollService,
+    private readonly service: RamschiService,
+    private readonly list: ItemListService,
     credential: CredentialService,
   ) {
     super(credential);
   }
 
-  showFilter: boolean = false;
+  showListView = false;
 
   get showSpinner(): boolean {
-    return this.spinner.isVisible();
+    return this.spinnerService.isVisible();
   }
 
-  get loggedIn(): boolean {
-    return this.credential.isInitialised();
+  get spinners(): Spinner[] {
+    return this.spinnerService.spinners;
+  }
+
+  get requiresLogin(): boolean {
+    return this.credential.getRequiresLogin();
   }
 
   ngOnInit(): void {
     this.router.events.subscribe((event) => {
       if (event instanceof ActivationStart) {
-        this.showFilter = !event.snapshot.routeConfig?.path;
+        this.showListView = !event.snapshot.routeConfig?.path;
       }
     });
+    if (this.credential.hasCredentials()) {
+      this.service.login().subscribe((response) => {
+        if (response.success) {
+          this.credential.setLoggedIn();
+          this.credential.setRole(response.role);
+          this.list.applyFilter();
+        } else {
+          this.credential.logout();
+        }
+      });
+    }
   }
 
   ngAfterViewInit(): void {

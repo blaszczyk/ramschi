@@ -1,17 +1,67 @@
-
-      <div class="header">
-        <div class="logo" (click)="navigateTo('/')">
-          <img src="/ramschi.png" alt="Ramschi" />
-        </div>
-        <div class="buttons">
-          <div class="assignee">Hallo {{ assignee }}!&nbsp;</div>
-          @if (isContributor) {
-            <button mat-mini-fab (click)="navigateTo('/ramsch')">
-              <mat-icon>add_circle</mat-icon>
-            </button>
-          }
-          <button mat-mini-fab (click)="logout()">
-            <mat-icon>{{ isAssignee ? 'logout' : 'login'}}</mat-icon>
-          </button>
-        </div>
+<div class="header">
+  <div class="menu-toggle">
+    <button
+      mat-mini-fab
+      matIconButton
+      (click)="toggleMenu($event)"
+      aria-label="menu"
+    >
+      <mat-icon>menu</mat-icon>
+    </button>
+  </div>
+  <div class="menu" [@openClose]="showMenu ? 'open' : 'closed'">
+    <div class="menu-button">
+      <button mat-mini-fab class="menu-button" (click)="navigateTo('/')">
+        <mat-icon>home</mat-icon>
+      </button>
+    </div>
+    @if (isContributor) {
+      <div class="menu-button">
+        <button
+          mat-mini-fab
+          class="menu-button"
+          (click)="navigateTo('/ramsch')"
+        >
+          <mat-icon>add_circle</mat-icon>
+        </button>
       </div>
+    }
+    <div class="menu-button">
+      @if (canShare()) {
+        <button mat-mini-fab class="menu-button" (click)="share()">
+          <mat-icon>share</mat-icon>
+        </button>
+      }
+    </div>
+    @if (isAdmin) {
+      <div class="menu-button">
+        <button mat-mini-fab class="menu-button" (click)="navigateTo('/admin')">
+          <mat-icon>manage_accounts</mat-icon>
+        </button>
+      </div>
+      <div class="menu-button">
+        <button
+          mat-mini-fab
+          class="menu-button"
+          (click)="navigateTo('/admin/sauber')"
+        >
+          <mat-icon>cleaning_services</mat-icon>
+        </button>
+      </div>
+    }
+    <div class="menu-button">
+      <button mat-mini-fab class="menu-button" (click)="navigateTo('/faq')">
+        <mat-icon>help</mat-icon>
+      </button>
+    </div>
+    <div class="menu-button">
+      <button mat-mini-fab class="menu-button" (click)="logout()">
+        <mat-icon>{{ isAssignee ? "logout" : "login" }}</mat-icon>
+      </button>
+    </div>
+  </div>
+  <div class="logo" (click)="navigateTo('/')">
+    <img src="/ramschi.png" alt="Ramschi" />
+  </div>
+  <div class="assignee">Hallo {{ assignee }}!&nbsp;</div>
+</div>

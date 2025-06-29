@@ -1,6 +1,6 @@
 @if (initialized) {
   <div class="panel">
-    <h1>{{isAssigned ? ' ☝️' : '' }} {{ item.name || "Neuer Ramsch" }} </h1>
+    <h1>{{ isAssigned ? " ☝️" : "" }} {{ item.name || "Neuer Ramsch" }}</h1>
   </div>
   @if (isContributor) {
     <mat-grid-list class="item-form" cols="1" rowHeight="5:1">
@@ -35,26 +35,13 @@
             (valueChange)="setDirty()"
             name="category"
           >
-            @for (category of categories; track category) {
+            @for (category of categories; track category.id) {
               <mat-option [value]="category.id">{{ category.name }}</mat-option>
             }
           </mat-select>
         </mat-form-field>
       </mat-grid-tile>
-      <mat-grid-tile>
-        <mat-form-field>
-          <mat-label>Preisvorstellung in €</mat-label>
-          <input
-            class="price"
-            matInput
-            type="number"
-            placeholder="Preis"
-            [(ngModel)]="item.price"
-            (keyup)="setDirty()"
-          />
-        </mat-form-field>
-      </mat-grid-tile>
-      @if (isAdmin && item.id ) {
+      @if (isAdmin && item.id) {
         <mat-grid-tile>
           <mat-form-field>
             <mat-label>Interessenten</mat-label>
@@ -70,44 +57,62 @@
           </mat-form-field>
         </mat-grid-tile>
       }
+      @if (isContributor && item.id) {
+        <mat-grid-tile>
+          <mat-checkbox [(ngModel)]="item.sold" (change)="setDirty()"
+            >Verkauft</mat-checkbox
+          >
+        </mat-grid-tile>
+      }
     </mat-grid-list>
   } @else {
     <div class="description" [innerHTML]="urlify(item.description)"></div>
   }
   @if (isAssignee) {
     @if (item.assignees.length) {
-      <hr>
+      <hr />
       <div class="assignees">Interessenten:</div>
       @for (assignee of item.assignees; track assignee) {
         <div class="assignee">☝️ {{ assignee }}</div>
       }
-      <hr>
+      <hr />
     }
     <div [style.text-align]="isContributor ? 'right' : 'center'">
       @if (isAssigned) {
-        <button class="assign"
+        <button
+          class="assign"
           mat-stroked-button
+          [disabled]="item.sold"
           (click)="unassign(assignee!)"
-        > Kein Interesse mehr
+        >
+          Kein Interesse mehr
         </button>
-      }
-      @else {
-        <button class="assign"
+      } @else {
+        <button
+          class="assign"
           mat-flat-button
+          [disabled]="item.sold"
           [style.visibility]="item.id ? 'visible' : 'hidden'"
           (click)="assign(assignee!)"
-        > Ich wäre interessiert!
+        >
+          Ich bin {{ item.assignees.length ? " auch " : "" }} interessiert!
         </button>
       }
       @if (isContributor) {
-        <button class="mini"
+        <button
+          class="mini"
           mat-mini-fab
           [style.visibility]="item.id ? 'visible' : 'hidden'"
           (click)="clickNewImage()"
         >
           <mat-icon>add_a_photo</mat-icon>
         </button>
-        <button mat-mini-fab  class="mini" [disabled]="saveDisabled()" (click)="saveItem()">
+        <button
+          mat-mini-fab
+          class="mini"
+          [disabled]="saveDisabled()"
+          (click)="saveItem()"
+        >
           <mat-icon>save</mat-icon>
         </button>
         <input
@@ -119,18 +124,15 @@
         />
       }
     </div>
-  }
-  @else {
+  } @else {
     <div [style.text-align]="'center'">
-        <button class="assign"
-          mat-flat-button
-          (click)="credential.logout()"
-        > Interessiert? Dann melde dich an!
-        </button>
+      <button class="assign" mat-flat-button (click)="credential.logout()">
+        Interessiert? Dann melde dich an!
+      </button>
     </div>
   }
   @if (isAssignee && item.id) {
-    <app-comments [item]="item"></app-comments>
+    <app-comments [itemId]="item.id" [comments]="item.comments"></app-comments>
   }
   @for (image of item.images; track image) {
     <a [href]="'/api/image/' + image">

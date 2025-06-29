@@ -1,17 +1,20 @@
 import { Component, OnInit } from '@angular/core';
 import { RamschiService } from '../ramschi.service';
 import { FormsModule } from '@angular/forms';
-import { ICategory } from '../domain';
+import { IAssignee, ICategory, IItem, Role } from '../domain';
 import { CredentialService, RoleAware } from '../../login/credential.service';
+import { tap } from 'rxjs';
 
 @Component({
   selector: 'app-admin',
   imports: [FormsModule],
   templateUrl: './admin.component.html',
-  styleUrl: './admin.component.css',
+  styleUrl: './admin.component.scss',
 })
 export class AdminComponent extends RoleAware implements OnInit {
-  assignees: string[] = [];
+  Role: typeof Role = Role;
+
+  assignees: IAssignee[] = [];
 
   categories: ICategory[] = [];
 
@@ -21,37 +24,52 @@ export class AdminComponent extends RoleAware implements OnInit {
 
   newCategoryName: string | null = null;
 
-  constructor(private readonly service: RamschiService,
+  popupItems: IItem[] = [];
+
+  constructor(
+    private readonly service: RamschiService,
     credential: CredentialService,
   ) {
-    super(credential);  
+    super(credential);
   }
 
   ngOnInit(): void {
     this.refresh();
   }
 
-  createNewAssignee(): void {
-    this.service.postAssignee(this.newAssignee!).subscribe(() => {
-      this.newAssignee = null;
-      this.refresh();
-    });
-  }
-
   deleteAssignee(name: string) {
     if (confirm(name + ' löschen?')) {
-      this.service.deleteAssignee(name).subscribe(() => {
-        this.refresh();
-      });
+      this.service.deleteAssignee(name).subscribe(this.alertSuccess);
     }
   }
 
   resetPassword(name: string) {
     if (confirm('Passwort von ' + name + ' zurücksetzen?')) {
-      this.service.resetPassword(name).subscribe(() => {
-        alert('Hat geklappt!');
-      });
+      this.service.resetPassword(name).subscribe(this.alertSuccess);
     }
+  }
+
+  toggleRole(assignee: IAssignee) {
+    if (
+      confirm(
+        assignee.name +
+          ' ' +
+          (assignee.role === Role.ASSIGNEE ? 'befördern' : 'herabstufen') +
+          '?',
+      )
+    ) {
+      const newRole =
+        assignee.role === Role.ASSIGNEE ? Role.CONTRIBUTOR : Role.ASSIGNEE;
+      this.service
+        .putAssigneeRole(assignee.name, newRole)
+        .subscribe(this.alertSuccess);
+    }
+  }
+
+  showItems(assignee: IAssignee) {
+    this.service
+      .getItemsForAssignee(assignee.name)
+      .subscribe((items) => (this.popupItems = items));
   }
 
   createNewCategory(): void {
@@ -59,26 +77,32 @@ export class AdminComponent extends RoleAware implements OnInit {
       id: this.newCategoryId!.toUpperCase(),
       name: this.newCategoryName!,
     };
-    this.service.postCategory(category).subscribe(() => {
-      this.newCategoryId = null;
-      this.newCategoryName = null;
-      this.refresh();
-    });
+    this.service
+      .postCategory(category)
+      .pipe(
+        tap(() => {
+          this.newCategoryId = null;
+          this.newCategoryName = null;
+        }),
+      )
+      .subscribe(this.alertSuccess);
   }
 
   updateCategory(category: ICategory): void {
-    this.service.postCategory(category).subscribe(() => {
-      this.refresh();
-      alert('Hat geklappt!');
-    });
+    this.service.postCategory(category).subscribe(this.alertSuccess);
   }
 
   private refresh() {
     this.service
-      .getAssignees()
+      .getFullAssignees()
       .subscribe((assignees) => (this.assignees = assignees));
     this.service
       .getCategories()
       .subscribe((categories) => (this.categories = categories));
   }
+
+  private alertSuccess = (): void => {
+    this.refresh();
+    alert('Hat geklappt!');
+  };
 }
