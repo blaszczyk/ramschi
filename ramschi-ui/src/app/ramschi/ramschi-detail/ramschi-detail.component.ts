@@ -68,6 +68,8 @@ export class RamschiDetailComponent
 
   initialized = false;
 
+  soldSaved = false;
+
   pristine = true;
 
   constructor(
@@ -92,6 +94,7 @@ export class RamschiDetailComponent
         this.service.getItem(id).subscribe((item) => {
           this.item = item;
           this.initialized = true;
+          this.soldSaved = item.sold;
           this.spinner.hide();
           this.itemHolder.setItem(item);
         });
@@ -131,9 +134,10 @@ export class RamschiDetailComponent
       sold: this.item.sold,
     };
     this.service.postItem(plainItem).subscribe((id) => {
-      this.pristine = true;
       this.router.navigateByUrl('/ramsch/' + id);
       this.itemList.requestItems().subscribe(() => {
+        this.pristine = true;
+        this.soldSaved = plainItem.sold;
         this.spinner.hide();
       });
     });

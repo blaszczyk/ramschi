@@ -1,142 +1,159 @@
 @if (initialized) {
-  <div class="panel">
-    <h1>{{ isAssigned ? " ☝️" : "" }} {{ item.name || "Neuer Ramsch" }}</h1>
-  </div>
-  @if (isContributor) {
-    <mat-grid-list class="item-form" cols="1" rowHeight="5:1">
-      <mat-grid-tile>
-        <mat-form-field>
-          <mat-label>Name</mat-label>
-          <input
-            matInput
-            placeholder="Name"
-            [(ngModel)]="item.name"
-            (keyup)="setDirty()"
-          />
-        </mat-form-field>
-      </mat-grid-tile>
-      <mat-grid-tile rowspan="2">
-        <mat-form-field>
-          <mat-label>Beschreibung</mat-label>
-          <textarea
-            matInput
-            placeholder="Beschreibung"
-            rows="4"
-            [(ngModel)]="item.description"
-            (keyup)="setDirty()"
-          ></textarea>
-        </mat-form-field>
-      </mat-grid-tile>
-      <mat-grid-tile>
-        <mat-form-field>
-          <mat-label>Kategorie</mat-label>
-          <mat-select
-            [(ngModel)]="item.category"
-            (valueChange)="setDirty()"
-            name="category"
-          >
-            @for (category of categories; track category.id) {
-              <mat-option [value]="category.id">{{ category.name }}</mat-option>
-            }
-          </mat-select>
-        </mat-form-field>
-      </mat-grid-tile>
-      @if (isAdmin && item.id) {
+  <div [class.sold]="item.sold">
+    <div class="panel">
+      <h1>{{ isAssigned ? " ☝️" : "" }} {{ item.name || "Neuer Ramsch" }}</h1>
+    </div>
+    @if (isContributor) {
+      <mat-grid-list class="item-form" cols="1" rowHeight="5:1">
         <mat-grid-tile>
           <mat-form-field>
-            <mat-label>Interessenten</mat-label>
+            <mat-label>Name</mat-label>
+            <input
+              matInput
+              placeholder="Name"
+              [(ngModel)]="item.name"
+              [disabled]="item.sold || soldSaved"
+              (keyup)="setDirty()"
+            />
+          </mat-form-field>
+        </mat-grid-tile>
+        <mat-grid-tile rowspan="2">
+          <mat-form-field>
+            <mat-label>Beschreibung</mat-label>
+            <textarea
+              matInput
+              placeholder="Beschreibung"
+              rows="4"
+              [(ngModel)]="item.description"
+              [disabled]="item.sold || soldSaved"
+              (keyup)="setDirty()"
+            ></textarea>
+          </mat-form-field>
+        </mat-grid-tile>
+        <mat-grid-tile>
+          <mat-form-field>
+            <mat-label>Kategorie</mat-label>
             <mat-select
-              multiple
-              (selectionChange)="changeAssignee($event)"
-              [value]="item.assignees"
+              [(ngModel)]="item.category"
+              [disabled]="item.sold || soldSaved"
+              (valueChange)="setDirty()"
+              name="category"
             >
-              @for (assignee of assignees; track assignee) {
-                <mat-option [value]="assignee">{{ assignee }}</mat-option>
+              @for (category of categories; track category.id) {
+                <mat-option [value]="category.id">{{
+                  category.name
+                }}</mat-option>
               }
             </mat-select>
           </mat-form-field>
         </mat-grid-tile>
-      }
-      @if (isContributor && item.id) {
-        <mat-grid-tile>
-          <mat-checkbox [(ngModel)]="item.sold" (change)="setDirty()"
-            >Verkauft</mat-checkbox
-          >
-        </mat-grid-tile>
-      }
-    </mat-grid-list>
-  } @else {
-    <div class="description" [innerHTML]="urlify(item.description)"></div>
-  }
-  @if (isAssignee) {
-    @if (item.assignees.length) {
-      <hr />
-      <div class="assignees">Interessenten:</div>
-      @for (assignee of item.assignees; track assignee) {
-        <div class="assignee">☝️ {{ assignee }}</div>
-      }
-      <hr />
+        @if (isAdmin && item.id) {
+          <mat-grid-tile>
+            <mat-form-field>
+              <mat-label>Interessenten</mat-label>
+              <mat-select
+                multiple
+                (selectionChange)="changeAssignee($event)"
+                [disabled]="item.sold || soldSaved"
+                [value]="item.assignees"
+              >
+                @for (assignee of assignees; track assignee) {
+                  <mat-option [value]="assignee">{{ assignee }}</mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+          </mat-grid-tile>
+        }
+        @if (isContributor && item.id) {
+          <mat-grid-tile>
+            <mat-checkbox [(ngModel)]="item.sold" (change)="setDirty()"
+              >Verkauft</mat-checkbox
+            >
+          </mat-grid-tile>
+        }
+      </mat-grid-list>
+    } @else {
+      <div class="description" [innerHTML]="urlify(item.description)"></div>
     }
-    <div [style.text-align]="isContributor ? 'right' : 'center'">
-      @if (isAssigned) {
-        <button
-          class="assign"
-          mat-stroked-button
-          [disabled]="item.sold"
-          (click)="unassign(assignee!)"
-        >
-          Kein Interesse mehr
-        </button>
-      } @else {
+    @if (isAssignee) {
+      @if (item.assignees.length) {
+        <hr />
+        <div class="assignees">Interessenten:</div>
+        @for (assignee of item.assignees; track assignee) {
+          <div class="assignee">☝️ {{ assignee }}</div>
+        }
+        <hr />
+      }
+      <div [style.text-align]="isContributor ? 'right' : 'center'">
+        @if (isAssigned) {
+          <button
+            class="assign"
+            mat-stroked-button
+            [disabled]="item.sold || soldSaved"
+            (click)="unassign(assignee!)"
+          >
+            Kein Interesse mehr
+          </button>
+        } @else {
+          <button
+            class="assign"
+            mat-flat-button
+            [disabled]="item.sold || soldSaved"
+            [style.visibility]="item.id ? 'visible' : 'hidden'"
+            (click)="assign(assignee!)"
+          >
+            Ich bin {{ item.assignees.length ? " auch " : "" }} interessiert!
+          </button>
+        }
+        @if (isContributor) {
+          <button
+            class="mini"
+            mat-mini-fab
+            [style.visibility]="item.id ? 'visible' : 'hidden'"
+            [disabled]="item.sold || soldSaved"
+            (click)="clickNewImage()"
+          >
+            <mat-icon>add_a_photo</mat-icon>
+          </button>
+          <button
+            mat-mini-fab
+            class="mini"
+            [disabled]="saveDisabled()"
+            (click)="saveItem()"
+          >
+            <mat-icon>save</mat-icon>
+          </button>
+          <input
+            #newImage
+            id="new-image"
+            type="file"
+            accept="image/*"
+            (change)="uploadNewImage($event)"
+          />
+        }
+      </div>
+    } @else {
+      <div [style.text-align]="'center'">
         <button
           class="assign"
           mat-flat-button
           [disabled]="item.sold"
-          [style.visibility]="item.id ? 'visible' : 'hidden'"
-          (click)="assign(assignee!)"
+          (click)="credential.logout()"
         >
-          Ich bin {{ item.assignees.length ? " auch " : "" }} interessiert!
+          Interessiert? Dann melde dich an!
         </button>
-      }
-      @if (isContributor) {
-        <button
-          class="mini"
-          mat-mini-fab
-          [style.visibility]="item.id ? 'visible' : 'hidden'"
-          (click)="clickNewImage()"
-        >
-          <mat-icon>add_a_photo</mat-icon>
-        </button>
-        <button
-          mat-mini-fab
-          class="mini"
-          [disabled]="saveDisabled()"
-          (click)="saveItem()"
-        >
-          <mat-icon>save</mat-icon>
-        </button>
-        <input
-          #newImage
-          id="new-image"
-          type="file"
-          accept="image/*"
-          (change)="uploadNewImage($event)"
-        />
-      }
-    </div>
-  } @else {
-    <div [style.text-align]="'center'">
-      <button class="assign" mat-flat-button (click)="credential.logout()">
-        Interessiert? Dann melde dich an!
-      </button>
-    </div>
-  }
-  @if (isAssignee && item.id) {
-    <app-comments [itemId]="item.id" [comments]="item.comments"></app-comments>
-  }
-  @for (image of item.images; track image) {
-    <a [href]="'/api/image/' + image">
-      <img [src]="'/api/image/' + image + '/preview'" [alt]="image" />
-    </a>
-  }
+      </div>
+    }
+    @if (isAssignee && item.id) {
+      <app-comments
+        [itemId]="item.id"
+        [comments]="item.comments"
+      ></app-comments>
+    }
+    @for (image of item.images; track image) {
+      <a [href]="'/api/image/' + image">
+        <img [src]="'/api/image/' + image + '/preview'" [alt]="image" />
+      </a>
+    }
+  </div>
 }
