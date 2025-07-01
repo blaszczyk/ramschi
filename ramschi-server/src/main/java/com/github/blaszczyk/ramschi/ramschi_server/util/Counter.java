@@ -13,18 +13,27 @@ public class Counter<K> {
                 Counter::absorb);
     }
 
-    private final Map<K, Integer> map = new HashMap<>();
+    private final Map<K, int[]> map = new HashMap<>();
 
-    public int get(K key) {
-        return map.getOrDefault(key, 0);
+    private Counter() {}
+
+    public int get(final K key) {
+        return getInternal(key)[0];
     }
 
-    public void add(K key, int summand) {
-        map.put(key, get(key) + summand);
+    private int[] getInternal(final K key) {
+        if (!map.containsKey(key)) {
+            map.put(key, new int[]{0});
+        }
+        return map.get(key);
     }
 
-    public Counter<K> absorb(Counter<K> other) {
-        other.map.forEach(this::add);
+    private void add(final K key, final int summand) {
+        getInternal(key)[0]+=summand;
+    }
+
+    private Counter<K> absorb(final Counter<K> other) {
+        other.map.forEach((key, count) -> add(key, count[0]));
         return this;
     }
 
