@@ -1,0 +1,24 @@
+services:
+    database:
+        image: postgres
+        environment:
+            - POSTGRES_DB=ramschi
+            - POSTGRES_USER=postgres
+            - POSTGRES_PASSWORD=postgres
+            - PG_PASSWORD=postgres
+        volumes:
+            - ./sql:/sql
+# psql -U postgres -d ramschi -f /sql/revert_liquibase.sql
+
+    service:
+        image: blaszczyk/ramschi:1.6.4
+        command: java -Xmx512m -jar ramschi-server.jar
+        environment:
+            - DATABASE_HOST=database
+            - DATABASE_NAME=ramschi
+            - DATABASE_USERNAME=postgres
+            - DATABASE_PASSWORD=postgres
+        ports:
+            - 80:80
+        depends_on:
+            - database
